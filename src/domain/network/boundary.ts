@@ -5,7 +5,10 @@ export interface AffinePlane {
   b: number;
 }
 export type Boundary =
-  { kind: 'constant' } | { kind: 'outside' } | { kind: 'line'; points: readonly [Point, Point] };
+  | { kind: 'constant' }
+  | { kind: 'outside' }
+  | { kind: 'point'; point: Point }
+  | { kind: 'line'; points: readonly [Point, Point] };
 const corners: Point[] = [
   [-2, -2],
   [2, -2],
@@ -34,7 +37,8 @@ export function boundaryLine({ w1, w2, b }: AffinePlane): Boundary {
   }
   const first = points[0];
   const second = points[1];
-  return first && second ? { kind: 'line', points: [first, second] } : { kind: 'outside' };
+  if (first && second) return { kind: 'line', points: [first, second] };
+  return first ? { kind: 'point', point: first } : { kind: 'outside' };
 }
 /** Sutherland–Hodgman clipping against z >= 0; used only to shade the input plane. */
 export function positiveRegion(plane: AffinePlane): Point[] {

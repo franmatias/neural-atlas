@@ -10,6 +10,9 @@ const x = scaleLinear().domain([-2, 2]).range([40, 278]);
 const y = scaleLinear().domain([-2, 2]).range([236, 20]);
 const ticks = [-2, -1, 0, 1, 2];
 const boundary = computed(() => boundaryLine(neuron.config));
+const allZero = computed(
+  () => neuron.config.w1 === 0 && neuron.config.w2 === 0 && neuron.config.b === 0,
+);
 const region = computed(() =>
   positiveRegion(neuron.config)
     .map((p: Point) => `${x(p[0])},${y(p[1])}`)
@@ -58,7 +61,7 @@ function move(event: KeyboardEvent) {
         </pattern>
       </defs>
       <rect x="40" y="20" width="238" height="216" class="plane-negative" />
-      <rect x="40" y="20" width="238" height="216" fill="url(#negative-hatch)" />
+      <rect v-if="!allZero" x="40" y="20" width="238" height="216" fill="url(#negative-hatch)" />
       <polygon v-if="region" :points="region" class="plane-positive" />
       <g v-for="tick in ticks" :key="tick" class="chart-grid">
         <path :d="`M${x(tick)} 20V236M40 ${y(tick)}H278`" />
@@ -74,17 +77,35 @@ function move(event: KeyboardEvent) {
         :y2="y(boundary.points[1][1])"
         class="decision-line"
       />
+      <circle
+        v-if="boundary.kind === 'point'"
+        :cx="x(boundary.point[0])"
+        :cy="y(boundary.point[1])"
+        r="4"
+        class="boundary-point"
+      />
       <circle :cx="x(neuron.config.x1)" :cy="y(neuron.config.x2)" r="7" class="input-point" />
       <text x="296" y="241" class="axis-label">x₁</text>
       <text x="15" y="16" class="axis-label">x₂</text>
     </svg>
     <div class="chart-legend">
-      <span class="negative-key">{{ t('neuron.negative') }}</span
-      ><span class="positive-key">{{ t('neuron.positive') }}</span
-      ><span class="line-key">{{ t('neuron.frontier') }}</span>
+      <span v-if="allZero">{{ t('neuron.zeroPlane') }}</span>
+      <template v-else
+        ><span class="negative-key">{{ t('neuron.negative') }}</span
+        ><span class="positive-key">{{ t('neuron.positive') }}</span
+        ><span class="line-key">{{ t('neuron.frontier') }}</span></template
+      >
     </div>
     <p v-if="boundary.kind !== 'line'" class="chart-status" role="status">
-      {{ t(boundary.kind === 'constant' ? 'neuron.constant' : 'neuron.outside') }}
+      {{
+        t(
+          boundary.kind === 'constant'
+            ? 'neuron.constant'
+            : boundary.kind === 'point'
+              ? 'neuron.tangent'
+              : 'neuron.outside',
+        )
+      }}
     </p>
   </section>
 </template>

@@ -2,18 +2,19 @@
 import { usePreferencesStore } from '@/stores/preferences';
 import { useI18n } from '@/app/i18n';
 import type { ExplanationLevel, Theme } from '@/infrastructure/persistence/preferences';
+withDefaults(defineProps<{ prefix?: string }>(), { prefix: '' });
 const prefs = usePreferencesStore();
 const { t } = useI18n();
 const themes: Theme[] = ['system', 'light', 'dark'];
 const levels: ExplanationLevel[] = ['intuition', 'steps', 'formal'];
 </script>
 <template>
-  <div class="settings-form">
+  <div class="settings-form space-y-4">
     <fieldset>
       <legend>{{ t('settings.appearance') }}</legend>
-      <label for="theme">{{ t('settings.theme') }}</label>
+      <label :for="`${prefix}theme`">{{ t('settings.theme') }}</label>
       <select
-        id="theme"
+        :id="`${prefix}theme`"
         :value="prefs.value.theme"
         @change="prefs.update({ theme: ($event.target as HTMLSelectElement).value as Theme })"
       >
@@ -32,9 +33,9 @@ const levels: ExplanationLevel[] = ['intuition', 'steps', 'formal'];
     </fieldset>
     <fieldset>
       <legend>{{ t('settings.learning') }}</legend>
-      <label for="level">{{ t('settings.level') }}</label>
+      <label :for="`${prefix}level`">{{ t('settings.level') }}</label>
       <select
-        id="level"
+        :id="`${prefix}level`"
         :value="prefs.value.level"
         @change="
           prefs.update({ level: ($event.target as HTMLSelectElement).value as ExplanationLevel })
@@ -47,11 +48,11 @@ const levels: ExplanationLevel[] = ['intuition', 'steps', 'formal'];
     </fieldset>
     <fieldset>
       <legend>{{ t('settings.animation') }}</legend>
-      <label for="speed"
+      <label :for="`${prefix}speed`"
         >{{ t('settings.speed') }} <output>{{ prefs.value.speed }}×</output></label
       >
       <input
-        id="speed"
+        :id="`${prefix}speed`"
         type="range"
         min="0.25"
         max="4"

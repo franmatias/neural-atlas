@@ -5,9 +5,22 @@ import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   base: '/neural-atlas/',
-  plugins: [vue(), tailwindcss()],
+  plugins: [
+    vue(),
+    tailwindcss(),
+    {
+      name: 'production-csp',
+      apply: 'build',
+      transformIndexHtml(html) {
+        return html.replace(
+          "connect-src 'self' ws://localhost:* ws://127.0.0.1:*",
+          "connect-src 'self'",
+        );
+      },
+    },
+  ],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   server: { host: '127.0.0.1', port: 5173 },
   preview: { host: '127.0.0.1', port: 4173, strictPort: true },
-  build: { target: 'es2022', sourcemap: true },
+  build: { target: 'es2022', sourcemap: true, manifest: true },
 });

@@ -18,6 +18,7 @@ HTMLDialogElement.prototype.showModal = function () {
 };
 HTMLDialogElement.prototype.close = function () {
   this.removeAttribute('open');
+  this.dispatchEvent(new Event('close'));
 };
 afterEach(() => {
   localStorage.clear();

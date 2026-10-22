@@ -83,7 +83,7 @@ describe('frontera y región afín', () => {
   it('distingue salida constante, fuera del plano y esquina sin segmento', () => {
     expect(boundaryLine({ w1: 0, w2: 0, b: 0 })).toEqual({ kind: 'constant' });
     expect(boundaryLine({ w1: 1, w2: 1, b: 5 })).toEqual({ kind: 'outside' });
-    expect(boundaryLine({ w1: 1, w2: 1, b: 4 })).toEqual({ kind: 'outside' });
+    expect(boundaryLine({ w1: 1, w2: 1, b: 4 })).toEqual({ kind: 'point', point: [-2, -2] });
   });
   it('el sesgo desplaza sin girar y las entradas no afectan a la frontera', () => {
     const a = boundaryLine({ w1: 1, w2: 0, b: 0 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from '@/app/i18n';
 import { useNeuronStore } from '@/stores/neuron';
 import { activations } from '@/domain/network/neuron';
@@ -8,29 +8,34 @@ import ParameterField from '@/shared/ui/ParameterField.vue';
 import AppIcon from '@/shared/ui/AppIcon.vue';
 const { t } = useI18n();
 const neuron = useNeuronStore();
-const preset = ref('first');
-function loadPreset() {
-  const selected = neuronPresets.find((p) => p.id === preset.value)!;
-  neuron.update(selected.config);
+const preset = computed(
+  () =>
+    neuronPresets.find((p) =>
+      (['x1', 'x2', 'w1', 'w2', 'b', 'activation'] as const).every(
+        (key) => p.config[key] === neuron.config[key],
+      ),
+    )?.id ?? 'custom',
+);
+function loadPreset(id: string) {
+  const selected = neuronPresets.find((p) => p.id === id);
+  if (selected) neuron.update(selected.config);
 }
 </script>
 <template>
   <section class="panel controls-panel" aria-labelledby="controls-title">
     <div class="panel-heading">
       <h2 id="controls-title">{{ t('neuron.controls') }}</h2>
-      <button
-        class="icon-button"
-        :aria-label="t('neuron.restore')"
-        @click="
-          neuron.restore();
-          preset = 'first';
-        "
-      >
+      <button class="icon-button" :aria-label="t('neuron.restore')" @click="neuron.restore()">
         <AppIcon name="reset" :size="17" />
       </button>
     </div>
     <label class="control-label" for="preset">{{ t('neuron.preset') }}</label
-    ><select id="preset" v-model="preset" @change="loadPreset">
+    ><select
+      id="preset"
+      :value="preset"
+      @change="loadPreset(($event.target as HTMLSelectElement).value)"
+    >
+      <option v-if="preset === 'custom'" value="custom" disabled>{{ t('neuron.custom') }}</option>
       <option v-for="example in neuronPresets" :key="example.id" :value="example.id">
         {{ example.title }}
       </option>
