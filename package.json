@@ -1,14 +1,15 @@
 {
   "name": "simulator-neural-networks-specification",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Especificación revisable de Neural Atlas; todavía sin aplicación Vue implementada",
   "type": "module",
-  "engines": { "node": ">=20.18.0" },
+  "engines": { "node": ">=24 <25" },
   "scripts": {
     "docs:diagrams": "node scripts/render-diagram-catalog.mjs",
     "docs:wireframes": "node scripts/render-wireframes.mjs",
-    "docs:check": "node scripts/check-docs.mjs && node scripts/render-diagram-catalog.mjs --check"
+    "docs:trace": "node scripts/render-rf-traceability.mjs",
+    "docs:check": "node scripts/check-docs.mjs && node scripts/render-diagram-catalog.mjs --check && node scripts/render-rf-traceability.mjs --check && node scripts/check-review-fixtures.mjs"
   },
   "devDependencies": {
     "jsdom": "26.1.0",

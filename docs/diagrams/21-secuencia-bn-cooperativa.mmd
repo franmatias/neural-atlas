@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant C as Controlador
+  participant W as Worker
+  participant B as Estado candidato del batch
+  W->>B: Guardar RNG y estado confirmado anterior
+  loop Por cada capa
+    loop Bloques dense de filas y columnas
+      W->>B: Calcular bloque y ceder al event loop
+    end
+    W->>B: Reducir estadisticas del lote completo
+    W->>B: Normalizar por bloques usando mismas estadisticas
+  end
+  W->>B: Backward con reducciones BN completas
+  alt Llega PAUSE o CANCEL en un yield
+    C->>W: PAUSE o CANCEL
+    W->>B: Descartar candidato y restaurar RNG
+    W-->>C: Estado estable sin paso parcial
+  else Batch finaliza finito
+    W->>B: Confirmar parametros optimizador BN y cursor
+    W-->>C: Snapshot confirmado
+  end

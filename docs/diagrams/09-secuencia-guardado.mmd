@@ -3,18 +3,19 @@ sequenceDiagram
   participant UI as Biblioteca
   participant W as Worker
   participant R as Repositorio
-  participant LS as LocalStorage
+  participant DB as IndexedDB
   A->>UI: Guardar experimento
   UI->>W: PAUSE y CHECKPOINT
   W-->>UI: Checkpoint en frontera confirmada
   UI->>R: Guardar copia validada
   R->>R: Validar schema y presupuesto
   alt Cabe en presupuesto
-    R->>LS: setItem de biblioteca completa
-    alt Escritura correcta
-      LS-->>UI: Confirmacion local
-    else Cuota o permiso denegado
-      LS-->>UI: Conservar anterior y ofrecer exportar
+    R->>DB: Transaccion de dataset modelo y manifiesto
+    DB->>DB: Comprobar revision esperada
+    alt Commit correcto
+      DB-->>UI: Confirmacion tras complete
+    else Abort cuota o conflicto
+      DB-->>UI: Conservar anterior y ofrecer exportar
     end
   else Excede limite
     R-->>UI: Exportar archivo o elegir entradas a retirar

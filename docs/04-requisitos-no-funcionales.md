@@ -24,7 +24,7 @@ Los valores son objetivos de aceptación, **no mediciones del producto todavía 
 | RNF-018 | Documentación | Todo RF trazado a historia, módulo y prueba; UML fuente versionado; cambios de contrato requieren ADR y prueba |
 | RNF-019 | Offline | Carga offline tras precaché completo; documentar que primera visita sin red depende del error del navegador; Worker y chunks usan la misma versión de build |
 | RNF-020 | Despliegue | GitHub Pages bajo subruta; hash routing y assets/Worker/SW con base correcta; recarga de rutas sin 404 |
-| RNF-021 | Internacionalización | Español consistente y términos ingleses localizables; coma decimal en UI, punto y UTF-8 en intercambios |
+| RNF-021 | Internacionalización | Español inicial completo; claves/locales es/en/ca/gl/eu y fallback explícito, términos ingleses buscables; parser coma/punto en UI, punto y UTF-8 en archivos; traducciones no publicadas se identifican |
 | RNF-022 | Errores numéricos | Detener actualización antes de propagar NaN/Infinity; conservar último checkpoint finito y explicar causa posible |
 | RNF-023 | Licencias | Inventario de dependencias y datasets, atribuciones y decisión de licencia antes de publicar; sin reutilizar datasets sin licencia |
 | RNF-024 | Integridad de comparación | Cada resultado lleva configHash, dataHash, engineVersion y semilla; UI no mezcla revisiones ni cohortes |

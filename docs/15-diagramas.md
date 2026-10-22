@@ -6,7 +6,7 @@ Documento generado desde los archivos `.mmd`. Editar las fuentes y ejecutar `npm
 
 Contexto, en flowchart: personas, aplicación y almacenamiento. No representa un backend.
 
-[Fuente Mermaid](diagrams/01-contexto.mmd)
+[Fuente Mermaid](diagrams/01-contexto.mmd) · [SVG exportado](diagrams/rendered/01-contexto.svg)
 
 ```mermaid
 flowchart LR
@@ -14,7 +14,8 @@ flowchart LR
   Docente[Docente] --> App
   App --> Motor[Motor TS en Web Worker]
   App --> Vistas[Vistas equivalentes 2D y 3D]
-  App <--> Local[LocalStorage acotado]
+  App <--> Local[LocalStorage ajustes y progreso]
+  App <--> IDB[IndexedDB biblioteca y checkpoints]
   Archivos[Archivos CSV y JSON] <--> App
   Pages[Hosting estatico GitHub Pages] --> App
   SW[Service Worker y cache de recursos] --> App
@@ -25,7 +26,7 @@ flowchart LR
 
 Vista de componentes expresada mediante flowchart; explicita la frontera entre hilo principal y Worker.
 
-[Fuente Mermaid](diagrams/02-componentes.mmd)
+[Fuente Mermaid](diagrams/02-componentes.mmd) · [SVG exportado](diagrams/rendered/02-componentes.svg)
 
 ```mermaid
 flowchart TB
@@ -35,7 +36,9 @@ flowchart TB
     Features --> Stores[Stores Pinia]
     Stores --> Render[Adapters SVG Canvas Three]
     Casos --> Ports[Puertos de aplicacion]
-    Ports --> Repo[Repositorio LocalStorage]
+    Ports --> Repo[Repositorio IDB transaccional]
+    Ports --> Prefs[LocalStorage de preferencias]
+    Features --> Learning[POE y diagnostico de solo lectura]
     Ports --> Files[Archivos y validadores]
     Ports --> Client[Cliente Worker]
   end
@@ -46,13 +49,15 @@ flowchart TB
   Client <-->|Mensajes versionados| Handler
   Handler -->|Snapshots y checkpoints| Client
   Client --> Stores
+  Client --> Recovery[Checkpoints automaticos RAM]
+  Recovery --> Repo
 ```
 
 ## 03 · Clases de dominio
 
 UML de clases: composición del experimento, dataset, partición, pipeline, red y checkpoints.
 
-[Fuente Mermaid](diagrams/03-clases-dominio.mmd)
+[Fuente Mermaid](diagrams/03-clases-dominio.mmd) · [SVG exportado](diagrams/rendered/03-clases-dominio.svg)
 
 ```mermaid
 classDiagram
@@ -74,6 +79,7 @@ classDiagram
     +Target target
   }
   class DataSplit {
+    +SplitStrategy strategy
     +IdSet train
     +IdSet validation
     +IdSet test
@@ -94,6 +100,9 @@ classDiagram
     +OptimizerState optimizer
     +RngStates rng
     +BatchCursor cursor
+    +ExtensionState batchNorm
+    +ExtensionState earlyStopping
+    +number update
   }
   Experiment "1" *-- "1" Dataset
   Dataset "1" *-- "1..*" Sample
@@ -108,7 +117,7 @@ classDiagram
 
 Vista de paquetes aproximada en flowchart; las flechas indican importaciones permitidas.
 
-[Fuente Mermaid](diagrams/04-paquetes.mmd)
+[Fuente Mermaid](diagrams/04-paquetes.mmd) · [SVG exportado](diagrams/rendered/04-paquetes.svg)
 
 ```mermaid
 flowchart LR
@@ -129,7 +138,7 @@ flowchart LR
 
 UML de secuencia: INIT, RUN, snapshots y finalización. Los mensajes están versionados.
 
-[Fuente Mermaid](diagrams/05-secuencia-entrenamiento.mmd)
+[Fuente Mermaid](diagrams/05-secuencia-entrenamiento.mmd) · [SVG exportado](diagrams/rendered/05-secuencia-entrenamiento.svg)
 
 ```mermaid
 sequenceDiagram
@@ -142,6 +151,9 @@ sequenceDiagram
   UI->>C: Preparar configuracion validada
   C->>W: INIT con sessionId y revision
   W->>M: Crear pipeline y red
+  W-->>C: RECOVERY_CHECKPOINT inicial update 0
+  C->>C: Validar y conservar copia RAM
+  C->>W: RECOVERY_ACK
   W-->>C: READY
   C->>W: RUN con runId
   W-->>C: ACK
@@ -150,6 +162,10 @@ sequenceDiagram
     M-->>W: Estado finito y contadores
     W-->>C: PROGRESS o SNAPSHOT con sequence
     C-->>UI: Publicar solo revision vigente
+    opt Epoca o intervalo en frontera confirmada
+      W-->>C: RECOVERY_CHECKPOINT con copia
+      C->>W: RECOVERY_ACK tras validacion
+    end
   end
   W-->>C: COMPLETED y snapshot final
   C-->>UI: Mostrar motivo de parada
@@ -159,7 +175,7 @@ sequenceDiagram
 
 UML de secuencia: comprobar tamaño, mapear columnas y confirmar una sesión válida.
 
-[Fuente Mermaid](diagrams/06-secuencia-importacion.mmd)
+[Fuente Mermaid](diagrams/06-secuencia-importacion.mmd) · [SVG exportado](diagrams/rendered/06-secuencia-importacion.svg)
 
 ```mermaid
 sequenceDiagram
@@ -188,7 +204,7 @@ sequenceDiagram
 
 UML de estados: ejecución, pausa, cancelación y recuperación. Cerrar mientras se ejecuta exige cancelar primero.
 
-[Fuente Mermaid](diagrams/07-estados-sesion.mmd)
+[Fuente Mermaid](diagrams/07-estados-sesion.mmd) · [SVG exportado](diagrams/rendered/07-estados-sesion.svg)
 
 ```mermaid
 stateDiagram-v2
@@ -223,7 +239,7 @@ stateDiagram-v2
 
 Actividad representada en flowchart: ajustar solo con train y reservar test hasta congelar selección.
 
-[Fuente Mermaid](diagrams/08-actividad-pipeline.mmd)
+[Fuente Mermaid](diagrams/08-actividad-pipeline.mmd) · [SVG exportado](diagrams/rendered/08-actividad-pipeline.svg)
 
 ```mermaid
 flowchart TD
@@ -248,9 +264,9 @@ flowchart TD
 
 ## 09 · Secuencia de guardado
 
-UML de secuencia: checkpoint estable, presupuesto y escritura de biblioteca con recuperación.
+UML de secuencia: checkpoint estable, presupuesto y transacción IndexedDB con revisión y rollback.
 
-[Fuente Mermaid](diagrams/09-secuencia-guardado.mmd)
+[Fuente Mermaid](diagrams/09-secuencia-guardado.mmd) · [SVG exportado](diagrams/rendered/09-secuencia-guardado.svg)
 
 ```mermaid
 sequenceDiagram
@@ -258,18 +274,19 @@ sequenceDiagram
   participant UI as Biblioteca
   participant W as Worker
   participant R as Repositorio
-  participant LS as LocalStorage
+  participant DB as IndexedDB
   A->>UI: Guardar experimento
   UI->>W: PAUSE y CHECKPOINT
   W-->>UI: Checkpoint en frontera confirmada
   UI->>R: Guardar copia validada
   R->>R: Validar schema y presupuesto
   alt Cabe en presupuesto
-    R->>LS: setItem de biblioteca completa
-    alt Escritura correcta
-      LS-->>UI: Confirmacion local
-    else Cuota o permiso denegado
-      LS-->>UI: Conservar anterior y ofrecer exportar
+    R->>DB: Transaccion de dataset modelo y manifiesto
+    DB->>DB: Comprobar revision esperada
+    alt Commit correcto
+      DB-->>UI: Confirmacion tras complete
+    else Abort cuota o conflicto
+      DB-->>UI: Conservar anterior y ofrecer exportar
     end
   else Excede limite
     R-->>UI: Exportar archivo o elegir entradas a retirar
@@ -280,7 +297,7 @@ sequenceDiagram
 
 UML de estados: hipótesis, experimento, observación y reflexión, con reintentos.
 
-[Fuente Mermaid](diagrams/10-estados-taller.mmd)
+[Fuente Mermaid](diagrams/10-estados-taller.mmd) · [SVG exportado](diagrams/rendered/10-estados-taller.svg)
 
 ```mermaid
 stateDiagram-v2
@@ -300,7 +317,7 @@ stateDiagram-v2
 
 Vista de despliegue aproximada mediante flowchart. CI y Pages son futuros, no un remoto ya creado.
 
-[Fuente Mermaid](diagrams/11-despliegue.mmd)
+[Fuente Mermaid](diagrams/11-despliegue.mmd) · [SVG exportado](diagrams/rendered/11-despliegue.svg)
 
 ```mermaid
 flowchart TB
@@ -311,7 +328,8 @@ flowchart TB
   Browser --> UI[Hilo principal Vue]
   Browser --> Worker[Worker de misma build]
   Browser --> SW[Service Worker de misma subruta]
-  UI --> LS[LocalStorage del origen con namespace]
+  UI --> LS[LocalStorage ajustes y progreso]
+  UI --> IDB[IndexedDB datos modelos y recovery]
   SW --> Cache[Cache de recursos revisionados]
   Browser <--> Files[Archivos locales por accion del usuario]
 ```
@@ -320,7 +338,7 @@ flowchart TB
 
 gitGraph ilustrativo del proceso acordado, no una copia del historial real ni trabajo funcional ya realizado.
 
-[Fuente Mermaid](diagrams/12-flujo-git.mmd)
+[Fuente Mermaid](diagrams/12-flujo-git.mmd) · [SVG exportado](diagrams/rendered/12-flujo-git.svg)
 
 ```mermaid
 gitGraph
@@ -347,7 +365,7 @@ gitGraph
 
 UML de clases: implementaciones de un contrato pequeño y scheduler independiente.
 
-[Fuente Mermaid](diagrams/13-clases-optimizadores.mmd)
+[Fuente Mermaid](diagrams/13-clases-optimizadores.mmd) · [SVG exportado](diagrams/rendered/13-clases-optimizadores.svg)
 
 ```mermaid
 classDiagram
@@ -392,7 +410,7 @@ classDiagram
 
 UML de secuencia: descartar cálculo parcial, nueva revisión y watchdog ante fallo.
 
-[Fuente Mermaid](diagrams/14-secuencia-cancelacion.mmd)
+[Fuente Mermaid](diagrams/14-secuencia-cancelacion.mmd) · [SVG exportado](diagrams/rendered/14-secuencia-cancelacion.svg)
 
 ```mermaid
 sequenceDiagram
@@ -421,7 +439,7 @@ sequenceDiagram
 
 Mapa didáctico en flowchart: dependencias recomendadas, sin bloquear exploración libre.
 
-[Fuente Mermaid](diagrams/15-recorrido.mmd)
+[Fuente Mermaid](diagrams/15-recorrido.mmd) · [SVG exportado](diagrams/rendered/15-recorrido.svg)
 
 ```mermaid
 flowchart LR
@@ -445,7 +463,7 @@ flowchart LR
 
 UML de clases: conceptos y paquetes versionados; sin máximo global ni enum cerrado de IDs.
 
-[Fuente Mermaid](diagrams/16-clases-catalogo-abierto.mmd)
+[Fuente Mermaid](diagrams/16-clases-catalogo-abierto.mmd) · [SVG exportado](diagrams/rendered/16-clases-catalogo-abierto.svg)
 
 ```mermaid
 classDiagram
@@ -484,7 +502,7 @@ classDiagram
 
 UML de secuencia: reconstruir pipeline/modelo por fold y conservar test fuera de selección.
 
-[Fuente Mermaid](diagrams/17-secuencia-validacion-cruzada.mmd)
+[Fuente Mermaid](diagrams/17-secuencia-validacion-cruzada.mmd) · [SVG exportado](diagrams/rendered/17-secuencia-validacion-cruzada.svg)
 
 ```mermaid
 sequenceDiagram
@@ -497,7 +515,8 @@ sequenceDiagram
   loop Cada fold con grupos disjuntos
     CV->>W: INIT modelo nuevo y seed de fold
     W->>W: Fit pipeline solo train del fold
-    W->>W: Entrenar y evaluar val del fold
+    W->>W: Entrenar presupuesto fijo sin early stopping
+    W->>W: Evaluar fold sin usarlo para parar
     W-->>CV: Metricas e IDs usados
   end
   CV-->>UI: Media desviacion y tamanos
@@ -512,7 +531,7 @@ sequenceDiagram
 
 UML de estados: descarga completa comprobada y activación después de guardar/detener sesión.
 
-[Fuente Mermaid](diagrams/18-estados-offline.mmd)
+[Fuente Mermaid](diagrams/18-estados-offline.mmd) · [SVG exportado](diagrams/rendered/18-estados-offline.svg)
 
 ```mermaid
 stateDiagram-v2
@@ -535,7 +554,7 @@ stateDiagram-v2
 
 UML de clases: definición declarativa, pasos, reglas y progreso local compatible.
 
-[Fuente Mermaid](diagrams/19-clases-taller.mmd)
+[Fuente Mermaid](diagrams/19-clases-taller.mmd) · [SVG exportado](diagrams/rendered/19-clases-taller.svg)
 
 ```mermaid
 classDiagram
@@ -572,7 +591,7 @@ classDiagram
 
 Actividad en flowchart: acumular gradientes antes de mutar parámetros y confirmar solo valores finitos.
 
-[Fuente Mermaid](diagrams/20-actividad-backprop.mmd)
+[Fuente Mermaid](diagrams/20-actividad-backprop.mmd) · [SVG exportado](diagrams/rendered/20-actividad-backprop.svg)
 
 ```mermaid
 flowchart TD
@@ -591,5 +610,181 @@ flowchart TD
   Update --> Commit{Parametros finitos}
   Commit -->|Si| Done([Confirmar una actualizacion])
   Commit -->|No| Error
+```
+
+## 21 · Secuencia BN cooperativa
+
+UML de secuencia: troceo por capa/fase con estadísticas completas y descarte atómico de candidato.
+
+[Fuente Mermaid](diagrams/21-secuencia-bn-cooperativa.mmd) · [SVG exportado](diagrams/rendered/21-secuencia-bn-cooperativa.svg)
+
+```mermaid
+sequenceDiagram
+  participant C as Controlador
+  participant W as Worker
+  participant B as Estado candidato del batch
+  W->>B: Guardar RNG y estado confirmado anterior
+  loop Por cada capa
+    loop Bloques dense de filas y columnas
+      W->>B: Calcular bloque y ceder al event loop
+    end
+    W->>B: Reducir estadisticas del lote completo
+    W->>B: Normalizar por bloques usando mismas estadisticas
+  end
+  W->>B: Backward con reducciones BN completas
+  alt Llega PAUSE o CANCEL en un yield
+    C->>W: PAUSE o CANCEL
+    W->>B: Descartar candidato y restaurar RNG
+    W-->>C: Estado estable sin paso parcial
+  else Batch finaliza finito
+    W->>B: Confirmar parametros optimizador BN y cursor
+    W-->>C: Snapshot confirmado
+  end
+```
+
+## 22 · Estados de predicción previa
+
+UML de estados: guardar hipótesis antes de actuar y contrastar con resultado o indeterminación.
+
+[Fuente Mermaid](diagrams/22-estados-prediccion.mmd) · [SVG exportado](diagrams/rendered/22-estados-prediccion.svg)
+
+```mermaid
+stateDiagram-v2
+  [*] --> Libre
+  Libre --> Baseline: activar POE y elegir accion
+  Baseline --> Hipotesis: congelar snapshot
+  Hipotesis --> Ejecutando: guardar prediccion antes de aplicar
+  Ejecutando --> Observado: resultado finito del presupuesto
+  Ejecutando --> Indeterminado: cancelar error o evidencia insuficiente
+  Observado --> Reflexion: contrastar regla declarativa
+  Indeterminado --> Reflexion: describir limites
+  Reflexion --> Libre: guardar evidencia y continuar
+  Hipotesis --> Libre: cancelar sin aplicar
+```
+
+## 23 · Diagnóstico por evidencia
+
+Flujo de reglas deterministas, con soporte y ventanas, que propone hipótesis sin afirmar causas.
+
+[Fuente Mermaid](diagrams/23-diagnostico.mmd) · [SVG exportado](diagrams/rendered/23-diagnostico.svg)
+
+```mermaid
+flowchart LR
+  Engine[Motor y backward] --> Summary[Resumen real por capa y split]
+  Summary --> Revision{Mismo run y revision}
+  Revision -->|No| Drop[Descartar evento antiguo]
+  Revision -->|Si| Window[Ventanas y soporte minimo]
+  Window --> Rules[Reglas deterministas versionadas]
+  Rules --> Evidence[Condicion y valores observados]
+  Evidence --> Hypothesis[Hipotesis con limites]
+  Hypothesis --> Link[Concepto y experimento sugerido]
+  Link --> Student[Alumno decide que contrastar]
+```
+
+## 24 · Clases de aprendizaje
+
+UML de clases: POE, reglas, plantilla editorial alineada, guía docente y evidencia.
+
+[Fuente Mermaid](diagrams/24-clases-aprendizaje.mmd) · [SVG exportado](diagrams/rendered/24-clases-aprendizaje.svg)
+
+```mermaid
+classDiagram
+  class PredictionRecord {
+    +string actionSpec
+    +string baselineSnapshotId
+    +string predictedOutcome
+    +string observedSnapshotId
+    +string comparisonStatus
+    +string explanation
+  }
+  class DiagnosticRule {
+    +string ruleVersion
+    +WindowSpec window
+    +Thresholds thresholds
+    +evaluate(summary)
+  }
+  class Concept {
+    +LocalizedText title
+    +NumericExample numericExample
+    +Question selfAssessment
+    +ControlRef[] relatedControls
+    +string targetRelease
+  }
+  class TeachingPack {
+    +Manifest manifest
+    +TeacherGuide guide
+    +OptionalSolutions solutions
+  }
+  class EvidencePortfolio {
+    +exportMarkdown()
+  }
+  PredictionRecord --> Concept : contrasta
+  DiagnosticRule --> Concept : enlaza
+  EvidencePortfolio "1" o-- "0..*" PredictionRecord
+  TeachingPack --> Concept : referencias validadas
+```
+
+## 25 · Datos persistidos
+
+Entidad-relación de registros IDB. Dataset compartido entre experimentos; no equivale a una base SQL.
+
+[Fuente Mermaid](diagrams/25-datos-persistidos.mmd) · [SVG exportado](diagrams/rendered/25-datos-persistidos.svg)
+
+```mermaid
+erDiagram
+  DATASET ||--o{ EXPERIMENT : referencia
+  EXPERIMENT ||--o{ MODEL : conserva
+  EXPERIMENT ||--o{ CHECKPOINT : guarda
+  EXPERIMENT ||--o{ LEARNING_EVIDENCE : recoge
+  MODEL ||--o{ CHECKPOINT : estado
+  EXPERIMENT {
+    string id PK
+    number revision
+    string dataHash FK
+  }
+  DATASET {
+    string dataHash PK
+    object columns
+  }
+  CHECKPOINT {
+    string id PK
+    string experimentId FK
+    number update
+    buffer tensors
+  }
+  LEARNING_EVIDENCE {
+    string id PK
+    string experimentId FK
+    string predictionId
+  }
+```
+
+## 26 · Entregas y puertas
+
+Roadmap por dependencias: MVP 1.0, alcance original ampliado en v1.1 y propuestas v1.2.
+
+[Fuente Mermaid](diagrams/26-entregas.mmd) · [SVG exportado](diagrams/rendered/26-entregas.svg)
+
+```mermaid
+flowchart TB
+  D0[Revision documental] --> MVP
+  subgraph MVP[MVP 1.0]
+    direction LR
+    D1[D1 Shell y neurona] --> D2[D2 Datos y pipeline]
+    D2 --> D3[D3 Motor y mapas]
+    D3 --> D4[D4 Worker y diagnostico]
+    D4 --> D5[D5 IDB POE y talleres]
+  end
+  MVP --> Gate1[Pruebas y revision del MVP]
+  Gate1 --> Complete
+  subgraph Complete[Alcance completo v1.1]
+    direction LR
+    D6[D6 Generalizacion] --> D7[D7 Comparacion y CV]
+    D7 --> D8[D8 Metricas y etica]
+    D8 --> D9[D9 3D vision y retos]
+    D9 --> D10[D10 Catalogo y PWA]
+  end
+  Complete --> Gate2[Pruebas y revision v1.1]
+  Gate2 -.-> X[Extensiones v1.2 propuestas]
 ```
 

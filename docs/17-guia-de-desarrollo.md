@@ -4,30 +4,31 @@
 
 Este repositorio contiene documentación, fuentes Mermaid y scripts de comprobación documental. No tiene servidor Vue, build de aplicación ni pruebas de producto ejecutables todavía. No ejecutar comandos de implementación futura como si existieran.
 
-Para verificar esta fase, desde la raíz del proyecto:
+Usar **Node 24 LTS** (referencia local 24.19.0 en `.node-version`), sin depender del Node 20 observado en auditoría. Para verificar esta fase, desde la raíz:
 
 ```powershell
 npm ci
 npm run docs:check
 ```
 
-El chequeo valida sintaxis Mermaid, enlaces locales, IDs/referencias y trazabilidad, catálogo de diagramas sincronizado, XML de wireframes y contraste básico de tokens. No certifica aspecto de la futura UI ni accesibilidad completa.
+El chequeo valida Mermaid, enlaces, IDs, RF→módulo→historia→prueba, fases, catálogos sincronizados, plantilla editorial de ejemplo, XML, contraste de texto y no textual, y oráculos numéricos/RNG. No certifica UI ni accesibilidad completa.
 
 Para regenerar las referencias visuales y el documento con diagramas:
 
 ```powershell
 npm run docs:wireframes
 npm run docs:diagrams
+npm run docs:trace
 npm run docs:check
 ```
 
 Los SVG se generan localmente y son wireframes estáticos con cifras ilustrativas. Los `.mmd` son la fuente de verdad de cada diagrama; `15-diagramas.md` se genera a partir de ellos. Las explicaciones y limitaciones se conservan en el script del catálogo.
 
-El script opcional `scripts/visual-review.mjs` requiere Playwright y Chrome en el entorno de revisión; puede localizar un módulo instalado mediante `NEURAL_ATLAS_PLAYWRIGHT`. Renderiza los 20 diagramas y actualiza PNG de referencia. No forma parte de `docs:check` ni es la batería E2E del producto. Las herramientas documentales fijan una versión corregida de KaTeX mediante override, verificado para estos diagramas; ver [registro](19-verificacion.md).
+El script opcional `scripts/visual-review.mjs` requiere Playwright/Chrome y puede localizar módulo mediante `NEURAL_ATLAS_PLAYWRIGHT`. Renderiza los 26 diagramas, guarda SVG en `docs/diagrams/rendered` y actualiza PNG base. No es la batería E2E del producto. Las herramientas documentales fijan KaTeX mediante override verificado para estos diagramas; ver [registro](19-verificacion.md).
 
 ## Inicio de D1 tras revisión
 
-1. Elegir Node LTS compatible con Vite/Vitest/Tailwind y registrar engines/versiones exactas.
+1. Verificar Node 24 LTS con Vite/Vitest/Tailwind y fijar versiones exactas, sin volver a Node 20.
 2. Crear rama `feat/vue-foundation`, añadir estructura mínima y lockfile de aplicación, conservando las herramientas documentales.
 3. Configurar TS estricto, Vue typecheck, lint de fronteras/ciclos, formatter, alias y router hash.
 4. Crear scripts de unidad, integración, cobertura y build con CI; no añadir E2E ficticios antes de tener recorrido real.
@@ -41,6 +42,7 @@ El script opcional `scripts/visual-review.mjs` requiere Playwright y Chrome en e
 - No usar `any` para silenciar errores; `unknown` en frontera y validación posterior. Estados y mensajes como uniones discriminadas exhaustivas.
 - No duplicar fórmulas en vistas. Un inspector consume los valores intermedios del mismo cálculo que genera predicciones.
 - Todo listener, observer, renderer y Worker tiene liberación explícita. No se disparan dos bucles de entrenamiento por doble clic.
+- Cuota/transacciones IDB se prueban en D5; copia automática RAM y planificación BN se diseñan desde el Worker, no se añaden al final como fallback ficticio.
 - Sin recursos remotos en tiempo de ejecución. Evitar dependencias redundantes; incorporar PixiJS solo con benchmark y ADR.
 - Tests orientados a conducta y oráculos externos; no extraer texto del código para probarlo.
 - Commits breves por cambios coherentes, sin secretos ni datos personales importados. El original queda fuera del repositorio.
@@ -53,4 +55,4 @@ Cambio de esquema: documentar nueva versión, migración y round-trip de ejemplo
 
 ## Publicación futura
 
-Preparar remoto y permisos solo cuando exista destino real; no inventar URL de producción. CI valida main antes de publicar dist. La documentación de usuario final incluirá instalación/offline, datasets, modelos, límites, ejemplos y preguntas frecuentes; este documento es una guía del proceso de construcción.
+El usuario ha indicado `https://github.com/franmatias/neural-atlas.git` para subir proyecto/historial documental; hacerlo sin force-push y comprobar SHA remoto. La aplicación Pages se prepara posteriormente bajo `/neural-atlas/`, con CI antes de publicar dist. La guía de usuario final incluirá instalación/offline, datasets/modelos, límites y ejemplos; no se presenta el repositorio de documentos como simulador ya operativo.

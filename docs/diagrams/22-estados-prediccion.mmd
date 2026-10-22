@@ -1,0 +1,11 @@
+stateDiagram-v2
+  [*] --> Libre
+  Libre --> Baseline: activar POE y elegir accion
+  Baseline --> Hipotesis: congelar snapshot
+  Hipotesis --> Ejecutando: guardar prediccion antes de aplicar
+  Ejecutando --> Observado: resultado finito del presupuesto
+  Ejecutando --> Indeterminado: cancelar error o evidencia insuficiente
+  Observado --> Reflexion: contrastar regla declarativa
+  Indeterminado --> Reflexion: describir limites
+  Reflexion --> Libre: guardar evidencia y continuar
+  Hipotesis --> Libre: cancelar sin aplicar

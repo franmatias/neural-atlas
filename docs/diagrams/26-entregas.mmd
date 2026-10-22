@@ -1,0 +1,20 @@
+flowchart TB
+  D0[Revision documental] --> MVP
+  subgraph MVP[MVP 1.0]
+    direction LR
+    D1[D1 Shell y neurona] --> D2[D2 Datos y pipeline]
+    D2 --> D3[D3 Motor y mapas]
+    D3 --> D4[D4 Worker y diagnostico]
+    D4 --> D5[D5 IDB POE y talleres]
+  end
+  MVP --> Gate1[Pruebas y revision del MVP]
+  Gate1 --> Complete
+  subgraph Complete[Alcance completo v1.1]
+    direction LR
+    D6[D6 Generalizacion] --> D7[D7 Comparacion y CV]
+    D7 --> D8[D8 Metricas y etica]
+    D8 --> D9[D9 3D vision y retos]
+    D9 --> D10[D10 Catalogo y PWA]
+  end
+  Complete --> Gate2[Pruebas y revision v1.1]
+  Gate2 -.-> X[Extensiones v1.2 propuestas]

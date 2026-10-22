@@ -28,7 +28,7 @@ assert.equal(arch.layers.slice(1,-1).reduce((s,n)=>s+2*n,0),arch.bnParameters);
 assert.equal(arch.denseParameters+arch.bnParameters,arch.totalWithBN);
 assert.equal(arch.totalWithBN*8*3,arch.adamMainTensorBytes);
 const storage=fixtures.storageMiB;
-assert(storage.experiments*storage.perExperiment+storage.recoveryReserve<=storage.budget);
+assert.equal(storage.experiments*storage.perExperiment+storage.recoveryReserve+storage.contentPacks+storage.learning+storage.overhead,storage.budget);
 
 function derive(seed,purpose){
   assert(/^[a-z0-9-]+$/.test(purpose));

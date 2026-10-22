@@ -1,0 +1,10 @@
+flowchart LR
+  Engine[Motor y backward] --> Summary[Resumen real por capa y split]
+  Summary --> Revision{Mismo run y revision}
+  Revision -->|No| Drop[Descartar evento antiguo]
+  Revision -->|Si| Window[Ventanas y soporte minimo]
+  Window --> Rules[Reglas deterministas versionadas]
+  Rules --> Evidence[Condicion y valores observados]
+  Evidence --> Hypothesis[Hipotesis con limites]
+  Hypothesis --> Link[Concepto y experimento sugerido]
+  Link --> Student[Alumno decide que contrastar]

@@ -74,7 +74,7 @@ Wireframe móvil:
 |---|---|
 | `/` | Retomar actividad, recorrido recomendado y 12 laboratorios por grupos; sin hero que desplace las acciones |
 | `/lab/:slug` | Pregunta, preset, configuración, visualizaciones sincronizadas, inspector, explicación y evidencia |
-| `/taller` | Ocho talleres con nivel/duración/objetivo/progreso; botón continuar |
+| `/taller` | T01–T05 en MVP y T01–T12 en v1.1; nivel/duración/objetivo/progreso |
 | `/taller/:id/:step` | Instrucción de un paso y laboratorio incrustado, pista/revelación y evidencia |
 | `/biblioteca` | Experimentos guardados, modelos y talleres; metadatos, cuota, duplicar/exportar/eliminar |
 | `/glosario` | Buscar término, definición, fórmula, ejemplo y experiencias relacionadas |

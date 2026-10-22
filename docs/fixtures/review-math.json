@@ -9,5 +9,5 @@
   "adamFirstStep": { "theta": 1, "gradient": 2, "learningRate": 0.1, "beta1": 0.9, "beta2": 0.999, "epsilon": 1e-8, "expected": 0.9000000005 },
   "extremeLogits": [1000, 1000, 1000],
   "maximumArchitecture": { "layers": [32, 64, 64, 64, 64, 64, 64, 10], "denseParameters": 23562, "bnParameters": 768, "totalWithBN": 24330, "adamMainTensorBytes": 583920 },
-  "storageMiB": { "budget": 256, "experiments": 5, "perExperiment": 40, "recoveryReserve": 20 }
+  "storageMiB": { "budget": 256, "experiments": 5, "perExperiment": 40, "recoveryReserve": 20, "contentPacks": 16, "learning": 8, "overhead": 12 }
 }
