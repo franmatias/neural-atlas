@@ -49,4 +49,6 @@ Los faltantes se inyectan únicamente en features; target ausente exige descarta
 
 ## Criterios editoriales de cierre
 
-Revisar dimensiones, unidades, terminología, fórmulas y ejemplos; vincular los 100 conceptos a acciones reales; contrastar cada solución con el motor. La revisión humana pedagógica precede a publicación de contenidos. El piloto con alumnado prueba si identifica el siguiente paso y explica el resultado, además de recoger problemas de navegación.
+Revisar dimensiones, unidades, terminología, fórmulas y ejemplos; vincular los 140 conceptos iniciales y los añadidos después a acciones reales; contrastar cada solución con el motor. La revisión humana pedagógica precede a publicación de contenidos. El piloto con alumnado prueba si identifica el siguiente paso y explica el resultado, además de recoger problemas de navegación.
+
+El catálogo abierto y sus paquetes declarativos se especifican en [la matriz](06-matriz-conceptos.md). El contenido importado no ejecuta código ni crea funciones nuevas del motor; se valida y queda distinguido del contenido editorial revisado.

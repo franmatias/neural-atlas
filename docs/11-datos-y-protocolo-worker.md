@@ -55,8 +55,11 @@ Ingeniería de features limitada a un editor declarativo: cuadrado, producto de 
 | JSON modelo | format, schemaVersion, engineVersion, network, tensors, pipeline, task, classOrder, hashes | ≤5 MiB; ≤30.000 parámetros; formas y tipos consistentes, todas las estadísticas de inferencia |
 | JSON experimento | metadata, dataset o receta exacta, split, config, model y checkpoint opcional, history/evidence | ≤10 MiB; integridad, versión y compatibilidad; dataset hash comprobado |
 | JSON taller | definición declarativa y versión de contenidos | ≤1 MiB; ≤30 pasos, ≤100 reglas, referencias válidas |
+| JSON paquete de conceptos | format, schemaVersion, packId, version y concepts | ≤1 MiB, ≤500 registros por archivo; IDs/referencias/versiones válidos; sin máximo global fijo |
 
 Prefijos `format`: `neural-atlas.dataset`, `.model`, `.experiment`, `.workshop`. `schemaVersion` se refiere al archivo, `engineVersion` a algoritmos y `contentVersion` a contenido didáctico. Una versión mayor desconocida se rechaza con mensaje; migraciones solo de versiones explícitamente conocidas y sobre copia. Modelo importado se abre en una sesión nueva para no destruir la sesión actual.
+
+Los paquetes de conceptos usan `neural-atlas.concept-pack`, cuyo registro se detalla en [el catálogo abierto](06-matriz-conceptos.md). Un paquete grande se puede dividir en archivos; el presupuesto local sigue aplicando y no se introduce un techo de conceptos en los tipos del producto.
 
 CSV permite separador coma/punto y coma/tabulador y decimal punto/coma con preview; no adivinar una combinación ambigua. Cabeceras duplicadas requieren renombrar. Informe de errores con fila/columna y motivo; opciones explícitas de cancelar o excluir filas inválidas. Preservar target numérico cero, comillas escapadas y saltos de línea dentro de celdas. Limitar longitud de celda a 4.096 caracteres y profundidad JSON a 20.
 

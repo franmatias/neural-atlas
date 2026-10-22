@@ -1,6 +1,6 @@
-# Trazabilidad de los 100 conceptos
+# Catálogo abierto: 140 conceptos iniciales
 
-Se conservan los números de la solicitud. La lista original omitía el 20: aquí se asigna **C020, datos de entrada (inputs)**, término que aparecía como cabecera. «Regresión numéricas» se normaliza a regresión numérica. Cada fila exige explicación intuitiva/formal, acción observable y evidencia. Las pruebas P-Lxx se concretan en el [plan de pruebas](13-pruebas-y-aceptacion.md); la tabla no implica que ya estén implementadas.
+Se conservan los números de la solicitud. La lista original omitía el 20: aquí se asigna **C020, datos de entrada (inputs)**, término que aparecía como cabecera. «Regresión numéricas» se normaliza a regresión numérica. Se añaden C101–C140 y no existe un máximo de conceptos. Cada fila exige explicación intuitiva/formal, acción observable y evidencia. Las pruebas P-Lxx se concretan en el [plan de pruebas](13-pruebas-y-aceptacion.md); la tabla no implica que ya estén implementadas.
 
 | ID | Concepto | Laboratorio | Acción/evidencia exigida | Prueba |
 |---|---|---|---|---|
@@ -104,7 +104,57 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C098 | Recall / sensibilidad | L09 | Calcular TP/(TP+FN) | P-L09 |
 | C099 | F1 | L09 | Media armónica y caso no definido | P-L09 |
 | C100 | Learning/loss curve | L06,L08 | Ejes, split y registro por época | P-L06 |
+| C101 | Fuga de información / data leakage | L01 | Comparar pipeline correcto y caso contaminado rotulado | P-L01 |
+| C102 | Datos faltantes e imputación | L01 | Introducir faltantes y ajustar imputador con train | P-L01 |
+| C103 | Duplicados y contaminación entre splits | L01 | Agrupar duplicados y comprobar grupos disjuntos | P-L01 |
+| C104 | Desbalance de clases | L09 | Comparar baseline mayoritario y recall | P-L09 |
+| C105 | Muestreo estratificado | L01 | Conservar proporciones dentro de tolerancia de redondeo | P-L01 |
+| C106 | Partición por grupos | L01 | Impedir que una entidad aparezca en dos splits | P-L01 |
+| C107 | Partición temporal | L01,L10 | Orden cronológico sin información futura | P-L01 |
+| C108 | Validación cruzada K-fold | L12 | Entrenar K modelos nuevos y agregar validación | P-L12 |
+| C109 | Baseline de referencia | L09,L10 | Mayoría, media y mediana ajustadas con train | P-L09 |
+| C110 | Semilla aleatoria | L01,L03 | Repetir pesos/datos y variar streams independientes | P-L03 |
+| C111 | Reproducibilidad | L12 | Exportar/importar experimento y comparar resultados | P-L12 |
+| C112 | Barajado de muestras | L06 | Inspeccionar Fisher–Yates por época | P-L06 |
+| C113 | Covariate shift / deriva de entradas | L01,L12 | Cambiar p(x) conservando mecanismo objetivo | P-L12 |
+| C114 | Concept drift / deriva del concepto | L10,L12 | Cambiar mecanismo p(y dado x) en cohorte posterior | P-L12 |
+| C115 | Train-serving skew | L01,L12 | Mostrar error al usar pipeline distinto en inferencia | P-L12 |
+| C116 | Categorías desconocidas | L01 | Enviar categoría no vista a columna reservada | P-L01 |
+| C117 | Ingeniería de características | L01,L03 | Añadir cuadrado/log/producto con fórmula e IDs | P-L01 |
+| C118 | Interacción entre características | L03,L10 | Comparar modelo con feature producto x1·x2 | P-L10 |
+| C119 | Curva por tamaño de entrenamiento | L08,L12 | Aumentar Ntrain con val fija y varias semillas | P-L12 |
+| C120 | Calibración de probabilidades | L09 | Diagrama de fiabilidad con tamaño de bins | P-L09 |
+| C121 | Puntuación Brier | L09 | Promediar error cuadrático de probabilidades | P-L09 |
+| C122 | Curva ROC | L09 | Recorrer umbrales y pares FPR/TPR | P-L09 |
+| C123 | ROC-AUC | L09 | Comparar ranking con empates y baseline | P-L09 |
+| C124 | Curva precision-recall | L09 | Observar efecto de prevalencia | P-L09 |
+| C125 | Average precision | L09 | Integrar por incrementos de recall sin confundir con trapecios | P-L09 |
+| C126 | Umbral operativo | L09 | Elegir umbral en val antes de evaluar test | P-L09 |
+| C127 | Coste de errores | L09 | Editar costes FP/FN y calcular coste medio | P-L09 |
+| C128 | Coeficiente R² | L10 | Comparar contra media del conjunto evaluado y caso constante | P-L10 |
+| C129 | RMSE y unidades de error | L10 | Relacionar raíz del MSE con unidad target | P-L10 |
+| C130 | Residuos | L10 | Filtrar residuo y localizar muestra | P-L10 |
+| C131 | Heterocedasticidad | L10 | Aumentar ruido dependiente de x y ver abanico | P-L10 |
+| C132 | Extrapolación | L10 | Consultar fuera de soporte train con aviso | P-L10 |
+| C133 | Escalado robusto | L01 | Comparar mediana/IQR con z-score y outliers | P-L01 |
+| C134 | Gradient checking | L05 | Contrastar derivada analítica y numérica | P-L05 |
+| C135 | Gradient clipping | L07,L08 | Medir norma antes/después sin alterar dirección | P-L08 |
+| C136 | Estabilidad numérica | L04,L06 | Probar logits ±1.000 sin NaN ni overflow | P-L04 |
+| C137 | Checkpoint | L06,L12 | Restaurar frontera de actualización confirmada | P-L12 |
+| C138 | Estado del optimizador | L07,L12 | Comparar continuación con/sin momentos | P-L12 |
+| C139 | Preprocesamiento dentro de cada fold | L01,L12 | Ajustar transformadores con train de cada fold | P-L12 |
+| C140 | Dispersión predictiva e incertidumbre | L09,L12 | Comparar semillas y explicar límites de la dispersión | P-L12 |
+
+## Contrato para ampliar la lista
+
+El catálogo se representa como registros declarativos, no como un enum TS ni un array de longitud fija. Identificador estable `C` seguido de al menos tres dígitos; el siguiente disponible inicialmente es C141. Nunca renumerar al reordenar o traducir. Un concepto retirado se marca deprecated y conserva redirect al sustituto.
+
+Campos obligatorios: `id`, `slug`, `contentVersion`, `title.es`, `aliases`, `category`, `level`, `definition`, `intuition`, `formal`, `prerequisiteIds`, `relatedIds`, `labIds`, `activity`, `evidence`, `validationRefs`, `sources` y `status`. Estados editoriales: proposed, specified, implemented, reviewed, deprecated. Las 140 filas de esta entrega están **specified**, no implemented. Las pruebas y referencias son IDs declarativos, no scripts.
+
+Añadir: registrar ID → validar slug/ID únicos y referencias → conectar experiencia existente o crear una especificación nueva → añadir evidencia/prueba → revisión pedagógica → publicar contenido. Se admiten nuevas categorías y etiquetas mediante registro validado, sin cambiar motor. Un concepto que requiera comportamiento matemático nuevo sí necesita desarrollar y probar ese comportamiento; el registro no crea una simulación por sí solo.
+
+Paquetes de contenido: `format: neural-atlas.concept-pack`, schemaVersion, packId, version y concepts; límite 1 MiB y 500 registros por archivo, sin límite global fijo del catálogo. Conflicto de ID existente exige misma identidad editorial y versión superior validada, con preview; nunca sobrescritura silenciosa. El catálogo empaquetado se combina con paquetes locales acotados por presupuesto. Relaciones de prerrequisito no pueden formar ciclos; relatedIds sí pueden ser recíprocos. La búsqueda y navegación se generan desde el registro.
 
 ## Revisión pedagógica
 
-No basta con que un término aparezca en el glosario: para cerrar cada concepto se exige la acción/evidencia indicada y una pregunta de comprensión. En D3 se revisarán las 100 filas contra contenidos reales y pruebas. No se usa accuracy para regresión; «precisión» sin apellido no sustituye a accuracy; normalización z-score, min-max y batch normalization se distinguen explícitamente.
+No basta con que un término aparezca en el glosario: para cerrar cada concepto se exige la acción/evidencia indicada y una pregunta de comprensión. En D3 se revisarán las 140 filas iniciales contra contenidos reales y pruebas. No se usa accuracy para regresión; «precisión» sin apellido no sustituye a accuracy; normalización z-score, min-max y batch normalization se distinguen explícitamente.

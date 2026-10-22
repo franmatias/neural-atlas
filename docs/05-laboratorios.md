@@ -89,3 +89,15 @@ El docente puede exportar/importar una secuencia JSON con actividades declarativ
 ## Dependencias didácticas
 
 Recorrido recomendado: L01 → L02 → L03 → L04 → L05 → L06 → L08 → L09/L10 → L12. L07 refuerza optimización tras L05; L11 es una extensión visual independiente. El acceso libre no se bloquea por progreso. El [mapa](diagrams/15-recorrido.mmd) expresa estas relaciones.
+
+## Extensiones para el catálogo abierto
+
+Los 40 conceptos añadidos en C101–C140 amplían estos laboratorios, sin exigir una pantalla independiente por concepto:
+
+- **L01:** split por grupos/tiempo, mediana/IQR, categorías desconocidas, indicadores de faltantes, features derivadas permitidas y demostración aislada de fuga. Comparación de datos de entrenamiento e inferencia para detectar diferencias de unidades/pipeline.
+- **L08/L12:** curva de validación frente a cantidad de datos train, con subconjuntos anidados y val fija. Validación cruzada K=2–10, defecto 5, con folds nuevos y pipeline ajustado dentro de cada train; opciones aleatoria, estratificada y por grupos, nunca mezclar grupos. El conjunto de test final permanece fuera de todos los folds.
+- **L09:** diagrama de fiabilidad, Brier, ROC/ROC-AUC, PR/AP y matriz de costes. En datasets desbalanceados, mostrar baseline y prevalencia; las gráficas aclaran split y clase positiva. Selector de bins de calibración 5–20, defecto 10. Umbral elegido con val; test solo confirma después.
+- **L10:** R², heterocedasticidad y extrapolación; rango train marcado en ejes. Aviso de extrapolación describe distancia/rango, no estima automáticamente un intervalo de confianza.
+- **L12:** escenarios de deriva de entradas, cambio del mecanismo objetivo y preprocesamiento de inferencia distinto. Los dos últimos se muestran como experimentos separados con condiciones documentadas, sin modificar silenciosamente test. Comparar continuidad de checkpoint completo frente a pesos solos y dispersión de 5 semillas por defecto.
+
+Los conceptos se amplían mediante el contrato del [catálogo](06-matriz-conceptos.md). Un nuevo concepto puede referenciar un componente ya existente; si necesita otro cálculo o interacción, debe añadirse a requisitos, historias y pruebas antes de marcarlo implemented.
