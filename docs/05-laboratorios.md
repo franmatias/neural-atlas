@@ -18,17 +18,19 @@ Animación secuencial de cada producto, acumulación, sesgo y activación; naveg
 
 ## L03 · Arquitectura y XOR — `/lab/arquitectura`
 
-Constructor de capas, representación por neuronas/matrices y contador `Σ(fanIn·fanOut+fanOut)`, más parámetros de BN cuando activa. Preset inicial 2→2→1 tanh/sigmoid. Limitar 1–6 capas ocultas, 1–64 neuronas cada una y presupuesto global; permitir red sin capa oculta para comparar perceptrón. Salida vinculada a tarea, no editable a dimensión incompatible.
+Constructor de capas, representación por neuronas/matrices y contador `Σ(fanIn·fanOut+fanOut)`, más parámetros de BN cuando activa. Preset entrenable candidato 2→4→1 tanh/sigmoid, pendiente de validar en D3 con semillas 7/42/123; no prometer solución antes de probarlo. Rango **0–6 capas ocultas**, 1–64 neuronas cada una y límite derivado de topología. Red sin ocultas conecta perceptrón y modelos lineal/logístico. Salida vinculada a tarea, no editable a dimensión incompatible.
 
 XOR: cuatro puntos canónicos, frontera lineal frente a MLP, capacidad para combinar regiones. Una solución demostrativa fija usa ReLU: h1=ReLU(x1−x2), h2=ReLU(x2−x1), salida h1+h2; clasifica con umbral 0,5 y no se confunde con probabilidades entrenadas. El preset entrenable usa salida sigmoid/BCE y debe resolver con seed fijada en pruebas.
 
-Inicialización: cero, Xavier uniforme y He normal, seed compartida; histogramas y diversidad de neuronas. Vista 3D opcional espacial de capas con inspector 2D equivalente; no implica una tercera feature. Aproximación universal se explica con condiciones y sin prometer entrenamiento fácil ni generalización.
+La pantalla básica de FP sigue tres pasos: red sin ocultas → XOR y combinación de regiones → constructor. Los mapas de activación seleccionados explican el papel de cada neurona. Inicialización y sus histogramas se trasladan a L04 como sección avanzada; aproximación de funciones a L10. Vista 3D de capas queda para v1.1, colapsada por defecto y sin implicar una tercera feature. El motor de perceptrón usa Rosenblatt y la prueba XOR del [doc 10](10-motor-matematico.md), no una promesa de convergencia en datos no separables.
 
 ## L04 · Activación y flujo de gradientes — `/lab/activaciones`
 
 Comparador lineal, escalón, sigmoid, tanh, ReLU y Leaky ReLU; x ∈[−10,10], zoom; α de Leaky en [0,001,0,3], defecto 0,01. Softmax tiene panel vectorial independiente con 2–10 logits y resta del máximo. Gráficas de f y f′, valores exactos al seleccionar z y cadena de 1–20 activaciones para observar productos de derivadas.
 
 Animación de señal y gradiente con escalas explícitas, opción logarítmica y aviso de saturación. Caso: sigmoid repetida frente a ReLU; incluir neuronas inactivas. Softmax no se dibuja como una curva escalar independiente de las otras salidas. El escalón muestra «derivada no útil para backprop» y se deshabilita como activación entrenable.
+
+Sección avanzada de inicialización: cero/Xavier/He, seed compartida, histogramas de pesos/activaciones y normas de gradientes por capa del modelo inspeccionado. Curva de derivadas y norma de una capa no se confunden. Las mismas normas aparecen en diagnóstico de L06 y panel de L08; su cálculo durante backward se especifica en el motor.
 
 ## L05 · Del cálculo al gradiente — `/lab/propagacion`
 
@@ -40,9 +42,11 @@ Controles: fase anterior/siguiente, reproducir, pausa, una actualización, learn
 
 Preset dos lunas, 400 filas, 2→8→8→1, tanh, BCE, Adam, lr 0,01, batch 16, seed 42. Datos y frontera 2D, red inspeccionable, historial train/val y contadores separados. Tareas binaria/multiclase/regresión; salida/pérdida compatibles automáticamente y explicación del cambio.
 
-Controles: estrategia SGD/batch/mini-batch; batch 1–min(512,Ntrain), optimizador SGD/Momentum/RMSprop/Adam; lr 1e-5–1 en log; momentum 0–0,99 defecto 0,9, Adam β1=0,9 β2=0,999 y ε=1e-8, RMSprop ρ=0,9. Scheduler constante, step (factor 0,5 cada 50 épocas), coseno (horizonte 300, lr mínimo 1e-5). Ejecutar lote, época, iniciar, pausar, cancelar; tope inicial 1.000 épocas configurable hasta 10.000.
+Controles: muestreo lote de 1/mini-lote/lote completo; mini-lote 2–min(512,Ntrain), completo B=Ntrain sin tope 512; optimizador «Descenso de gradiente simple» (id sgd)/Momentum/RMSprop/Adam; lr 1e-5–1 en log; momentum 0–0,99 defecto 0,9, Adam β1=0,9 β2=0,999 y ε=1e-8, RMSprop ρ=0,9. Scheduler constante, step (factor 0,5 cada 50 épocas), coseno (horizonte 300, lr mínimo 1e-5). Ejecutar lote, época, iniciar, pausar y cancelar; defecto 300 épocas, configurable hasta 10.000, con coste estimado antes de iniciar. «Visual» regula traza, «Ritmo» actualizaciones/s, nunca son el mismo control.
 
 Animación de 1 muestra no pretende mostrar todos los cálculos de un lote a velocidad real: se identifica como inspección de muestra seleccionada. Estado por época proviene del Worker. Actividad: aislar el efecto del tamaño de lote manteniendo optimizador y presupuesto de actualizaciones explícitos. Sin train válido no se habilita ejecutar.
+
+Inspector de orden del lote: lista de IDs por época, índice de Fisher–Yates e intercambios de una permutación congelada reproducible; animarla no vuelve a barajar la ejecución activa. Panel de diagnóstico muestra normas por capa, activaciones y condiciones observadas; mini-mapas de neuronas heredan presupuesto adaptativo. Predicción previa opcional registra hipótesis antes de ejecutar o confirmar un control, según [experiencias transversales](22-experiencias-educativas.md).
 
 ## L07 · Paisajes de pérdida — `/lab/optimizacion`
 
@@ -56,6 +60,8 @@ Preset 120 puntos, ruido 0,2, red de capacidad alta frente a pequeña. Paneles t
 
 Animaciones: conexiones temporalmente descartadas con reescalado, estadísticas de lote frente a medias móviles, checkpoint de mejor validación y restauración. Datos aumentados reciben IDs derivados y solo pertenecen a train. Bias/variance usa varias semillas (5 por defecto) y explica que la brecha de curvas aislada no es una descomposición estadística exacta. Actividad: diseñar intervención y justificar con val; test permanece oculto.
 
+Normas ||dW||/||db|| por capa antes/después de clipping y porcentaje de activaciones inactivas/saturadas, con sonda/ventana visibles. Aumento 2D por receta: jitter gaussiano truncado a radio 0,03 en coordenadas base [-1,1], σ≤0,01; aceptar solo si el oráculo sintético mantiene etiqueta limpia y distancia al borde definida por receta ≥0,03. Hasta 10 intentos, si fallan no crear copia y registrar rechazo. No rotar/reflejar lunas automáticamente. En datos importados o recetas sin oráculo, aumento desactivado hasta una política docente explícita, sin garantía ficticia de conservar etiqueta. Ruido de etiqueta no se trata como augmentation.
+
 ## L09 · Evaluación de clasificación — `/lab/clasificacion`
 
 Presets binario desbalanceado y tres clases solapadas. Mapa, probabilidades, matriz de confusión con filas reales y columnas predichas, métricas por clase, macro y ponderadas; precisión global se llama «exactitud (accuracy)». Umbral binario 0–1, defecto 0,5; en multiclase argmax con empate por menor índice.
@@ -67,6 +73,8 @@ Seleccionar celda filtra tabla y puntos. Animación de muestras hacia TP/FP/TN/F
 Presets consumo energético sintético y relación sinusoidal. Línea para una feature, superficie 3D opcional para dos, proyección 2D seleccionable para más dimensiones; no ocultar que la proyección fija otras features a valores elegidos de train. Salida lineal; MSE o MAE, baseline de media o mediana train. Datos conservan unidades y métricas se muestran en escala original si se transforma target.
 
 Controles de ruido, outliers y distribución de evaluación; gráfica de residuos vs predicción. Actividad: comparar sensibilidad de MSE/MAE a outliers usando mismo dataset/split. La pendiente de una curva ajustada no se presenta como causalidad. Para MAE, convención de derivada cero en residuo cero.
+
+Modo «Construir una función»: 1/2/8/32 neuronas y salida lineal, seno/valor absoluto/escalón, suma de contribuciones por neurona y error cerca de discontinuidades. Es la experiencia de C037; no confundir mapas de activación con demostración del teorema. En MVP se presenta explícitamente el baseline lineal/logístico; los comparadores kNN/árbol son extensión posterior.
 
 ## L11 · Visión: del píxel al mapa — `/lab/vision`
 
@@ -82,7 +90,7 @@ Panel de evidencia: hipótesis, variable modificada, resultados reales, interpre
 
 ## Taller — `/taller`
 
-Ocho secuencias incluidas: T01 datos y fuga; T02 neurona y frontera; T03 XOR y capacidad; T04 cadena del gradiente; T05 learning rate y lotes; T06 sobreajuste; T07 desbalance y umbral; T08 proyecto de regresión completo. Cada secuencia dura 15–35 min, con objetivo, prerrequisitos, preset, predicción, pasos, evidencia y rúbrica de explicación.
+Doce secuencias previstas: T01 datos y fuga; T02 neurona y frontera; T03 XOR y capacidad; T04 cadena del gradiente; T05 learning rate y lotes; T06 sobreajuste; T07 desbalance y umbral; T08 proyecto de regresión completo; T09 datos defectuosos; T10 gradientes/convergencia; T11 evaluación y contexto; T12 reparación reproducible. Cada una dura 15–35 min. MVP incluye T01–T05; T06–T12 se incorporan en v1.1 con objetivo, prerrequisitos, preset, predicción, pasos, evidencia y rúbrica. Mecanismos de fallos plantados en [el diseño transversal](22-experiencias-educativas.md).
 
 El docente puede exportar/importar una secuencia JSON con actividades declarativas: `predict`, `configure`, `run`, `inspect`, `explain`. Las comprobaciones usan campos permitidos del resultado (pérdida finita, comparación, configuración y métricas), nunca JavaScript recibido. Una respuesta libre se guarda para reflexión y no recibe calificación automática de comprensión. Las soluciones están disponibles al revelar; el modo docente local no es una barrera de seguridad ni una plataforma de examen.
 
@@ -95,7 +103,7 @@ Recorrido recomendado: L01 → L02 → L03 → L04 → L05 → L06 → L08 → L
 Los 40 conceptos añadidos en C101–C140 amplían estos laboratorios, sin exigir una pantalla independiente por concepto:
 
 - **L01:** split por grupos/tiempo, mediana/IQR, categorías desconocidas, indicadores de faltantes, features derivadas permitidas y demostración aislada de fuga. Comparación de datos de entrenamiento e inferencia para detectar diferencias de unidades/pipeline.
-- **L08/L12:** curva de validación frente a cantidad de datos train, con subconjuntos anidados y val fija. Validación cruzada K=2–10, defecto 5, con folds nuevos y pipeline ajustado dentro de cada train; opciones aleatoria, estratificada y por grupos, nunca mezclar grupos. El conjunto de test final permanece fuera de todos los folds.
+- **L08/L12:** curva de aprendizaje por tamaño de train, con subconjuntos anidados y val fija. Validación cruzada K=2–10, defecto 5, con folds nuevos y pipeline ajustado dentro de cada train; early stopping desactivado y presupuesto fijo. Opciones aleatoria, estratificada y por grupos, nunca mezclar grupos. El conjunto de test final permanece fuera de todos los folds.
 - **L09:** diagrama de fiabilidad, Brier, ROC/ROC-AUC, PR/AP y matriz de costes. En datasets desbalanceados, mostrar baseline y prevalencia; las gráficas aclaran split y clase positiva. Selector de bins de calibración 5–20, defecto 10. Umbral elegido con val; test solo confirma después.
 - **L10:** R², heterocedasticidad y extrapolación; rango train marcado en ejes. Aviso de extrapolación describe distancia/rango, no estima automáticamente un intervalo de confianza.
 - **L12:** escenarios de deriva de entradas, cambio del mecanismo objetivo y preprocesamiento de inferencia distinto. Los dos últimos se muestran como experimentos separados con condiciones documentadas, sin modificar silenciosamente test. Comparar continuidad de checkpoint completo frente a pesos solos y dispersión de 5 semillas por defecto.

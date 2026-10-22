@@ -43,6 +43,7 @@ src/
     experiments/        # biblioteca, comparación e informes
     workshops/          # intérprete declarativo y progreso
     glossary/           # índice y búsqueda
+    learning/           # POE, diagnóstico, grafo y repaso por entregas
     settings/           # panel de preferencias
   domain/
     math/               # matrices, RNG, estadística, utilidades numéricas
@@ -52,6 +53,7 @@ src/
     evaluation/         # pérdidas, métricas, baselines
     vision/             # correlación, padding y pooling
     experiments/        # invariantes, hashes y versiones
+    learning/           # reglas declarativas de observación y evidencia, sin IA
   application/
     use-cases/          # preparar, entrenar, comparar, guardar, exportar
     ports/              # TrainingExecutor, ExperimentRepository, FileGateway
@@ -89,6 +91,8 @@ La estructura anterior es una propuesta, no una lista de carpetas vacías ya cre
 Dominio → tipos y módulos propios, más una dependencia matemática pura SHA-256 explícitamente permitida; ninguna API de plataforma. Aplicación → dominio y puertos. Infraestructura → implementa puertos. Features → casos de uso, stores y visualización pública. Visualización → view-models sin controlar entrenamiento. `app` ensambla dependencias. ESLint bloquea imports invertidos y ciclos; alias `@domain`, `@application`, `@infra`, `@features`, `@viz`.
 
 Principios: una responsabilidad por módulo, cálculo puro donde sea posible, estado mutable encapsulado por sesión, contratos pequeños y composición sobre herencia. Optimizadores y transformadores implementan interfaces concretas; no hay contenedor de inyección complejo. Los fixtures prueban comportamientos públicos y no acceden por corte de texto fuente.
+
+Los módulos de POE y diagnóstico consumen eventos/snapshots por puertos de solo lectura; no escriben pesos ni alteran training. El reloj de repetición/fechas queda en infraestructura; reglas de comparación son puras. Mini-mapas usan adapters del mismo modelo con presupuesto cooperativo, sin un segundo motor. Modelos kNN/árbol son extensiones posteriores con contrato discriminado antes de implementar, no se añaden como capas falsas de MLP. Detalle en [experiencias](22-experiencias-educativas.md).
 
 ## Estado y ejecución
 
