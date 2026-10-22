@@ -8,8 +8,14 @@
       if (['system', 'light', 'dark'].includes(saved.payload.theme)) theme = saved.payload.theme;
       presentation = saved.payload.presentation === true;
     }
-  } catch { /* A blocked store must not prevent opening the laboratory. */ }
-  document.documentElement.dataset.theme = theme === 'system'
-    ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
+  } catch {
+    /* A blocked store must not prevent opening the laboratory. */
+  }
+  document.documentElement.dataset.theme =
+    theme === 'system'
+      ? matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+      : theme;
   document.documentElement.dataset.presentation = String(presentation);
 })();
