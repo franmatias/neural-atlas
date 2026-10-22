@@ -31,9 +31,20 @@ try {
       await page.getByRole('searchbox').fill('bias');
       await page.locator('.concept-card').filter({ hasText: 'Sesgo' }).waitFor();
       assert.equal(await page.locator('.concept-card').count(), 1);
+      await page.goto(new URL('#/lab/datos', url).href);
+      await page.getByRole('heading', { level: 1 }).filter({ hasText: 'Todo empieza en los datos.' }).waitFor();
+      await page.getByLabel('Ejemplo práctico', { exact: true }).selectOption('copies');
+      await page.getByRole('button', { name: 'Generar y sustituir datos' }).click();
+      await page.getByText('Dataset generado.', { exact: false }).waitFor();
+      await page.getByRole('button', { name: 'Dividir', exact: true }).click();
+      await page.getByRole('button', { name: 'Crear partición' }).click();
+      await page.getByRole('heading', { name: /Proporciones logradas/ }).waitFor();
+      await page.getByRole('button', { name: 'Preparar', exact: true }).click();
+      await page.getByRole('button', { name: 'Ajustar con train y transformar' }).click();
+      await page.getByRole('heading', { name: 'Estado aprendido exclusivamente con train' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron fixture, theme and glossary at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron fixture, theme, glossary and data Worker/split/pipeline at ${url}`,
       );
       failure = undefined;
       break;

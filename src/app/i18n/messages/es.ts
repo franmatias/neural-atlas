@@ -1,4 +1,6 @@
+import { dataEs } from './data-es';
 export const es = {
+  ...dataEs,
   'brand.tagline': 'APRENDE. EXPERIMENTA. COMPRENDE.',
   'nav.home': 'Inicio',
   'nav.labs': 'Laboratorios',
@@ -11,8 +13,8 @@ export const es = {
   'nav.label': 'Navegación principal',
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
-  'app.delivery': 'Primera entrega · D1',
-  'app.available': '1 laboratorio disponible',
+  'app.delivery': 'Datos y neurona · D2',
+  'app.available': '2 laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',
   'home.eyebrow': 'EL CONOCIMIENTO SE CONSTRUYE EXPERIMENTANDO',
@@ -92,14 +94,14 @@ export const es = {
   'glossary.eyebrow': 'CONECTA LAS IDEAS',
   'glossary.title': 'Las palabras del aprendizaje.',
   'glossary.description':
-    'Conceptos para explorar la neurona. Busca en español o en inglés y llévalos al laboratorio.',
+    'Conceptos para explorar los datos y la neurona. Busca en español o en inglés y llévalos al laboratorio.',
   'glossary.search': 'Buscar un concepto',
   'glossary.placeholder': 'Prueba con «bias», «peso» o «sigmoid»…',
   'glossary.count': '{count} conceptos disponibles',
   'glossary.empty': 'No encontramos ese concepto en esta entrega.',
   'glossary.try': 'Probar en el laboratorio',
   'glossary.catalogNote':
-    'El catálogo abierto prevé 152 conceptos. Aquí se muestra el contenido vinculado a la experiencia disponible en D1.',
+    'El catálogo abierto prevé 152 conceptos. Aquí se muestra el contenido publicado para los laboratorios de datos y neurona.',
   'neuron.eyebrow': 'L02 / FUNDAMENTOS',
   'neuron.title': 'La neurona, por dentro.',
   'neuron.question': '¿Cómo cambia una predicción cuando cambias un peso o el sesgo?',

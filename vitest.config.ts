@@ -16,6 +16,7 @@ export default defineConfig({
       exclude: [
         'src/app/main.ts',
         'src/app/router.ts',
+        'src/infrastructure/workers/data.worker.ts', // Declarative bootstrap; handler/client and real Worker are tested separately.
         'src/content/**',
         'src/app/i18n/messages/**',
         '**/*.d.ts',
