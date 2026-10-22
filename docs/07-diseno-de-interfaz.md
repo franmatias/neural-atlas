@@ -17,7 +17,7 @@ Identidad provisional nueva: **Neural Atlas**, un atlas de experimentos donde ca
 | `warning` | #805100 | #FFD27A | Advertencias |
 | `border-strong` | #718681 | #799099 | Contorno de control interactivo |
 
-Bordes decorativos pueden ser más suaves; límites interactivos y foco se miden con contraste. La paleta de clases empieza con azul #0072B2, naranja #D55E00 y verde #009E73, y añade forma/etiqueta; en oscuro usa variantes luminosas como #65BDF3 y #FFAD75 para las dos primeras clases. Gradientes de pesos divergentes se centran en cero con leyenda numérica. No usar verde/rojo como única codificación de acierto/error. Imprimir exportaciones con fondo blanco y patrones distinguibles.
+Bordes decorativos pueden ser más suaves; límites interactivos y foco se miden con contraste. Clases en claro: azul #0072B2, naranja #D55E00 y verde **#007F5F**, con círculo/rombo/triángulo y etiqueta; oscuro: #65BDF3, #FFAD75 y #5BD6A0. El verde anterior #009E73 se retira porque sobre surface-muted no alcanzaba 3:1. El validador comprueba marcadores, contornos/foco y fondos reales, además de texto. Gradientes divergentes centrados en cero con leyenda; no usar verde/rojo como único canal. Exportar con fondo blanco y patrones distinguibles.
 
 Tipografía del sistema: `ui-sans-serif, system-ui, Segoe UI, sans-serif`; código y números `ui-monospace, Consolas, monospace`. Tamaños: título página 28/34 px, título panel 18/26, cuerpo 16/24, ayuda 14/21, etiqueta de gráfico mínima 12/18. Modo presentación multiplica texto por 1,25 sin escalar indiscriminadamente lienzos. Cifras tabulares para métricas; mostrar 4 decimales por defecto y precisión extendida en inspector. Nunca redondear internamente antes de calcular.
 
@@ -85,9 +85,9 @@ Los títulos identifican objetivo observable, por ejemplo «Una tasa alta puede 
 
 ## Componentes y contratos visuales
 
-- `AppShell`: navegación, landmarks, skip link, tema y región de avisos. Sin conocimiento de tensores.
+- `AppShell`: navegación, landmarks, botón «Saltar al contenido», tema y región de avisos. El botón mueve foco al main con tabindex=-1 y scroll mediante JS; no usa href=#main, que interferiría con hash router. Sin conocimiento de tensores.
 - `ExperimentToolbar`: nombre, estado, revisión y acciones de guardar/duplicar/exportar.
-- `ParameterField`: etiqueta, unidad, input numérico + slider, rango y error; teclado y puntero equivalentes.
+- `ParameterField`: etiqueta, unidad, input de texto con inputmode=decimal + slider, rango y error; parser propio coma/punto y formato sin separador de miles. Teclado y puntero equivalentes.
 - `VisualizationFrame`: título, leyenda, selector 2D/3D, reset/cámara, exportación y tabla alternativa.
 - `TrainingPlayer`: estado explícito, play/pause, lote, época, cancelación y velocidad visual separada.
 - `MetricCard`/`LearningCurve`: valor, split, unidad, tooltip y fuente del snapshot; actualizar anuncios accesibles como máximo una vez cada 2 s.
@@ -119,3 +119,13 @@ Transiciones UI 120–180 ms; foco inmediato; entrada de panel máximo 200 ms. E
 ## Accesibilidad y revisión
 
 Orden DOM: cabecera, título/pregunta, configuración, visual, inspector, acciones. En móvil las tabs gestionan foco y estado sin duplicar controles activos. Tooltips al foco y hover, con descripción persistente equivalente; errores enlazados por `aria-describedby`. Los gráficos tienen resumen, ejes y tabla accesible; selección se puede hacer desde la tabla. Validar contrastes de tokens y de estados hover/disabled/selected en ambos temas; las paletas indicadas son base de diseño, no certificación WCAG del producto.
+
+## Parser decimal y prueba temprana
+
+Aceptar signo, decimal coma **o** punto y exponente opcional, por ejemplo −0,5 o 1e-3; normalizar signo Unicode a ASCII. Rechazar mezcla de separadores, agrupación de miles, cadenas sobrantes y valores no finitos. Texto intermedio vacío o «−» se permite mientras se edita, sin enviar cambios al motor. Al confirmar/blur validar rango y mostrar error; no transformar una entrada ambigua en otro número silenciosamente. `Intl.NumberFormat` presenta valores sin grouping y con locale; los archivos siempre usan formato JSON/CSV documentado. Probar es-ES/en-US en los tres motores de navegador.
+
+## Nuevos paneles del MVP
+
+La banda POE aparece bajo la pregunta: hipótesis → acción → observación → explicación, plegable fuera del taller. El diagnóstico ocupa una pestaña del inspector con contador de evidencia, texto hipotético y enlaces a conceptos. Mini-mapas de activación abren desde una neurona seleccionada, máximo cuatro y uno en perfil reducido, sin tapar el mapa principal. Ninguno exige un modal por cada movimiento de slider. Diseño detallado y reglas en [experiencias educativas](22-experiencias-educativas.md).
+
+Para proyección A/B (v1.1), usar dos columnas simétricas sobre un solo panel de controles comunes y una diferencia resaltada; a menos de 1024 px, alternar tabs A/B con estado compartido. Timeline de segmentos e historial de configuración son paneles plegables de v1.2. Son diseños pendientes de implementación; los SVG de referencia de 0.1 muestran la composición base y no certifican estos nuevos estados.

@@ -1,6 +1,6 @@
-# Catálogo abierto: 140 conceptos iniciales
+# Catálogo abierto: 152 conceptos iniciales
 
-Se conservan los números de la solicitud. La lista original omitía el 20: aquí se asigna **C020, datos de entrada (inputs)**, término que aparecía como cabecera. «Regresión numéricas» se normaliza a regresión numérica. Se añaden C101–C140 y no existe un máximo de conceptos. Cada fila exige explicación intuitiva/formal, acción observable y evidencia. Las pruebas P-Lxx se concretan en el [plan de pruebas](13-pruebas-y-aceptacion.md); la tabla no implica que ya estén implementadas.
+Se conservan los números de la solicitud. La lista original omitía el 20: aquí se asigna **C020, datos de entrada (inputs)**, término que aparecía como cabecera. «Regresión numéricas» se normaliza a regresión numérica. Se añaden C101–C152 y no existe un máximo de conceptos. Cada fila exige explicación intuitiva/formal, acción observable y evidencia. Las pruebas P-Lxx se concretan en el [plan de pruebas](13-pruebas-y-aceptacion.md); la tabla no implica que estén implementadas ni que todas se cierren en el MVP.
 
 | ID | Concepto | Laboratorio | Acción/evidencia exigida | Prueba |
 |---|---|---|---|---|
@@ -35,12 +35,12 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C029 | Conexión/sinapsis | L03,L05 | Seleccionar arista con origen/destino | P-L05 |
 | C030 | Topología | L03 | Construir y validar dimensiones | P-L03 |
 | C031 | Inicialización | L03 | Repetir seed y comparar pesos | P-L03 |
-| C032 | Xavier/Glorot | L03 | Mostrar límite y varianza | P-L03 |
-| C033 | He | L03 | Comparar propagación con ReLU | P-L03 |
+| C032 | Xavier/Glorot | L04 | Mostrar límite y varianza | P-L04 |
+| C033 | He | L04 | Comparar propagación con ReLU | P-L04 |
 | C034 | Hiperparámetros | L06 | Distinguir configuración y pesos | P-L06 |
 | C035 | Parámetros entrenables | L03 | Contar W, b, gamma y beta | P-L03 |
 | C036 | Capacidad | L08 | Comparar tamaños de red | P-L08 |
-| C037 | Aproximación universal | L03 | Mostrar aproximación y límites del teorema | P-L03 |
+| C037 | Aproximación universal | L10 | Ajustar seno/abs/escalón con 1/2/8/32 neuronas, contribuciones y límites | P-L10 |
 | C038 | MLP | L03,L06 | Entrenar red multicapa | P-L06 |
 | C039 | Activación | L04 | Relacionar z, a y derivada | P-L04 |
 | C040 | Linealidad/no linealidad | L03,L04 | Componer capas lineales y comparar | P-L04 |
@@ -92,7 +92,7 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C086 | L2 | L08 | Mostrar contracción de pesos | P-L08 |
 | C087 | Dropout | L08 | Máscaras train y ausencia en inferencia | P-L08 |
 | C088 | Early stopping | L08 | Restaurar mejor checkpoint | P-L08 |
-| C089 | Data augmentation | L08,L11 | Transformar solo train | P-L08 |
+| C089 | Data augmentation | L08 | Jitter acotado solo train con oráculo/receta y rechazos visibles | P-L08 |
 | C090 | Batch normalization | L08 | Estadísticas train/eval y gradientes | P-L08 |
 | C091 | Matriz de confusión | L09 | Filtrar muestras por celda | P-L09 |
 | C092 | TP | L09 | Identificar positivos correctos | P-L09 |
@@ -103,7 +103,7 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C097 | Precision / precisión | L09 | Calcular TP/(TP+FP) | P-L09 |
 | C098 | Recall / sensibilidad | L09 | Calcular TP/(TP+FN) | P-L09 |
 | C099 | F1 | L09 | Media armónica y caso no definido | P-L09 |
-| C100 | Learning/loss curve | L06,L08 | Ejes, split y registro por época | P-L06 |
+| C100 | Curva de pérdida por época / loss curve | L06,L08 | Ejes, split y registro por época | P-L06 |
 | C101 | Fuga de información / data leakage | L01 | Comparar pipeline correcto y caso contaminado rotulado | P-L01 |
 | C102 | Datos faltantes e imputación | L01 | Introducir faltantes y ajustar imputador con train | P-L01 |
 | C103 | Duplicados y contaminación entre splits | L01 | Agrupar duplicados y comprobar grupos disjuntos | P-L01 |
@@ -122,7 +122,7 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C116 | Categorías desconocidas | L01 | Enviar categoría no vista a columna reservada | P-L01 |
 | C117 | Ingeniería de características | L01,L03 | Añadir cuadrado/log/producto con fórmula e IDs | P-L01 |
 | C118 | Interacción entre características | L03,L10 | Comparar modelo con feature producto x1·x2 | P-L10 |
-| C119 | Curva por tamaño de entrenamiento | L08,L12 | Aumentar Ntrain con val fija y varias semillas | P-L12 |
+| C119 | Curva de aprendizaje por tamaño de train / learning curve | L08,L12 | Aumentar Ntrain con val fija y varias semillas | P-L12 |
 | C120 | Calibración de probabilidades | L09 | Diagrama de fiabilidad con tamaño de bins | P-L09 |
 | C121 | Puntuación Brier | L09 | Promediar error cuadrático de probabilidades | P-L09 |
 | C122 | Curva ROC | L09 | Recorrer umbrales y pares FPR/TPR | P-L09 |
@@ -144,17 +144,29 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C138 | Estado del optimizador | L07,L12 | Comparar continuación con/sin momentos | P-L12 |
 | C139 | Preprocesamiento dentro de cada fold | L01,L12 | Ajustar transformadores con train de cada fold | P-L12 |
 | C140 | Dispersión predictiva e incertidumbre | L09,L12 | Comparar semillas y explicar límites de la dispersión | P-L12 |
+| C141 | Regresión logística | L03,L09 | Red sin ocultas sigmoid/BCE frente al MLP en mismo split | P-L09 |
+| C142 | Regresión lineal | L03,L10 | Salida lineal sin ocultas y residuos | P-L10 |
+| C143 | K vecinos más próximos | L12 | Variar k, escala/distancia y frontera del comparador | P-L12 |
+| C144 | Árbol de decisión y particiones | L12 | Inspeccionar splits, profundidad y hojas | P-L12 |
+| C145 | Búsqueda de hiperparámetros | L12 | Rejilla acotada con presupuesto y val reservada para selección | P-L12 |
+| C146 | Importancia por permutación | L12 | Barajar feature val y medir deterioro sin refit | P-L12 |
+| C147 | Métricas por grupos y límites de equidad | L09 | Comparar soportes/errores por grupos sintéticos sin certificar justicia | P-L09 |
+| C148 | Ética y contexto de decisión | L09 | Discutir costes FP/FN y límites del dataset | P-L09 |
+| C149 | Representaciones aprendidas | L03,L06 | Mini-mapas de activación por neurona y combinación por capas | P-L06 |
+| C150 | Interpretabilidad y causalidad | L12 | Explicar límites de contribuciones, mapas y permutación | P-L12 |
+| C151 | Sesgo de selección de hiperparámetros | L12 | Comparar intentos de grid y conservar test fuera de selección | P-L12 |
+| C152 | Diagnóstico por evidencia | L06,L08 | Contrastar alerta determinista con métricas/ventana y una intervención | P-L06 |
 
 ## Contrato para ampliar la lista
 
-El catálogo se representa como registros declarativos, no como un enum TS ni un array de longitud fija. Identificador estable `C` seguido de al menos tres dígitos; el siguiente disponible inicialmente es C141. Nunca renumerar al reordenar o traducir. Un concepto retirado se marca deprecated y conserva redirect al sustituto.
+El catálogo se representa como registros declarativos, no como un enum TS ni un array de longitud fija. Identificador estable `C` seguido de al menos tres dígitos; el siguiente disponible inicialmente es C153. Nunca renumerar al reordenar o traducir. Un concepto retirado se marca deprecated y conserva redirect al sustituto.
 
-Campos obligatorios: `id`, `slug`, `contentVersion`, `title.es`, `aliases`, `category`, `level`, `definition`, `intuition`, `formal`, `prerequisiteIds`, `relatedIds`, `labIds`, `activity`, `evidence`, `validationRefs`, `sources` y `status`. Estados editoriales: proposed, specified, implemented, reviewed, deprecated. Las 140 filas de esta entrega están **specified**, no implemented. Las pruebas y referencias son IDs declarativos, no scripts.
+Campos obligatorios: `id`, `slug`, `contentVersion`, `title.es`, `title.en`, `aliases` por locale, `category`, `level`, `definition`, `intuition` con límite de analogía, `formal`, `numericExample`, `relatedControls`, `frequentMistake`, `misconceptionPresetIds`, `selfAssessment`, `prerequisiteIds`, `relatedIds`, `labIds`, `activity`, `evidence`, `validationRefs`, `sources`, `targetRelease` y `status`. `numericExample` define fixture/valores, fórmula, dimensiones, unidades y bindings de snapshot si dinámico. `relatedControls` contiene labId/controlId; `selfAssessment` contiene prompt, tipo MCQ/VF, opciones, correctOptionIds, answer y explanation. `frequentMistake` incluye corrección y preset si existe. Campos editoriales localizados con fallback es; title.en/aliases permiten búsqueda inglesa sin fingir traducción completa de UI. Estados: proposed, specified, implemented, reviewed, deprecated. Las 152 filas están **specified**, no implemented. Pruebas y referencias son IDs declarativos, no scripts.
 
 Añadir: registrar ID → validar slug/ID únicos y referencias → conectar experiencia existente o crear una especificación nueva → añadir evidencia/prueba → revisión pedagógica → publicar contenido. Se admiten nuevas categorías y etiquetas mediante registro validado, sin cambiar motor. Un concepto que requiera comportamiento matemático nuevo sí necesita desarrollar y probar ese comportamiento; el registro no crea una simulación por sí solo.
 
-Paquetes de contenido: `format: neural-atlas.concept-pack`, schemaVersion, packId, version y concepts; límite 1 MiB y 500 registros por archivo, sin límite global fijo del catálogo. Conflicto de ID existente exige misma identidad editorial y versión superior validada, con preview; nunca sobrescritura silenciosa. El catálogo empaquetado se combina con paquetes locales acotados por presupuesto. Relaciones de prerrequisito no pueden formar ciclos; relatedIds sí pueden ser recíprocos. La búsqueda y navegación se generan desde el registro.
+Paquetes: `format: neural-atlas.concept-pack`, schemaVersion, packId, version y concepts; **4 MiB UTF-8 y 500 registros por archivo**, límites simultáneos, sin prometer que 500 textos completos quepan. Máximo editorial por registro 32 KiB. No hay máximo global fijo. Conflicto de ID exige misma identidad y versión superior validada, con preview; nunca sobrescritura silenciosa. Contenido local se guarda en IDB, sujeto a presupuesto. Prerrequisitos sin ciclos; relatedIds pueden ser recíprocos. Búsqueda, grafo accesible y lista se generan del registro.
 
 ## Revisión pedagógica
 
-No basta con que un término aparezca en el glosario: para cerrar cada concepto se exige la acción/evidencia indicada y una pregunta de comprensión. En D3 se revisarán las 140 filas iniciales contra contenidos reales y pruebas. No se usa accuracy para regresión; «precisión» sin apellido no sustituye a accuracy; normalización z-score, min-max y batch normalization se distinguen explícitamente.
+No basta con aparecer en el glosario: cerrar un concepto exige actividad/evidencia y pregunta explicada reales. La revisión se hace por entrega según targetRelease, sin marcar como implementados los pendientes de v1.1/v1.2. No se usa accuracy para regresión; «precisión» sin apellido no sustituye a accuracy; z-score, min-max y BN se distinguen. Nombres fijos: **curva de pérdida por época** (C100), **curva de aprendizaje por tamaño train** (C119); «curva de validación» se reserva al rendimiento frente a un hiperparámetro.
