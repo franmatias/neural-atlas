@@ -35,7 +35,10 @@ function commit() {
   emit('update:modelValue', result.value);
 }
 function slide(event: Event) {
-  emit('update:modelValue', Number((event.target as HTMLInputElement).value));
+  const value = Number((event.target as HTMLInputElement).value);
+  draft.value = formatNumber(value);
+  error.value = '';
+  emit('update:modelValue', value);
 }
 </script>
 <template>

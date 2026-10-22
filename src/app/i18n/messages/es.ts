@@ -187,6 +187,9 @@ export const es = {
   'neuron.trace': 'Recorrido del cálculo',
   'neuron.live': 'Cálculo en directo',
   'field.slider': '{label} · deslizador',
+  'neuron.tangent': 'La frontera toca una esquina del encuadre; no hay un segmento visible.',
+  'neuron.custom': 'Experimento personalizado',
+  'neuron.zeroPlane': 'z = 0 en todo el plano',
 } as const;
 
 export type MessageKey = keyof typeof es;

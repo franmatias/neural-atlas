@@ -5,11 +5,14 @@ import { useI18n, type MessageKey } from '@/app/i18n';
 import { usePreferencesStore } from '@/stores/preferences';
 import AppIcon from '@/shared/ui/AppIcon.vue';
 import SettingsForm from '@/shared/ui/SettingsForm.vue';
+import { trapDialogFocus } from '@/shared/ui/dialog-focus';
 const { t } = useI18n();
 const prefs = usePreferencesStore();
 const route = useRoute();
 const base = import.meta.env.BASE_URL;
 const settings = ref<HTMLDialogElement>();
+const settingsOpen = ref(false);
+const settingsTrigger = ref<HTMLElement>();
 const menu = ref<HTMLDialogElement>();
 const main = ref<HTMLElement>();
 const links: { to: string; label: MessageKey; icon: string }[] = [
@@ -21,6 +24,15 @@ const links: { to: string; label: MessageKey; icon: string }[] = [
 ];
 function focusMain() {
   main.value?.focus();
+}
+async function openSettings() {
+  settingsOpen.value = true;
+  await nextTick();
+  settings.value?.showModal();
+}
+function closeSettings() {
+  settingsOpen.value = false;
+  settingsTrigger.value?.focus();
 }
 watch(
   () => route.fullPath,
@@ -40,7 +52,12 @@ watch(
       ></RouterLink
     >
     <nav :aria-label="t('nav.label')">
-      <RouterLink v-for="link in links" :key="link.to" :to="link.to" :exact-active-class="'active'"
+      <RouterLink
+        v-for="link in links"
+        :key="link.to"
+        :to="link.to"
+        :exact-active-class="'active'"
+        :class="{ active: link.to === '/laboratorios' && route.path.startsWith('/lab/') }"
         ><AppIcon :name="link.icon" /><span>{{ t(link.label) }}</span></RouterLink
       >
     </nav>
@@ -49,7 +66,7 @@ watch(
       ><small>{{ t('app.delivery') }}</small>
     </div>
   </aside>
-  <div class="workspace">
+  <div class="workspace min-h-screen">
     <header class="topbar">
       <button
         class="icon-button mobile-menu"
@@ -67,7 +84,12 @@ watch(
       >
         <AppIcon :name="prefs.resolvedTheme === 'dark' ? 'sun' : 'moon'" />
       </button>
-      <button class="icon-button" :aria-label="t('nav.settings')" @click="settings?.showModal()">
+      <button
+        ref="settingsTrigger"
+        class="icon-button"
+        :aria-label="t('nav.settings')"
+        @click="openSettings"
+      >
         <AppIcon name="settings" />
       </button>
     </header>
@@ -77,17 +99,22 @@ watch(
       ><RouterLink to="/ajustes">{{ t('nav.settings') }}</RouterLink>
     </footer>
   </div>
-  <dialog ref="settings" class="settings-dialog" aria-labelledby="settings-title">
+  <dialog
+    ref="settings"
+    class="settings-dialog"
+    aria-labelledby="settings-title"
+    @keydown="trapDialogFocus"
+    @close="closeSettings"
+  >
     <div class="dialog-heading">
       <h2 id="settings-title">{{ t('settings.dialog') }}</h2>
       <button class="icon-button" :aria-label="t('settings.close')" @click="settings?.close()">
         <AppIcon name="close" />
       </button>
     </div>
-    <SettingsForm v-if="route.path !== '/ajustes'" />
-    <p v-else>{{ t('settings.description') }}</p>
+    <SettingsForm v-if="settingsOpen" prefix="dialog-" />
   </dialog>
-  <dialog ref="menu" class="menu-dialog" :aria-label="t('nav.label')">
+  <dialog ref="menu" class="menu-dialog" :aria-label="t('nav.label')" @keydown="trapDialogFocus">
     <button class="icon-button menu-close" :aria-label="t('nav.close')" @click="menu?.close()">
       <AppIcon name="close" />
     </button>

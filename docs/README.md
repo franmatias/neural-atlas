@@ -1,6 +1,6 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-Fecha: 22/10/2026. Estado: **propuesta documentada; aplicación pendiente de implementación**. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
+Fecha: 22/10/2026. Esta carpeta conserva el diseño completo 0.2. La primera aplicación D1 se documenta en [implementación 0.3](23-implementacion-d1.md), con funciones reales, pruebas y limitaciones. Las fases posteriores siguen pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
 
 ## Resumen revisable
 

@@ -5,6 +5,7 @@ import { line, curveLinear, curveStepAfter } from 'd3-shape';
 import { useNeuronStore } from '@/stores/neuron';
 import { activate } from '@/domain/network/neuron';
 import { useI18n } from '@/app/i18n';
+import { formatNumber } from '@/shared/utils/decimal';
 const { t } = useI18n();
 const neuron = useNeuronStore();
 const chart = computed(() => {
@@ -41,11 +42,11 @@ const chart = computed(() => {
     >
       <g v-for="tick in chart.ticksX" :key="`x${tick}`" class="chart-grid">
         <path :d="`M${chart.x(tick)} 20V236`" />
-        <text :x="chart.x(tick)" y="253" text-anchor="middle">{{ tick }}</text>
+        <text :x="chart.x(tick)" y="253" text-anchor="middle">{{ formatNumber(tick) }}</text>
       </g>
       <g v-for="tick in chart.ticksY" :key="`y${tick}`" class="chart-grid">
         <path :d="`M40 ${chart.y(tick)}H286`" />
-        <text x="31" :y="chart.y(tick) + 4" text-anchor="end">{{ tick }}</text>
+        <text x="31" :y="chart.y(tick) + 4" text-anchor="end">{{ formatNumber(tick) }}</text>
       </g>
       <path :d="`M40 ${chart.y(0)}H286M${chart.x(0)} 20V236`" class="chart-axis" />
       <path :d="chart.path ?? ''" class="activation-path" />

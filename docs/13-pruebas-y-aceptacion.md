@@ -1,6 +1,6 @@
 # Estrategia de pruebas y aceptación
 
-**Estado:** plan para la aplicación futura. Esta entrega solo ejecuta comprobaciones documentales; no hay una batería de producto ya implementada ni porcentajes de cobertura medidos. La ejecución de las 11 pruebas del original se registra en [auditoría](01-auditoria.md).
+**Estado:** estrategia del alcance completo. D1 ya cuenta con unidad, integración, cobertura y E2E de producto; [su informe](23-implementacion-d1.md) distingue resultados ejecutados y límites. Las pruebas de funcionalidades posteriores siguen siendo un plan. La ejecución de las 11 pruebas del original se registra en [auditoría](01-auditoria.md).
 
 ## Capas y herramientas
 

@@ -54,6 +54,7 @@ describe('navegación y contenido disponible', () => {
     await router.push('/lab/neurona');
     await flushPromises();
     expect(wrapper.get<HTMLInputElement>('#x1').element.value).toBe('1,5');
+    expect(wrapper.get<HTMLSelectElement>('#preset').element.value).toBe('custom');
     expect(document.activeElement?.id).toBe('main-content');
     const url = window.location.hash;
     await wrapper.get('.skip-link').trigger('click');
@@ -207,8 +208,15 @@ describe('laboratorio de neurona conectado', () => {
     neuron.update({ w1: 0.1, w2: 0.1 });
     await nextTick();
     expect(wrapper.text()).toContain('fuera');
+    neuron.update({ w1: 1, w2: 1, b: 4 });
+    await nextTick();
+    expect(wrapper.find('.boundary-point').exists()).toBe(true);
+    expect(wrapper.text()).toContain('esquina');
+    neuron.update({ w1: 0, w2: 0, b: 0 });
+    await nextTick();
+    expect(wrapper.find('rect[fill="url(#negative-hatch)"]').exists()).toBe(false);
     expect(() => neuron.update({ w1: NaN })).toThrow(RangeError);
-    expect(neuron.config.w1).toBe(0.1);
+    expect(neuron.config.w1).toBe(0);
   });
   it('mueve la entrada con teclado y ratón, con límites y sin redefinir el modelo', async () => {
     const { wrapper } = await render('/lab/neurona');

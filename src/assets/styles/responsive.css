@@ -1,0 +1,173 @@
+:root[data-presentation='true'] {
+  font-size: 19px;
+}
+.menu-dialog nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (min-width: 1600px) {
+  .page {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+  .hero {
+    min-height: 450px;
+  }
+}
+@media (max-width: 1199px) {
+  .sidebar {
+    width: 72px;
+    padding: 30px 10px;
+  }
+  .brand {
+    padding: 0 7px;
+    gap: 0;
+  }
+  .brand > span,
+  .sidebar nav span,
+  .sidebar-bottom {
+    display: none;
+  }
+  .sidebar nav a {
+    justify-content: center;
+    padding: 14px;
+  }
+  .workspace {
+    margin-left: 72px;
+  }
+  .page {
+    padding: 34px 28px 46px;
+  }
+  .topbar {
+    padding: 0 28px;
+  }
+  .lab-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .concept-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+  }
+}
+@media (max-width: 767px) {
+  .sidebar {
+    display: none;
+  }
+  .workspace {
+    margin-left: 0;
+  }
+  .topbar {
+    height: 64px;
+    padding: 0 16px;
+    gap: 4px;
+  }
+  .mobile-menu {
+    display: inline-flex;
+  }
+  .topbar-title {
+    font-size: 0.65rem;
+  }
+  .status-pill {
+    display: none;
+  }
+  .page {
+    padding: 30px 20px 36px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+  .hero h1 {
+    font-size: clamp(2.3rem, 8vw, 3rem);
+  }
+  .hero-art {
+    max-width: 380px;
+    margin: 8px auto 12px;
+    width: 100%;
+  }
+  .hero-caption {
+    margin-bottom: 0;
+  }
+  .hero-description {
+    font-size: 0.9rem;
+  }
+  .featured-lab {
+    gap: 14px;
+    padding: 20px;
+  }
+  .feature-mark {
+    width: 52px;
+    height: 52px;
+  }
+  .feature-mark svg {
+    width: 30px;
+  }
+  .featured-lab > svg {
+    display: none;
+  }
+  .featured-lab h2 {
+    font-size: 1.15rem;
+  }
+  .featured-lab p {
+    font-size: 0.8rem;
+  }
+  .lab-card {
+    padding: 20px 16px;
+  }
+  .lab-card h3 {
+    font-size: 0.95rem;
+  }
+  .lab-card-top {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .section-heading {
+    display: block;
+  }
+  .section-heading .text-link {
+    margin-top: 16px;
+  }
+  .learning-note {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .footer {
+    padding: 24px 20px;
+    flex-wrap: wrap;
+    font-size: 0.5rem;
+  }
+  .footer span:nth-child(2) {
+    display: none;
+  }
+  .concept-grid {
+    grid-template-columns: 1fr;
+  }
+  .planned-page {
+    padding-top: 60px;
+  }
+  .settings-dialog {
+    padding: 20px;
+  }
+  .eyebrow {
+    font-size: 0.6rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+:root[data-reduced-motion='true'] * {
+  scroll-behavior: auto !important;
+  animation: none !important;
+  transition: none !important;
+}

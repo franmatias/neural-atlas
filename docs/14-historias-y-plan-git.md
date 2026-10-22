@@ -1,6 +1,6 @@
 # Historias, entregas y plan Git · revisión 0.2
 
-Las 65 historias son diseño pendiente de implementar. Cada una tiene RF, pruebas y entrega de aceptación sin depender de funcionalidades de una entrega posterior. RF → módulo → historia → prueba se publica en [la matriz completa](21-trazabilidad-rf.md). Los sufijos a/b de pruebas separan recorridos básicos y ampliados reales, no permiten cerrar una historia sin su evidencia de la entrega.
+Las 65 historias definen el alcance completo. US-001–US-005, US-013 y US-065 tienen una primera implementación en D1; [su informe](23-implementacion-d1.md) registra evidencia y límites de aceptación. Las demás siguen pendientes. Cada una tiene RF, pruebas y entrega de aceptación sin depender de funcionalidades de una entrega posterior. RF → módulo → historia → prueba se publica en [la matriz completa](21-trazabilidad-rf.md). Los sufijos a/b de pruebas separan recorridos básicos y ampliados reales, no permiten cerrar una historia sin su evidencia de la entrega.
 
 ## MVP, alcance completo y extensiones
 
