@@ -1,0 +1,18 @@
+flowchart TB
+  subgraph Principal[Hilo principal]
+    Vue[Vue Router y AppShell] --> Features[Laboratorios y taller]
+    Features --> Casos[Casos de uso]
+    Features --> Stores[Stores Pinia]
+    Stores --> Render[Adapters SVG Canvas Three]
+    Casos --> Ports[Puertos de aplicacion]
+    Ports --> Repo[Repositorio LocalStorage]
+    Ports --> Files[Archivos y validadores]
+    Ports --> Client[Cliente Worker]
+  end
+  subgraph Aislado[Web Worker]
+    Handler[Handler de protocolo] --> Executor[Executor por tareas acotadas]
+    Executor --> Domain[Dominio matematico TS]
+  end
+  Client <-->|Mensajes versionados| Handler
+  Handler -->|Snapshots y checkpoints| Client
+  Client --> Stores

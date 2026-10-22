@@ -1,0 +1,21 @@
+sequenceDiagram
+  actor A as Alumno
+  participant UI as Laboratorio
+  participant C as Caso de uso
+  participant W as Worker
+  participant M as Motor
+  A->>UI: Entrenar
+  UI->>C: Preparar configuracion validada
+  C->>W: INIT con sessionId y revision
+  W->>M: Crear pipeline y red
+  W-->>C: READY
+  C->>W: RUN con runId
+  W-->>C: ACK
+  loop Unidades acotadas hasta parada
+    W->>M: Calcular y confirmar lote
+    M-->>W: Estado finito y contadores
+    W-->>C: PROGRESS o SNAPSHOT con sequence
+    C-->>UI: Publicar solo revision vigente
+  end
+  W-->>C: COMPLETED y snapshot final
+  C-->>UI: Mostrar motivo de parada

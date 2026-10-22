@@ -1,0 +1,20 @@
+sequenceDiagram
+  actor A as Usuario
+  participant UI as Sesion UI
+  participant W as Worker
+  participant M as Motor
+  A->>UI: Cambiar arquitectura
+  UI->>W: CANCEL revision R
+  W-->>UI: ACK
+  alt Worker responde
+    W->>M: Interrumpir y descartar batch parcial
+    M-->>W: Ultimo estado confirmado
+    W-->>UI: CANCELLED revision R
+    UI->>UI: Incrementar revision a R+1
+    UI->>W: INIT revision R+1
+    W-->>UI: READY revision R+1
+    Note over UI,W: Cualquier snapshot tardio de R se descarta
+  else Sin respuesta en watchdog
+    UI->>W: terminate
+    UI->>UI: Restaurar checkpoint y crear Worker nuevo
+  end

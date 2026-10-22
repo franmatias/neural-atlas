@@ -1,0 +1,18 @@
+flowchart TD
+  Start([Dataset validado]) --> Split{Estrategia de split}
+  Split --> Random[Aleatorio o estratificado]
+  Split --> Groups[Por grupos indivisibles]
+  Split --> Time[Por tiempo sin futuro]
+  Random --> IDs[Train val test disjuntos]
+  Groups --> IDs
+  Time --> IDs
+  IDs --> Fit[Ajustar imputacion codificacion y escalado solo train]
+  Fit --> Train[Transformar train]
+  Fit --> Val[Transformar val con mismo estado]
+  Fit --> Test[Test reservado y estado congelado]
+  Train --> Learn[Entrenar y aumentar solo train]
+  Val --> Select[Seleccionar y parar con validacion]
+  Learn --> Select
+  Select --> Final[Congelar modelo y umbral]
+  Test --> Final
+  Final --> Evaluate([Evaluar test por accion explicita])

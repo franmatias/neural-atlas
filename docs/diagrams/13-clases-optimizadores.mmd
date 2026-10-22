@@ -1,0 +1,36 @@
+classDiagram
+  class Optimizer {
+    <<interface>>
+    +step(parameters, gradients, learningRate)
+    +serializeState()
+    +restoreState(state)
+  }
+  class SGD
+  class Momentum {
+    +Tensor velocity
+    +number beta
+  }
+  class RMSprop {
+    +Tensor squareAverage
+    +number rho
+  }
+  class Adam {
+    +Tensor firstMoment
+    +Tensor secondMoment
+    +number updateIndex
+  }
+  class Trainer {
+    +trainBatch()
+    +pause()
+    +checkpoint()
+  }
+  class Scheduler {
+    <<interface>>
+    +rate(epoch)
+  }
+  Optimizer <|.. SGD
+  Optimizer <|.. Momentum
+  Optimizer <|.. RMSprop
+  Optimizer <|.. Adam
+  Trainer --> Optimizer : usa
+  Trainer --> Scheduler : consulta

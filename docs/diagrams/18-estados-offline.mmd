@@ -1,0 +1,14 @@
+stateDiagram-v2
+  [*] --> SinCache
+  SinCache --> Descargando: primera visita con red
+  Descargando --> Parcial: descarga interrumpida
+  Parcial --> Descargando: reintentar con red
+  Descargando --> OfflineListo: manifiesto completo
+  OfflineListo --> VersionEnEspera: nueva build instalada
+  VersionEnEspera --> GuardandoSesion: usuario acepta actualizar
+  GuardandoSesion --> DeteniendoWorker: guardado o exportacion correcta
+  GuardandoSesion --> VersionEnEspera: cancelar
+  DeteniendoWorker --> Activando: sesion estable
+  Activando --> OfflineListo: recargar y comprobar version
+  OfflineListo --> OfflineListo: abrir sin red
+  SinCache --> SinCache: sin red mostrar limitacion

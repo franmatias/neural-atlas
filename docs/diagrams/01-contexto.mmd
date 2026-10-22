@@ -1,0 +1,10 @@
+flowchart LR
+  Estudiante[Estudiante FP o universidad] --> App[Neural Atlas en navegador]
+  Docente[Docente] --> App
+  App --> Motor[Motor TS en Web Worker]
+  App --> Vistas[Vistas equivalentes 2D y 3D]
+  App <--> Local[LocalStorage acotado]
+  Archivos[Archivos CSV y JSON] <--> App
+  Pages[Hosting estatico GitHub Pages] --> App
+  SW[Service Worker y cache de recursos] --> App
+  App --> Evidencia[Informe y progreso locales]

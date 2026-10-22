@@ -1,0 +1,47 @@
+classDiagram
+  class Experiment {
+    +string id
+    +number revision
+    +string configHash
+    +invalidate()
+  }
+  class Dataset {
+    +string id
+    +string dataHash
+    +Task task
+  }
+  class Sample {
+    +string id
+    +string groupId
+    +FeatureValues features
+    +Target target
+  }
+  class DataSplit {
+    +IdSet train
+    +IdSet validation
+    +IdSet test
+    +assertDisjoint()
+  }
+  class Pipeline {
+    +fit(train)
+    +transform(rows)
+    +serialize()
+  }
+  class Network {
+    +LayerSpec[] layers
+    +forward(input, mode)
+    +backward(cache, target)
+  }
+  class Checkpoint {
+    +Parameters parameters
+    +OptimizerState optimizer
+    +RngStates rng
+    +BatchCursor cursor
+  }
+  Experiment "1" *-- "1" Dataset
+  Dataset "1" *-- "1..*" Sample
+  Experiment "1" *-- "1" DataSplit
+  DataSplit --> Dataset : referencia IDs
+  Experiment "1" *-- "1" Pipeline
+  Experiment "1" *-- "1" Network
+  Experiment "1" o-- "0..*" Checkpoint

@@ -1,0 +1,28 @@
+classDiagram
+  class WorkshopDefinition {
+    +string id
+    +number contentVersion
+    +string presetId
+    +Rubric rubric
+  }
+  class WorkshopStep {
+    +string id
+    +StepType type
+    +string instruction
+    +string[] allowedControls
+  }
+  class EvidenceRule {
+    +RuleType type
+    +MetricRef operand
+    +evaluate(snapshot)
+  }
+  class WorkshopProgress {
+    +string currentStepId
+    +Answer[] answers
+    +EvidenceRef[] evidence
+    +save()
+  }
+  WorkshopDefinition "1" *-- "1..30" WorkshopStep
+  WorkshopStep "1" *-- "0..*" EvidenceRule
+  WorkshopProgress --> WorkshopDefinition : version compatible
+  WorkshopProgress --> WorkshopStep : paso actual

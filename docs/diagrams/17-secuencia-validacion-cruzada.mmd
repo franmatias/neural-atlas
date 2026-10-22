@@ -1,0 +1,19 @@
+sequenceDiagram
+  actor A as Usuario
+  participant UI as Experimentos
+  participant CV as Coordinador CV
+  participant W as Worker
+  A->>UI: Ejecutar K folds
+  UI->>CV: Desarrollo y test reservado
+  loop Cada fold con grupos disjuntos
+    CV->>W: INIT modelo nuevo y seed de fold
+    W->>W: Fit pipeline solo train del fold
+    W->>W: Entrenar y evaluar val del fold
+    W-->>CV: Metricas e IDs usados
+  end
+  CV-->>UI: Media desviacion y tamanos
+  Note over UI,CV: Test permanece fuera de todos los folds
+  A->>UI: Elegir configuracion y reajustar
+  UI->>W: Fit y train sobre desarrollo
+  A->>UI: Evaluar test final
+  W-->>UI: Resultado de test registrado

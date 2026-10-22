@@ -1,0 +1,11 @@
+stateDiagram-v2
+  [*] --> Pendiente
+  Pendiente --> Prediccion: abrir actividad
+  Prediccion --> Experimento: registrar hipotesis
+  Experimento --> Inspeccion: ejecutar caso
+  Inspeccion --> Reflexion: recoger evidencia
+  Reflexion --> Completo: evidencia valida y reflexion registrada
+  Reflexion --> Experimento: revisar hipotesis
+  Experimento --> Experimento: revelar pista
+  Completo --> Prediccion: reintentar conservando historial
+  Completo --> [*]: siguiente actividad
