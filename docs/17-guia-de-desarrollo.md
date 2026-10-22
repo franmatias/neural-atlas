@@ -23,6 +23,8 @@ npm run docs:check
 
 Los SVG se generan localmente y son wireframes estáticos con cifras ilustrativas. Los `.mmd` son la fuente de verdad de cada diagrama; `15-diagramas.md` se genera a partir de ellos. Las explicaciones y limitaciones se conservan en el script del catálogo.
 
+El script opcional `scripts/visual-review.mjs` requiere Playwright y Chrome en el entorno de revisión; puede localizar un módulo instalado mediante `NEURAL_ATLAS_PLAYWRIGHT`. Renderiza los 20 diagramas y actualiza PNG de referencia. No forma parte de `docs:check` ni es la batería E2E del producto. Las herramientas documentales fijan una versión corregida de KaTeX mediante override, verificado para estos diagramas; ver [registro](19-verificacion.md).
+
 ## Inicio de D1 tras revisión
 
 1. Elegir Node LTS compatible con Vite/Vitest/Tailwind y registrar engines/versiones exactas.
