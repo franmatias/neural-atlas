@@ -28,6 +28,7 @@ export default ts.config(
         navigator: 'readonly',
         Storage: 'readonly',
         HTMLInputElement: 'readonly',
+        HTMLSelectElement: 'readonly',
         HTMLElement: 'readonly',
         HTMLDialogElement: 'readonly',
         SVGSVGElement: 'readonly',
