@@ -22,16 +22,16 @@ Tres niveles simultáneos: **Intuición** (analogía con sus límites), **Paso a
 
 | Persona | Necesidad | Recorrido de referencia |
 |---|---|---|
-| Estudiante FP | Comprender lo que cambia al mover un control | Taller de 20–30 min: datos → neurona → entrenamiento → evidencia |
+| Estudiante FP | Comprender lo que cambia al mover un control | Taller de 15–35 min: datos → neurona → entrenamiento → evidencia |
 | Estudiante universitario | Contrastar derivaciones | Inspector formal → gradientes analíticos/numéricos → comparación |
 | Docente | Proyectar, recuperar un caso y plantear un reto | Abrir preset → modo presentación → pausa → revelar explicación |
 | Explorador autónomo | Probar hipótesis y guardar resultados | Laboratorio libre → comparar A/B → exportar experimento |
 
-## Alcance de la primera versión funcional completa
+## Alcance completo y límites
 
 12 laboratorios, taller, biblioteca de experimentos, glosario, ajustes, importación/exportación y PWA. Un MLP entrenable para clasificación binaria, multiclase y regresión tabular. Convolución y pooling didácticos se incluyen como operador inspeccionable; no se promete entrenar una CNN completa.
 
-Límites iniciales, medidos y revisables: 10.000 filas, 32 características numéricas después de codificar, 10 clases; MLP de hasta 6 capas ocultas y 64 neuronas/capa, máximo 30.000 parámetros. Hasta 12 neuronas por capa se muestran individualmente por defecto; redes mayores se agrupan con inspector. Dataset y modelo que excedan límites se rechazan antes de reservar buffers grandes. El perfil 3D avanzado es opcional y siempre tiene alternativa 2D.
+Límites iniciales, medibles y revisables: 10.000 filas, 32 características numéricas después de codificar, 10 clases; MLP de 0–6 capas ocultas y 1–64 neuronas/capa. La arquitectura máxima 32→64→64→64→64→64→64→10 suma **23.562 parámetros densos y 24.330 con BN**. Se elimina el techo independiente de 30.000: el validador deriva dimensiones y presupuesto de la topología. Hasta 12 neuronas por capa se muestran individualmente por defecto; redes mayores se agrupan con inspector. Límites de dimensiones y bytes son simultáneos y se comprueban antes de reservar buffers grandes. El perfil 3D es opcional y siempre tiene alternativa 2D.
 
 Fuera de esta versión: backend, cuentas, nube, colaboración multiusuario, inferencia de LLM, GPU para entrenamiento, CNN/RNN/transformers entrenables, importación de código arbitrario, compatibilidad universal ONNX/Keras/PyTorch, calificación oficial o certificación del alumno. Los modelos se intercambian en el formato nativo documentado.
 

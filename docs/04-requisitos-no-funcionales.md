@@ -5,7 +5,7 @@ Los valores son objetivos de aceptación, **no mediciones del producto todavía 
 | ID | Dimensión | Criterio verificable |
 |---|---|---|
 | RNF-001 | Corrección matemática | Gradientes suaves con error relativo ≤1e-5; puntos no diferenciables verificados por convención explícita |
-| RNF-002 | Reproducibilidad | Mismo engineVersion, receta, seed y configuración: mismo orden y valores dentro de 1e-10 absoluto + 1e-8 relativo en CPU JS |
+| RNF-002 | Reproducibilidad | Mismo motor JS y versión, engineVersion, receta, seed y configuración: mismo orden y valores dentro de 1e-10 absoluto + 1e-8 relativo; entre motores se verifican fixtures y tolerancias de métricas, no pesos idénticos |
 | RNF-003 | Respuesta de controles | En P, p95 desde interacción hasta cambio visible ≤100 ms en escritorio y ≤200 ms en móvil |
 | RNF-004 | Fluidez visual | En P, p95 de frame ≤33 ms; perfil reducido limita densidad y resolución sin alterar cálculo |
 | RNF-005 | Cancelación | Worker reconoce cancelación/pausa en ≤250 ms p95; unidad interna de trabajo objetivo ≤8 ms; watchdog 2 s |
@@ -17,12 +17,12 @@ Los valores son objetivos de aceptación, **no mediciones del producto todavía 
 | RNF-011 | Navegadores | Últimas dos versiones estables al validar de Chrome, Edge, Firefox y Safari; WebGL opcional con 2D equivalente |
 | RNF-012 | Privacidad | Sin cuentas, telemetría, subida de datasets ni servicios externos en ejecución; fuentes e iconos locales |
 | RNF-013 | Importación segura | Tamaño, profundidad y dimensiones limitados; sin eval/v-html de contenido externo; CSV protegido al exportar a hoja de cálculo |
-| RNF-014 | Persistencia robusta | JSON con schemaVersion; errores no destruyen último guardado; modo memoria cuando LocalStorage no está disponible |
-| RNF-015 | Almacenamiento acotado | Presupuesto de aplicación 3 MiB de datos serializados UTF-16 estimados; biblioteca máx. 10 entradas; límite por guardado 512 KiB |
+| RNF-014 | Persistencia robusta | Registros versionados; transacción IndexedDB para biblioteca/checkpoints; errores conservan último guardado; modo memoria/exportación si el backend correspondiente no está disponible |
+| RNF-015 | Almacenamiento acotado | IndexedDB: 256 MiB objetivo, 5 experimentos de hasta 40 MiB imputados cada uno y reserva de 20 MiB para recuperación; LocalStorage ≤512 KiB solo ajustes/progreso; cuota real compartida puede ser menor |
 | RNF-016 | Mantenibilidad | Dominio sin imports Vue/DOM/Worker/storage; fronteras verificadas por lint; ningún componente concentra motor e IO |
 | RNF-017 | Calidad automatizada | Umbrales de cobertura por carpeta y flujos E2E obligatorios definidos en el plan; build, lint y tipos sin errores |
 | RNF-018 | Documentación | Todo RF trazado a historia, módulo y prueba; UML fuente versionado; cambios de contrato requieren ADR y prueba |
-| RNF-019 | Offline | Carga offline tras precaché completo; primera visita sin red muestra error honesto; Worker y chunks usan la misma versión de build |
+| RNF-019 | Offline | Carga offline tras precaché completo; documentar que primera visita sin red depende del error del navegador; Worker y chunks usan la misma versión de build |
 | RNF-020 | Despliegue | GitHub Pages bajo subruta; hash routing y assets/Worker/SW con base correcta; recarga de rutas sin 404 |
 | RNF-021 | Internacionalización | Español consistente y términos ingleses localizables; coma decimal en UI, punto y UTF-8 en intercambios |
 | RNF-022 | Errores numéricos | Detener actualización antes de propagar NaN/Infinity; conservar último checkpoint finito y explicar causa posible |
@@ -31,7 +31,7 @@ Los valores son objetivos de aceptación, **no mediciones del producto todavía 
 
 ## Límites y degradación
 
-El presupuesto de LocalStorage no garantiza cuota real; puede ser menor o estar bloqueado. No se presume persistencia indefinida. Guardar es una operación explícita con captura de excepción; el autosave de preferencias usa debounce de 500 ms. Pesos de gran tamaño, datasets grandes e historiales completos se exportan a archivo, no se fuerza su almacenamiento local.
+Los presupuestos no garantizan cuota real; puede ser menor o estar bloqueada. LocalStorage conserva únicamente preferencias (≤64 KiB) y progreso (≤448 KiB), con autosave debounce de 500 ms. Biblioteca, datasets y checkpoints usan IndexedDB con ArrayBuffer y transacciones asíncronas; no se serializa toda la biblioteca en el hilo principal. 5×40+20=220 MiB, dentro del presupuesto 256 MiB; los 36 MiB restantes absorben metadatos y margen estimado. No se promete persistencia indefinida ni que la cuota del origen permita agotar el presupuesto.
 
 Al ocultar la pestaña se pausa por defecto entrenamiento y animación, y se anuncia el motivo al volver. Al cambiar de laboratorio se pausa y conserva sesión en memoria. Existe una sola sesión de entrenamiento activa global; comparación A/B se ejecuta secuencialmente para limitar CPU y mantener equidad.
 
@@ -39,4 +39,10 @@ Fallos WebGL → vista 2D; fallo Worker → sesión pausada y opción de reinici
 
 ## Política de dependencias
 
-Las versiones concretas se fijarán en un lockfile al iniciar D1 después de revisar compatibilidad y avisos oficiales. Las herramientas de documentación de esta fase tienen su propio lockfile. El entorno Node observado (20.18.0) no se declara suficiente para el futuro Vite: se usará una versión LTS compatible, mínimo técnico 22.12 según la documentación consultada, verificándolo de nuevo en D1. Ver [fuentes](18-fuentes.md).
+Objetivo de plataforma: **Node 24 LTS**, verificado nuevamente al iniciar D1. El Node 20 observado durante la auditoría no se usa como plataforma admitida. Las versiones concretas se fijan por lockfile; esta revisión documental se valida con el Node 24 disponible sin cambiar la instalación global. Ver [fuentes](18-fuentes.md).
+
+## Perfiles de rendimiento ampliados
+
+P sigue siendo la referencia ligera de interacción (337 parámetros). P-Max usa 10.000 filas, 32 features, 10 clases y topología máxima; P-Map usa dos entradas y seis capas de 64 con frontera 80×80. P-CV multiplica P por K=5 y cinco semillas como tareas secuenciales. No se prometen tiempos de época a los límites. Se exige estimación visible con rango antes de iniciar, latencia de cancelación RNF-005 y degradación adaptativa del mapa; medir tiempos, throughput y memoria por perfil en P-P06. El usuario confirma presupuestos extensos, no una duración inventada.
+
+Entre motores JS: datos/orden basados en enteros deben coincidir exactamente; fixtures de un paso admiten tolerancia 1e-10 absoluta + 1e-8 relativa. En fixtures de convergencia de 200 épocas, exigir diferencias ≤0,01 en pérdida de datos y ≤0,02 en accuracy, con objetivo común alcanzado; si divergen, informar incompatibilidad y no relajar silenciosamente. Trayectorias largas o caóticas no tienen garantía de igualdad entre navegadores.
