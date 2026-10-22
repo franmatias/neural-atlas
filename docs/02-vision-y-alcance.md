@@ -3,7 +3,7 @@
 ## Acuerdos
 
 - Público mixto, con prioridad para FP de especialización; matemáticas explicadas progresivamente.
-- Agrupar los 100 conceptos originales y ampliar el catálogo con otros pertinentes: **140 iniciales, lista abierta**, distribuidos en laboratorios coherentes.
+- Agrupar los 100 conceptos originales y ampliar el catálogo: **152 iniciales, lista abierta**, con estado/entrega explícitos por experiencia.
 - Importar y exportar datasets, modelos y experimentos; generar datos con defectos controlados.
 - Taller con actividades guiadas, pistas, soluciones y seguimiento local.
 - Identidad visual nueva, temas claro/oscuro, diseño adaptable y ajustes de animación.
@@ -37,13 +37,15 @@ Fuera de esta versión: backend, cuentas, nube, colaboración multiusuario, infe
 
 ## Entregas y puertas de revisión
 
-1. **D0, esta entrega:** auditoría, requisitos, diseño, UML, contratos, historias, trazabilidad y plan de validación. Estado: propuesta, pendiente de revisión del usuario.
-2. **D1:** estructura Vue, diseño base, accesibilidad, ajustes y primer laboratorio con motor probado.
-3. **D2:** pipeline de datos y MLP completo en Worker; clasificación, regresión y evaluación.
-4. **D3:** optimización, regularización, 3D, CNN, taller y cobertura de los 140 conceptos iniciales y su mecanismo de ampliación.
-5. **D4:** endurecimiento de importadores, PWA, rendimiento, pruebas completas y documentación de publicación.
+**D0, revisión 0.2:** contratos corregidos, historias operativas y nuevas experiencias educativas; aplicación pendiente. Se propone un MVP para no convertir toda la lista en condición del primer hito.
 
-Las fases ordenan la construcción; los requisitos obligatorios se evalúan al finalizar D4. Un módulo parcial se identifica como tal. No se simulan métricas ni se presentan funciones pendientes como terminadas.
+**MVP 1.0 (D1–D5):** L01–L06, evaluación básica L09/L10 y T01–T05, motor MLP/perceptrón, Worker recuperable, IDB e intercambio. Prioridades nuevas: POE, diagnóstico por métricas y mapas de activación; puente lineal/logístico e infraestructura de idiomas. No incluye 3D, CNN, BN/dropout, CV, calibración o PWA.
+
+**v1.1 (D6–D10):** completa alcance original, 12 laboratorios/12 talleres, regularización, comparación/CV, 3D, visión, catálogo abierto, paquete docente y PWA. Los 140 conceptos previos se cierran en esta etapa según evidencia real; el catálogo añadido puede referenciar extensiones posteriores marcadas.
+
+**v1.2 propuesta (X1–X2):** kNN/árbol, grid, importancia por permutación, audio opcional, deshacer y datos reales opcionales. Estas seis extensiones se documentan y trazan, pero requieren revisión posterior de alcance; no se promete incorporarlas al MVP ni se elimina el alcance original.
+
+Cada fase incorpora sus pruebas y accesibilidad; no se acumula calidad al final. [Plan](14-historias-y-plan-git.md): D1 shell; D2 datos; D3 motor; D4 entrenamiento/evaluación; D5 biblioteca/taller; D6 generalización; D7 comparación/CV; D8 métricas/funciones; D9 3D/visión/investigación; D10 catálogo/PWA. Estimación orientativa: MVP 29–48 jornadas, v1.1 adicional 34–59, no compromiso de calendario. Un módulo parcial se identifica como tal; no se simulan métricas.
 
 ## Éxito y riesgos
 
