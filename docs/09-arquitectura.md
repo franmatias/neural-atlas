@@ -1,6 +1,6 @@
 # Arquitectura y responsabilidades
 
-Diseño propuesto, aún no implementado. SPA estática en Vue con Composition API y `<script setup lang="ts">`, TypeScript estricto, Vite, Vue Router y Pinia. Tailwind compilado con tokens CSS semánticos. No se incorpora backend. Ver [diagrama de componentes](diagrams/02-componentes.mmd) y [estructura de paquetes](diagrams/04-paquetes.mmd).
+Arquitectura del alcance completo; D1 ya implementa la SPA, dominio de neurona, preferencias y vistas descritos en [el informe de implementación](23-implementacion-d1.md). Los módulos restantes siguen como diseño objetivo. SPA estática en Vue con Composition API y `<script setup lang="ts">`, TypeScript estricto, Vite, Vue Router y Pinia. Tailwind compilado con tokens CSS semánticos. No se incorpora backend. Ver [diagrama de componentes](diagrams/02-componentes.mmd) y [estructura de paquetes](diagrams/04-paquetes.mmd).
 
 ## Decisiones de tecnología
 

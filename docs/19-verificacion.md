@@ -1,5 +1,7 @@
 # Verificación de la revisión documental 0.2
 
+Informe histórico de D0. Para la aplicación Vue y las pruebas de producto posteriores, consultar [la entrega D1](23-implementacion-d1.md).
+
 Fecha: 22/10/2026. Producto: especificación para revisión; aplicación Vue pendiente. Este informe sustituye la formulación incorrecta «revisión visual humana del agente» de 0.1 por **revisión visual del agente, pendiente de revisión humana**.
 
 ## Comprobaciones realizadas

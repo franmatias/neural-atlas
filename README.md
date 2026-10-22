@@ -1,34 +1,36 @@
-# Neural Atlas — simulator-neural-networks
+# Neural Atlas
 
-Laboratorio didáctico de redes neuronales para FP de especialización y universidad.
+Laboratorio visual de aprendizaje automático para FP de especialización y universidad. Vue 3 Composition API, TypeScript, Tailwind, Pinia, Vue Router y D3.
 
-**Estado: especificación 0.2 para revisión. La aplicación todavía no está implementada.**
+**Versión 0.3 · primera implementación D1.** Ya se puede experimentar con una neurona: cinco ejemplos, seis activaciones, frontera interactiva, cálculo explicado y animación ajustable. Incluye temas claro/oscuro, modo presentación, ajustes locales y glosario inicial en tres niveles.
 
-Este repositorio se inicia con el análisis y el diseño; el desarrollo funcional comienza tras revisar la especificación. El simulador original se conserva en la carpeta hermana `simulador-redes-neuronales`.
+![Laboratorio D1](docs/implementation/d1-light.png)
 
-## Lectura
+## Arrancar
 
-La entrada principal es [la especificación](docs/README.md): **88 requisitos funcionales, 24 no funcionales, 12 laboratorios, 12 talleres previstos, 152 conceptos ampliables, 65 historias y 26 diagramas Mermaid**. [Cambios de revisión](docs/20-revision-y-respuestas.md) y [trazabilidad RF→módulo→historia→prueba](docs/21-trazabilidad-rf.md).
-
-MVP: predice-observa-explica, diagnóstico con métricas reales, mapas de activación, núcleo de datos/MLP y talleres T01–T05. La planificación conserva el alcance completo en v1.1 y separa extensiones v1.2 propuestas. IndexedDB almacena biblioteca/checkpoints; LocalStorage, preferencias/progreso.
-
-Revisa primero [alcance](docs/02-vision-y-alcance.md), [laboratorios](docs/05-laboratorios.md) y [diseño visual](docs/07-diseno-de-interfaz.md). Los temas [claro](docs/design/desktop-light.svg), [oscuro](docs/design/desktop-dark.svg) y [móvil](docs/design/mobile.svg) son referencias estáticas del diseño.
-
-## Comprobar esta entrega
-
-Usar **Node 24 LTS** (referencia 24.19.0); no cambiar automáticamente el Node global del equipo.
+Node **24.19.0**; versión indicada también en `.nvmrc`.
 
 ```powershell
-npm ci
-npm run docs:check
+npm ci --ignore-scripts
+npm run dev
 ```
 
-Estos comandos comprueban documentación; todavía no hay aplicación Vue ni pruebas de producto. Consulta [la verificación](docs/19-verificacion.md) y [el plan de pruebas](docs/13-pruebas-y-aceptacion.md). Las dependencias actuales sirven exclusivamente para validar Mermaid y los documentos; el stack de aplicación se incorporará tras revisar la especificación.
+Abre [Neural Atlas local](http://127.0.0.1:5173/neural-atlas/). Para producción: `npm run build` y `npm run preview` (puerto 4173).
 
-## Historial
+## Verificar
 
-Repositorio independiente con rama principal `main`. Cada bloque documental se desarrolla en una rama y se integra con un commit de fusión. Los futuros incrementos funcionales seguirán el mismo criterio.
+```powershell
+npm run check
+npx playwright install chromium firefox webkit
+npm run test:e2e
+```
 
-Fecha de inicio: 22 de octubre de 2026. Nombre de producto provisional: **Neural Atlas**.
+Tipos, lint, unidades/integración, cobertura con umbrales, build, presupuesto y documentación. Playwright comprueba recorridos, accesibilidad automática, teclado, persistencia, temas, responsive y CSP sobre producción. Informes: `coverage/` y `playwright-report/`.
 
-Repositorio indicado por el usuario: [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas). El sitio Vue y el despliegue de GitHub Pages se construirán tras revisar la especificación; publicar estos documentos no equivale a tener el simulador desplegado.
+La [entrega D1](docs/23-implementacion-d1.md) documenta arquitectura real, uso, trazabilidad y resultados. Firefox de pruebas tiene una incidencia local de arranque en Windows documentada; su comprobación permanece configurada en CI y no se da por aprobada sin ejecución.
+
+## Alcance y continuidad
+
+D1 permite modificar parámetros manualmente; el entrenamiento, los datasets, el taller, la biblioteca y el 3D llegarán en sus fases. La neurona conserva su sesión entre rutas; LocalStorage guarda preferencias. El [diseño completo](docs/README.md) mantiene **88 requisitos funcionales, 24 no funcionales, 65 historias, 12 laboratorios, 12 talleres, 152 conceptos ampliables y 26 diagramas Mermaid**. Quince conceptos tienen contenido publicado en esta entrega.
+
+El proyecto original permanece en la carpeta hermana `simulador-redes-neuronales`. Repositorio independiente, commits por incremento y fusiones explícitas. [Código en GitHub](https://github.com/franmatias/neural-atlas); la aplicación aún no está desplegada en GitHub Pages.
