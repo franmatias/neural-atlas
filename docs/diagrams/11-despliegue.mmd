@@ -1,0 +1,11 @@
+flowchart TB
+  Git[Repositorio local con ramas] --> CI[GitHub Actions futuro]
+  CI --> Check[Tipos lint pruebas cobertura E2E build]
+  Check --> Pages[GitHub Pages HTTPS bajo subruta]
+  Pages --> Browser[Navegador con hash router]
+  Browser --> UI[Hilo principal Vue]
+  Browser --> Worker[Worker de misma build]
+  Browser --> SW[Service Worker de misma subruta]
+  UI --> LS[LocalStorage del origen con namespace]
+  SW --> Cache[Cache de recursos revisionados]
+  Browser <--> Files[Archivos locales por accion del usuario]

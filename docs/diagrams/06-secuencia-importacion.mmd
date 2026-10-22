@@ -1,0 +1,20 @@
+sequenceDiagram
+  actor A as Usuario
+  participant UI as ImportWizard
+  participant V as Validador
+  participant P as Parser
+  participant S as Sesion
+  A->>UI: Elegir archivo
+  UI->>V: Validar bytes y tipo
+  alt Excede limites
+    V-->>UI: Error recuperable
+  else Dentro de limites
+    UI->>P: Leer preview y esquema
+    P-->>UI: Columnas y muestra
+    A->>UI: Mapear features y target
+    UI->>V: Validar filas y dimensiones
+    V-->>UI: Resumen y errores localizados
+    A->>UI: Confirmar importacion valida
+    UI->>S: Crear nueva revision y pausar anterior
+    S-->>UI: Datos listos para particionar
+  end

@@ -1,0 +1,26 @@
+stateDiagram-v2
+  [*] --> Empty
+  Empty --> Preparing: datos validos e INIT
+  Preparing --> Ready: READY
+  Preparing --> Invalid: validacion fallida
+  Invalid --> Preparing: corregir
+  Ready --> Running: RUN o STEP
+  Running --> Pausing: PAUSE
+  Pausing --> Paused: PAUSED con estado estable
+  Paused --> Running: RUN o STEP
+  Running --> Completed: presupuesto o early stopping
+  Completed --> Running: continuar explicitamente
+  Running --> Cancelling: CANCEL
+  Paused --> Cancelling: CANCEL
+  Cancelling --> Ready: CANCELLED
+  Running --> RecoverableError: no finito o fallo
+  RecoverableError --> Paused: restaurar checkpoint finito
+  RecoverableError --> Preparing: reinicializar Worker
+  Ready --> Preparing: nueva revision
+  Paused --> Preparing: nueva revision
+  Completed --> Preparing: nueva revision
+  Empty --> Disposed: cerrar
+  Ready --> Disposed: cerrar
+  Paused --> Disposed: cerrar
+  Completed --> Disposed: cerrar
+  Disposed --> [*]

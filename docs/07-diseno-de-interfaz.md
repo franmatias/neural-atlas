@@ -17,7 +17,7 @@ Identidad provisional nueva: **Neural Atlas**, un atlas de experimentos donde ca
 | `warning` | #805100 | #FFD27A | Advertencias |
 | `border-strong` | #718681 | #799099 | Contorno de control interactivo |
 
-Bordes decorativos pueden ser más suaves; límites interactivos y foco se miden con contraste. La paleta de clases empieza con azul #0072B2, naranja #D55E00 y verde #009E73, y añade forma/etiqueta. Gradientes de pesos divergentes se centran en cero con leyenda numérica. No usar verde/rojo como única codificación de acierto/error. Imprimir exportaciones con fondo blanco y patrones distinguibles.
+Bordes decorativos pueden ser más suaves; límites interactivos y foco se miden con contraste. La paleta de clases empieza con azul #0072B2, naranja #D55E00 y verde #009E73, y añade forma/etiqueta; en oscuro usa variantes luminosas como #65BDF3 y #FFAD75 para las dos primeras clases. Gradientes de pesos divergentes se centran en cero con leyenda numérica. No usar verde/rojo como única codificación de acierto/error. Imprimir exportaciones con fondo blanco y patrones distinguibles.
 
 Tipografía del sistema: `ui-sans-serif, system-ui, Segoe UI, sans-serif`; código y números `ui-monospace, Consolas, monospace`. Tamaños: título página 28/34 px, título panel 18/26, cuerpo 16/24, ayuda 14/21, etiqueta de gráfico mínima 12/18. Modo presentación multiplica texto por 1,25 sin escalar indiscriminadamente lienzos. Cifras tabulares para métricas; mostrar 4 decimales por defecto y precisión extendida en inspector. Nunca redondear internamente antes de calcular.
 

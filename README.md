@@ -8,7 +8,18 @@ Este repositorio se inicia con el análisis y el diseño; el desarrollo funciona
 
 ## Lectura
 
-La entrada principal será [docs/README.md](docs/README.md), con requisitos, diseño de interacción, arquitectura, plan de pruebas y diagramas Mermaid editables.
+La entrada principal es [la especificación](docs/README.md), con 68 requisitos funcionales, 24 no funcionales, 12 laboratorios, ocho talleres, 140 conceptos iniciales ampliables, 44 historias y 20 diagramas Mermaid editables.
+
+Revisa primero [alcance](docs/02-vision-y-alcance.md), [laboratorios](docs/05-laboratorios.md) y [diseño visual](docs/07-diseno-de-interfaz.md). Los temas [claro](docs/design/desktop-light.svg), [oscuro](docs/design/desktop-dark.svg) y [móvil](docs/design/mobile.svg) son referencias estáticas del diseño.
+
+## Comprobar esta entrega
+
+```powershell
+npm ci
+npm run docs:check
+```
+
+Estos comandos comprueban documentación; todavía no hay aplicación Vue ni pruebas de producto. Consulta [la verificación](docs/19-verificacion.md) y [el plan de pruebas](docs/13-pruebas-y-aceptacion.md). Las dependencias actuales sirven exclusivamente para validar Mermaid y los documentos; el stack de aplicación se incorporará tras revisar la especificación.
 
 ## Historial
 

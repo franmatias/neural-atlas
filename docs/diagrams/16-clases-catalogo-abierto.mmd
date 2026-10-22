@@ -1,0 +1,30 @@
+classDiagram
+  class ConceptRegistry {
+    +Map concepts
+    +register(pack)
+    +validateReferences()
+    +search(query)
+  }
+  class Concept {
+    +string id
+    +string slug
+    +number contentVersion
+    +Status status
+    +LocalizedText title
+    +Activity activity
+    +ValidationRef[] validationRefs
+  }
+  class ConceptPack {
+    +string packId
+    +number schemaVersion
+    +number version
+  }
+  class Laboratory {
+    +string id
+    +string route
+  }
+  ConceptRegistry "1" o-- "0..*" Concept
+  ConceptPack "1" *-- "1..*" Concept
+  Concept --> Concept : prerrequisito sin ciclos
+  Concept "0..*" --> "1..*" Laboratory : experiencia
+  ConceptRegistry --> ConceptPack : valida e importa

@@ -1,0 +1,12 @@
+flowchart LR
+  App[app y composicion] --> UI[features y stores]
+  App --> Infra[infrastructure]
+  UI --> UseCases[application]
+  UI --> Viz[visualization]
+  UI --> Shared[shared UI y composables]
+  UseCases --> Domain[domain puro]
+  Infra --> UseCases
+  Infra --> Domain
+  Viz --> VM[ViewModels de lectura]
+  UI --> VM
+  Content[content declarativo] --> UI

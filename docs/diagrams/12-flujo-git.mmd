@@ -1,0 +1,18 @@
+gitGraph
+  commit id: "Inicio documental"
+  branch docs-requisitos
+  checkout docs-requisitos
+  commit id: "Auditoria y RF"
+  checkout main
+  merge docs-requisitos
+  branch docs-diseno
+  checkout docs-diseno
+  commit id: "Interaccion y arquitectura"
+  checkout main
+  merge docs-diseno
+  commit id: "Revision del usuario"
+  branch feat-primer-laboratorio
+  checkout feat-primer-laboratorio
+  commit id: "UI motor y pruebas"
+  checkout main
+  merge feat-primer-laboratorio

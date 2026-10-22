@@ -1,0 +1,16 @@
+flowchart TD
+  Start([Snapshot de parametros]) --> Forward[Forward y cache por capa]
+  Forward --> Loss[Perdida estable desde logits]
+  Loss --> Delta[Gradiente fusionado de salida]
+  Delta --> Layers[Recorrer capas en orden inverso]
+  Layers --> Acc[Acumular dW y db sin mutar parametros]
+  Acc --> More{Quedan capas}
+  More -->|Si| Layers
+  More -->|No| Reg[Agregar L1 y L2]
+  Reg --> Clip[Clipping opcional por norma global]
+  Clip --> Finite{Gradiente finito}
+  Finite -->|No| Error[Descartar batch y conservar checkpoint]
+  Finite -->|Si| Update[Calcular paso de optimizador en copia]
+  Update --> Commit{Parametros finitos}
+  Commit -->|Si| Done([Confirmar una actualizacion])
+  Commit -->|No| Error
