@@ -15,7 +15,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué puede aprender un modelo de datos defectuosos?',
     group: 'foundations',
     phase: 'D2',
-    available: false,
+    available: true,
   },
   {
     id: 'L02',

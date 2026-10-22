@@ -28,7 +28,7 @@ const results = computed(() => searchConcepts(query.value));
           ><p class="concept-question">{{ concept.question }}</p>
           <p>{{ concept.answer }}</p></template
         ><code v-if="prefs.value.level === 'formal'">{{ concept.formula }}</code
-        ><RouterLink to="/lab/neurona" class="text-link"
+        ><RouterLink :to="`/lab/${concept.lab ?? 'neurona'}`" class="text-link"
           >{{ t('glossary.try') }}<AppIcon name="arrow" :size="16"
         /></RouterLink>
       </article>

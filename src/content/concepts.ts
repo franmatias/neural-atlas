@@ -1,4 +1,6 @@
+import { dataConcepts } from './data-concepts';
 export interface Concept {
+  lab?: string;
   id: string;
   title: string;
   english: string;
@@ -9,6 +11,7 @@ export interface Concept {
   answer: string;
 }
 export const concepts: readonly Concept[] = [
+  ...dataConcepts,
   {
     id: 'C011',
     title: 'Vector de características',

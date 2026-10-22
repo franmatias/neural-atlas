@@ -8,6 +8,11 @@ export const routes = [
     component: () => import('@/features/laboratories/LaboratoriesPage.vue'),
   },
   {
+    path: '/lab/datos',
+    name: 'datasets',
+    component: () => import('@/features/datasets/DatasetsPage.vue'),
+  },
+  {
     path: '/lab/neurona',
     name: 'neuron',
     component: () => import('@/features/neuron/NeuronPage.vue'),
