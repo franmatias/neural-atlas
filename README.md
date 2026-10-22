@@ -33,4 +33,6 @@ La [entrega D1](docs/23-implementacion-d1.md) documenta arquitectura real, uso, 
 
 D1 permite modificar parámetros manualmente; el entrenamiento, los datasets, el taller, la biblioteca y el 3D llegarán en sus fases. La neurona conserva su sesión entre rutas; LocalStorage guarda preferencias. El [diseño completo](docs/README.md) mantiene **88 requisitos funcionales, 24 no funcionales, 65 historias, 12 laboratorios, 12 talleres, 152 conceptos ampliables y 26 diagramas Mermaid**. Quince conceptos tienen contenido publicado en esta entrega.
 
-El proyecto original permanece en la carpeta hermana `simulador-redes-neuronales`. Repositorio independiente, commits por incremento y fusiones explícitas. [Código en GitHub](https://github.com/franmatias/neural-atlas); la aplicación aún no está desplegada en GitHub Pages.
+El proyecto original permanece en la carpeta hermana `simulador-redes-neuronales`. Repositorio independiente, commits por incremento y fusiones explícitas. [Código en GitHub](https://github.com/franmatias/neural-atlas) · [Aplicación en GitHub Pages](https://franmatias.github.io/neural-atlas/).
+
+El [plan de despliegue continuo](docs/24-despliegue-pages.md) publica `main` después de superar todos los controles de CI y verifica la aplicación HTTPS. Los cambios en desarrollo permanecen en sus ramas hasta estar listos.

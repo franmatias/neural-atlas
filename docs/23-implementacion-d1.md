@@ -1,5 +1,7 @@
 # Implementación D1 · Neural Atlas 0.3
 
+Nota posterior: la primera publicación HTTPS se realiza mediante [GitHub Pages y CI](24-despliegue-pages.md), solicitada después de entregar D1. Los resultados de esta entrega se conservan como registro histórico.
+
 Fecha: 22/10/2026. Primera entrega funcional de la especificación 0.2. La aplicación usa Vue 3 con Composition API, TypeScript estricto, Vite, Pinia, Vue Router, Tailwind 4 y D3. El proyecto original permanece intacto.
 
 ## Qué se puede usar

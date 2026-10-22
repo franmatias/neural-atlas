@@ -33,9 +33,9 @@ Nueva versión: instalar en espera → aviso → usuario guarda/exporta sesión 
 
 ## GitHub Pages
 
-Preparar futuro workflow con instalación por lockfile, tipos/lint/tests/coverage/E2E/build y despliegue de dist desde main o acción manual. Vite base `/neural-atlas/` y hash router. Worker y recursos con URLs relativas a import.meta.url/base; SW y manifest con scope/start_url de esa subruta. Probar preview bajo `/neural-atlas/`, no solo `/`.
+El [workflow de publicación](24-despliegue-pages.md) incorpora instalación por lockfile, tipos/lint/tests/coverage/E2E/build y despliegue del `dist` probado desde main o acción manual. Vite usa base `/neural-atlas/` y hash router. Worker y recursos usan URLs relativas a import.meta.url/base; SW y manifest futuros conservarán scope/start_url de esa subruta. La vista previa y la comprobación pública se ejecutan bajo `/neural-atlas/`, no solo `/`.
 
-Destino indicado expresamente por el usuario: `https://github.com/franmatias/neural-atlas.git`. La publicación documental conserva main y ramas con su historial; no despliega una aplicación inexistente. El futuro Vite usa base `/neural-atlas/`, Router hash y SW limitado a esa subruta. GitHub Pages se habilitará con la implementación y controles de despliegue, no al subir D0. Verificación real del push en [registro](19-verificacion.md).
+Destino indicado expresamente por el usuario: `https://github.com/franmatias/neural-atlas.git`. D0 publicó documentación y D1 incorporó la primera aplicación. Por petición expresa posterior, se habilita Pages con controles de despliegue sobre D1; la PWA/offline sigue prevista para D10. La publicación conserva main y ramas con su historial. El [registro documental histórico](19-verificacion.md) y el [despliegue actual](24-despliegue-pages.md) distinguen ambos momentos.
 
 Todos los proyectos en `usuario.github.io` comparten origen, cuota y acceso potencial a almacenamiento. Namespace y nombre de base evitan colisiones accidentales, no crean aislamiento de seguridad ni cuota exclusiva. `navigator.storage.estimate()` orienta sobre el origen completo, no sobre nuestra base. Comprobar cuota en cada escritura; documentar riesgo de compartir origen con aplicaciones no confiables y permitir exportación de respaldo.
 
