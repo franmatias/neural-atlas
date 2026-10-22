@@ -6,7 +6,7 @@ Destino autorizado: [Neural Atlas](https://franmatias.github.io/neural-atlas/). 
 
 Un único workflow, [quality.yml](../.github/workflows/quality.yml), valida y publica el mismo commit:
 
-1. `verify`: instalación por lockfile con Node 24.19.0; tipos, lint, cobertura, build, presupuesto y documentación; Playwright en Chromium, Firefox y WebKit sobre producción.
+1. `verify`: instalación por lockfile con Node 24.19.0; tipos, lint, cobertura, build, presupuesto y documentación; Playwright en Chromium, Firefox y WebKit sobre producción. Usa la imagen oficial `playwright:v1.64.1-noble` fijada por digest, con los navegadores y dependencias ya instalados, evitando instalaciones del sistema que pueden bloquearse por repositorios externos.
 2. Solo cuando lo anterior termina correctamente en `main`, empaqueta **el mismo `dist/` probado** como artefacto de Pages. Los pull requests validan el producto y no publican.
 3. `deploy`, dependiente de `verify`, usa el entorno `github-pages` y el artefacto anterior. Solo este job recibe `pages: write` e `id-token: write`.
 4. `smoke`, dependiente de `deploy`, abre la dirección HTTPS pública con Chrome instalado en el runner y comprueba HTTP 200, carga sin errores, resultado `0,6083`, cambio de tema y búsqueda del glosario. Reintenta brevemente para contemplar la propagación inicial de Pages. La matriz previa sigue usando los tres navegadores fijados de Playwright; este control posterior evita otra instalación de paquetes del sistema.
