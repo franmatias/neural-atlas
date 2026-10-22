@@ -71,7 +71,7 @@ src/
     types/              # tipos compartidos pequeños
   stores/               # preferences, session, library, workshops
   content/
-    concepts/           # definiciones, traducciones y fórmulas
+    concepts/           # registro abierto de conceptos, traducciones y fórmulas
     lessons/            # explicaciones vinculadas a conceptos
     workshops/          # ocho definiciones declarativas
     presets/            # recetas y configuraciones

@@ -80,3 +80,17 @@ Accuracy=(TP+TN)/N; precision=TP/(TP+FP); recall=TP/(TP+FN); F1=2TP/(2TP+FP+FN).
 Superficies analíticas: cuenco `0,5(x²+4y²)`; silla `x²−y²`; doble pozo `(x²−1)²+y²`; Rosenbrock `(1−x)²+100(y−x²)²`. Gradientes analíticos probados por diferencias finitas. En superficies no acotadas no prometer mínimo global. Cortes reales evalúan en modo inferencia un snapshot con pipeline y train fijos; opcional penalización se identifica expresamente.
 
 Correlación 2D: `out=floor((in+padBefore+padAfter−kernel)/stride)+1`; padding same produce ceil(in/stride), con sobrante al final. Max-pool no añade padding por defecto y desempata primer índice en orden fila. La animación muestra operaciones reales del operador, no una CNN aprendiendo cuando los filtros están fijados manualmente.
+
+## Evaluación ampliada y validación cruzada
+
+R²=`1−Σ(y−ŷ)²/Σ(y−mean_eval(y))²`; referencia media del conjunto evaluado, distinta del baseline predictor ajustado en train. Si el denominador es cero, devolver null y explicar que R² no está definido. RMSE=sqrt(MSE). Residuos se definen como y−ŷ y los ejes indican esa convención. Ruido heterocedástico de demostración: desviación σ(x)=σ0·(1+α|x1|), con parámetros y unidades documentados por receta.
+
+Brier binario `mean((p−y)²)`, rango [0,1]; multiclase `mean(Σ_k(p_k−y_k)²)`, rango [0,2], sin dividir por K. Fiabilidad: bins de igual anchura en [0,1], último inclusivo; cada punto muestra probabilidad media, frecuencia positiva y n. Bins vacíos se omiten explícitamente; con pocos ejemplos no se afirma calibración demostrada.
+
+ROC agrupa puntuaciones empatadas y recorre umbrales descendentes; TPR=TP/P, FPR=FP/Nneg. Incluir extremos de predecir ninguno/todos; AUC por trapecios con empates agrupados. Si falta clase positiva o negativa, ROC-AUC=null. Curva PR con precisión 1 en el punto inicial sin predichos y recall 0; AP=`Σ(Recall_i−Recall_i−1)·Precision_i`, sin interpolación trapezoidal; si no hay positivos, AP=null. Multiclase ofrece one-vs-rest y media macro de clases definidas, mostrando cuántas se excluyeron.
+
+Coste medio `Σ_{real,pred}C[real,pred]·count[real,pred]/N`. Matriz por defecto diagonal cero y costes unitarios; preset didáctico opcional FN=5/FP=1 rotulado como supuesto del caso. Buscar umbral de coste mínimo en val entre puntuaciones únicas y extremos, empates por umbral más alto; no optimizar umbral con test.
+
+K-fold sobre desarrollo (train+val originales), con test excluido permanentemente; cada fold reconstruye pipeline/modelo y RNG derivado de seed/fold. Reportar media y desviación muestral de métricas de validación, además de tamaños; no tratar folds como mediciones independientes para intervalos sin justificación. Estratificación exige K≤menor recuento de clase; agrupada exige K≤número de grupos y no promete balance perfecto. Temporal usa holdout cronológico en esta versión, no K-fold barajado. Seleccionar hiperparámetros por CV y reajustar en desarrollo queda registrado como nueva ejecución antes del único test final.
+
+Deriva de entradas cambia p(x) manteniendo receta del target condicional; deriva de concepto cambia coeficientes/regla objetivo en una cohorte posterior. Train-serving skew altera deliberadamente unidades o pipeline en un modo aislado rotulado incorrecto. Dispersión entre semillas se presenta como variabilidad del procedimiento, no intervalo de confianza calibrado ni medida completa de incertidumbre aleatoria/epistémica.

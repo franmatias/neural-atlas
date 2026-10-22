@@ -3,7 +3,7 @@
 ## Acuerdos
 
 - Público mixto, con prioridad para FP de especialización; matemáticas explicadas progresivamente.
-- Agrupar los 100 conceptos en laboratorios coherentes y ampliar los siete originales.
+- Agrupar los 100 conceptos originales y ampliar el catálogo con otros pertinentes: **140 iniciales, lista abierta**, distribuidos en laboratorios coherentes.
 - Importar y exportar datasets, modelos y experimentos; generar datos con defectos controlados.
 - Taller con actividades guiadas, pistas, soluciones y seguimiento local.
 - Identidad visual nueva, temas claro/oscuro, diseño adaptable y ajustes de animación.
@@ -40,7 +40,7 @@ Fuera de esta versión: backend, cuentas, nube, colaboración multiusuario, infe
 1. **D0, esta entrega:** auditoría, requisitos, diseño, UML, contratos, historias, trazabilidad y plan de validación. Estado: propuesta, pendiente de revisión del usuario.
 2. **D1:** estructura Vue, diseño base, accesibilidad, ajustes y primer laboratorio con motor probado.
 3. **D2:** pipeline de datos y MLP completo en Worker; clasificación, regresión y evaluación.
-4. **D3:** optimización, regularización, 3D, CNN, taller y cobertura de los 100 conceptos.
+4. **D3:** optimización, regularización, 3D, CNN, taller y cobertura de los 140 conceptos iniciales y su mecanismo de ampliación.
 5. **D4:** endurecimiento de importadores, PWA, rendimiento, pruebas completas y documentación de publicación.
 
 Las fases ordenan la construcción; los requisitos obligatorios se evalúan al finalizar D4. Un módulo parcial se identifica como tal. No se simulan métricas ni se presentan funciones pendientes como terminadas.

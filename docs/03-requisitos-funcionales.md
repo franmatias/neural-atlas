@@ -6,7 +6,7 @@ Todos los RF siguientes son obligatorios para la versión completa. «Opcional»
 |---|---|---|
 | RF-001 | Navegar por inicio, 12 laboratorios, taller, biblioteca, glosario y ajustes | URL propia, atrás/adelante y recarga conservan ruta válida |
 | RF-002 | Mostrar tres niveles de explicación | Cambiar nivel conserva experimento y presenta números actuales en paso a paso |
-| RF-003 | Buscar conceptos y enlazarlos con experiencias | Los 100 conceptos tienen búsqueda por español/inglés y acceso al laboratorio |
+| RF-003 | Buscar conceptos y enlazarlos con experiencias | Los 140 conceptos iniciales tienen búsqueda por español/inglés y acceso al laboratorio; sin máximo fijo del catálogo |
 | RF-004 | Ofrecer recorrido guiado y exploración libre | El usuario puede abandonar guía sin perder configuración |
 | RF-005 | Cambiar tema claro, oscuro o del sistema | Persiste preferencia; no destella el tema opuesto al recargar |
 | RF-006 | Panel de ajustes accesible | Tema, nivel, velocidad, movimiento, calidad, formato numérico, progreso y almacenamiento |
@@ -64,6 +64,14 @@ Todos los RF siguientes son obligatorios para la versión completa. «Opcional»
 | RF-058 | Gestionar almacenamiento | Uso aproximado, exportación, borrado selectivo y manejo de cuota/denegación con sesión en memoria |
 | RF-059 | Recuperar de fallos | Errores de Worker, importación, WebGL y persistencia tienen explicación y recuperación segura |
 | RF-060 | Exportar evidencia didáctica | Informe Markdown con configuración, métricas, advertencias, versiones y resultados; gráficas SVG/PNG cuando compatibles |
+| RF-061 | Particionar por grupos o tiempo | Grupos disjuntos; timestamps train anteriores a val/test; impedir estratificación incompatible |
+| RF-062 | Validación cruzada sin fuga | K-fold 2–10 sobre desarrollo, pipeline/modelo nuevos por fold; test final reservado; variantes estratificada y por grupos |
+| RF-063 | Explorar calibración y Brier | Diagrama de fiabilidad y puntuación Brier con bins y recuentos; distinguir calibración de accuracy |
+| RF-064 | Mostrar ROC y precision-recall | Umbrales ordenados, ROC-AUC/AP y casos indefinidos; one-vs-rest explícito en multiclase |
+| RF-065 | Introducir costes y métricas adicionales | Matriz de costes editable; umbral elegido en val; R²/RMSE y explicación de denominadores nulos |
+| RF-066 | Comparar cambios de distribución | Escenarios de covariate shift, concept drift y train-serving skew con procedencia y parámetros visibles |
+| RF-067 | Ampliar transformaciones e incertidumbre | Escalado robusto, features derivadas permitidas, curva por tamaño train y dispersión de predicciones entre semillas |
+| RF-068 | Mantener catálogo abierto de conceptos | Añadir por registros declarativos versionados con ID estable, relaciones, actividad y referencias de prueba; importar/exportar paquetes sin ejecutar código |
 
 ## Reglas transversales
 
