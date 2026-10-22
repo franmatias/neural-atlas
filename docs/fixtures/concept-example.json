@@ -1,0 +1,20 @@
+{
+  "id": "C021", "slug": "neurona-artificial", "contentVersion": 1,
+  "title": { "es": "Neurona artificial", "en": "Artificial neuron" },
+  "aliases": { "es": ["unidad de cálculo"], "en": ["artificial neural unit"] },
+  "category": "architecture", "level": "introductory",
+  "definition": { "es": "Una neurona combina entradas mediante pesos, añade un sesgo y aplica una función de activación. Su salida depende de esos valores y de la función elegida; no es una decisión consciente. En una red, esa salida puede alimentar otras unidades. Inspeccionar sus operaciones permite relacionar parámetros y predicción sin atribuir causalidad a un peso aislado." },
+  "intuition": { "es": "Piensa en una mezcla con ganancias ajustables y un desplazamiento.", "analogyLimit": "La analogía no implica comprensión, intención ni importancia causal de cada entrada." },
+  "formal": { "notation": "z=w1*x1+w2*x2+b; a=sigmoid(z)", "dimensions": "x y w de dimensión 2; z y a escalares" },
+  "numericExample": { "inputs": [0.8, 0.2], "weights": [0.5, -0.3], "bias": 0.1, "z": 0.44, "output": 0.6082590307465143, "units": "sin unidad", "snapshotBindings": ["selectedNeuron.preActivation", "selectedNeuron.activation"] },
+  "relatedControls": [{ "labId": "L02", "controlId": "input-x1" }, { "labId": "L02", "controlId": "bias" }],
+  "frequentMistake": { "es": "Confundir z con la salida activada.", "correction": "La función de activación transforma z en a; no siempre son iguales." },
+  "misconceptionPresetIds": [],
+  "selfAssessment": { "type": "mcq", "prompt": "¿Cuál es z para el ejemplo?", "options": [{ "id": "a", "text": "0,44" }, { "id": "b", "text": "0,608259" }], "correctOptionIds": ["a"], "answer": "0,44", "explanation": "0,5×0,8−0,3×0,2+0,1=0,44; el otro valor es sigmoid(z)." },
+  "prerequisiteIds": ["C011"], "relatedIds": ["C027", "C028", "C049"], "labIds": ["L02"],
+  "activity": "Modificar solo el sesgo y predecir el cambio antes de confirmarlo.",
+  "evidence": "Sustitución numérica y observación del desplazamiento de la frontera.",
+  "validationRefs": ["P-L02", "P-Q01"],
+  "sources": [{ "title": "Motor matemático de Neural Atlas", "path": "../10-motor-matematico.md" }],
+  "targetRelease": "1.0", "status": "specified"
+}
