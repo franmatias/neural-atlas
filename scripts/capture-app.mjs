@@ -1,6 +1,6 @@
 import { chromium } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
-const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
@@ -8,14 +8,15 @@ page.on('console', message => { if (message.type() === 'error') errors.push(mess
 await mkdir('test-results/visual', { recursive: true });
 await page.goto('http://127.0.0.1:4173/neural-atlas/');
 await page.getByRole('heading', { level: 1 }).waitFor();
-await page.screenshot({ path: 'test-results/visual/home-light.png', fullPage: true });
+await page.screenshot({ path: 'test-results/visual/home-light.png', fullPage: true, animations: 'disabled' });
 await page.goto('http://127.0.0.1:4173/neural-atlas/#/lab/neurona');
 await page.getByTestId('output').waitFor();
-await page.screenshot({ path: 'test-results/visual/neuron-light.png', fullPage: true });
+await page.screenshot({ path: 'test-results/visual/neuron-light.png', fullPage: true, animations: 'disabled' });
 await page.getByRole('button', { name: 'Oscuro', exact: true }).click();
-await page.screenshot({ path: 'test-results/visual/neuron-dark.png', fullPage: true });
+await page.screenshot({ path: 'test-results/visual/neuron-dark.png', fullPage: true, animations: 'disabled' });
 await page.setViewportSize({ width: 390, height: 844 });
-await page.screenshot({ path: 'test-results/visual/neuron-mobile.png', fullPage: true });
+await page.screenshot({ path: 'test-results/visual/neuron-mobile.png', fullPage: true, animations: 'disabled' });
 console.log(JSON.stringify({ errors, title: await page.title(), output: await page.getByTestId('output').textContent() }));
 await browser.close();
 if (errors.length) process.exitCode = 1;
+
