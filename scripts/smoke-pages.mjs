@@ -5,7 +5,7 @@ const parsed = new URL(url);
 assert.equal(parsed.protocol, 'https:');
 assert.equal(parsed.hostname, 'franmatias.github.io');
 assert.equal(parsed.pathname, '/neural-atlas/');
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, ...(process.env.PAGES_BROWSER_CHANNEL ? { channel: process.env.PAGES_BROWSER_CHANNEL } : {}) });
 try {
   let failure;
   for (let attempt = 0; attempt < 10; attempt++) {
