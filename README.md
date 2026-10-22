@@ -27,7 +27,7 @@ npm run test:e2e
 
 Tipos, lint, unidades/integración, cobertura con umbrales, build, presupuesto y documentación. Playwright comprueba recorridos, accesibilidad automática, teclado, persistencia, temas, responsive y CSP sobre producción. Informes: `coverage/` y `playwright-report/`.
 
-La [entrega D1](docs/23-implementacion-d1.md) documenta arquitectura real, uso, trazabilidad y resultados. Firefox de pruebas tiene una incidencia local de arranque en Windows documentada; su comprobación permanece configurada en CI y no se da por aprobada sin ejecución.
+La [entrega D1](docs/23-implementacion-d1.md) documenta arquitectura real, uso, trazabilidad y resultados: 61 pruebas de unidad/integración, 98,93% de cobertura de líneas y [CI aprobada con Chromium, Firefox y WebKit en Linux](https://github.com/franmatias/neural-atlas/actions/runs/39854702324). Firefox tiene además una incidencia local de arranque en Windows documentada.
 
 ## Alcance y continuidad
 

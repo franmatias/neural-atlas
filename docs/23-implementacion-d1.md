@@ -102,6 +102,7 @@ Ejecución local final en Windows, Node 24.19.0, 22/10/2026:
 | Playwright Chromium | 10 recorridos correctos |
 | Playwright WebKit | 10 recorridos correctos |
 | Playwright Firefox | No ejecutables localmente por la incidencia de arranque descrita abajo |
+| CI Ubuntu 24.04 | Instalación limpia, `check`, matriz Chromium/Firefox/WebKit e informes: aprobados en [ejecución 39854702324](https://github.com/franmatias/neural-atlas/actions/runs/39854702324), commit `85e4add` |
 | Transferencia inicial gzip | JS 48,79 KiB; CSS 7,41 KiB; dentro de límites 250/60 KiB |
 | Documentación | 26 Mermaid válidos/sincronizados y 160 enlaces locales correctos |
 
@@ -109,12 +110,12 @@ El presupuesto se comprueba sobre imports iniciales más la ruta de inicio y su 
 
 La revisión de navegador cubre ambas apariencias con axe (WCAG 2 A/AA y 2.1 AA), anchos 360/390/768/1024/1440, texto ampliado, teclado, persistencia, almacenamiento denegado, movimiento reducido y CSP. Son controles automáticos y revisión visual del agente; no certifican accesibilidad integral ni sustituyen una prueba con lector de pantalla o una revisión docente en aula.
 
-**Incidencia del entorno Windows:** el Firefox 157 de Playwright 1.64.1 no arranca por un ensamblado `mozglue` no encontrado. Se comprobó el registro SideBySide y se reinstaló el paquete una vez; el fallo persiste antes de abrir la aplicación. No se modificó Windows ni se sustituyó el navegador por uno no compatible. La matriz conserva Firefox y se ejecutará también en Ubuntu mediante CI. Hasta ver su resultado, Firefox local está pendiente, no aprobado ni omitido silenciosamente.
+**Incidencia del entorno Windows:** el Firefox 157 de Playwright 1.64.1 no arranca por un ensamblado `mozglue` no encontrado. Se comprobó el registro SideBySide y se reinstaló el paquete una vez; el fallo persiste antes de abrir la aplicación. No se modificó Windows ni se sustituyó el navegador por uno no compatible. La misma matriz **ha pasado en Ubuntu mediante CI**, incluido Firefox. Esa evidencia verifica Linux y no convierte el Firefox local de Windows en un resultado aprobado.
 
 La CSP de producción usa scripts y conexiones propios, sin `eval` ni scripts inline. El tema inicial se aplica mediante un archivo externo antes del arranque; el aviso de Vite de que ese script clásico no se empaqueta es esperado: se copia desde `public/` y su funcionamiento se comprueba en E2E. Desarrollo permite WebSocket local para HMR; ese permiso se elimina del HTML productivo. Los estilos permiten inline para atributos reactivos; no hay CDNs ni analítica. Aún no hay Service Worker ni promesa de uso offline.
 
 ## Git e integración continua
 
-Tres incrementos D1: `feat/d1-shell-settings`, `feat/d1-neuron-playback`, `test/d1-accessibility-csp`. Se integran con `--no-ff`, conservando las ramas para revisar. El flujo CI fija Node 24.19.0 y acciones oficiales por SHA; ejecuta `check` y los tres motores de Playwright, publica informes y no despliega GitHub Pages. Un workflow configurado no equivale a una ejecución remota aprobada.
+Tres incrementos de implementación D1: `feat/d1-shell-settings`, `feat/d1-neuron-playback`, `test/d1-accessibility-csp`; `docs/d1-ci-verification` registra después el resultado remoto y las capturas estables, sin cambiar código de la aplicación. Se integran con `--no-ff`, conservando las ramas para revisar. El flujo CI fija Node 24.19.0 y acciones oficiales por SHA; ejecuta `check` y los tres motores de Playwright, publica informes y no despliega GitHub Pages. La aprobación remota registrada corresponde a una ejecución real, no solo a disponer de un workflow.
 
 La siguiente fase D2 incorpora generación reproducible, defectos, división de datos, pipeline sin fuga e importación/exportación CSV/JSON. El entrenamiento en Worker corresponde a D4 según la dependencia con MLP/backprop de D3.
