@@ -8,6 +8,9 @@ sequenceDiagram
   UI->>C: Preparar configuracion validada
   C->>W: INIT con sessionId y revision
   W->>M: Crear pipeline y red
+  W-->>C: RECOVERY_CHECKPOINT inicial update 0
+  C->>C: Validar y conservar copia RAM
+  C->>W: RECOVERY_ACK
   W-->>C: READY
   C->>W: RUN con runId
   W-->>C: ACK
@@ -16,6 +19,10 @@ sequenceDiagram
     M-->>W: Estado finito y contadores
     W-->>C: PROGRESS o SNAPSHOT con sequence
     C-->>UI: Publicar solo revision vigente
+    opt Epoca o intervalo en frontera confirmada
+      W-->>C: RECOVERY_CHECKPOINT con copia
+      C->>W: RECOVERY_ACK tras validacion
+    end
   end
   W-->>C: COMPLETED y snapshot final
   C-->>UI: Mostrar motivo de parada

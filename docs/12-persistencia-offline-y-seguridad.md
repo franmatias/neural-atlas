@@ -33,9 +33,9 @@ Nueva versión: instalar en espera → aviso → usuario guarda/exporta sesión 
 
 ## GitHub Pages
 
-Preparar futuro workflow con instalación por lockfile, tipos/lint/tests/coverage/E2E/build y despliegue del directorio dist solo desde main o acción manual. `base` de Vite configurable según nombre real de repositorio; hash router para rutas. URLs del Worker y recursos relativas a `import.meta.url`/base gestionada por Vite; registro SW y manifest con scope/start_url correspondientes. Probar preview de producción bajo `/simulator-neural-networks/`, no solo `/`.
+Preparar futuro workflow con instalación por lockfile, tipos/lint/tests/coverage/E2E/build y despliegue de dist desde main o acción manual. Vite base `/neural-atlas/` y hash router. Worker y recursos con URLs relativas a import.meta.url/base; SW y manifest con scope/start_url de esa subruta. Probar preview bajo `/neural-atlas/`, no solo `/`.
 
-No hay remoto creado ni publicación en esta entrega. No asumir que el repositorio futuro usa el mismo propietario o configuración que el simulador anterior. El nombre final del remoto determina base. El historial Git local ya contiene ramas e integraciones documentales, sin requerir GitHub.
+Destino indicado expresamente por el usuario: `https://github.com/franmatias/neural-atlas.git`. La publicación documental conserva main y ramas con su historial; no despliega una aplicación inexistente. El futuro Vite usa base `/neural-atlas/`, Router hash y SW limitado a esa subruta. GitHub Pages se habilitará con la implementación y controles de despliegue, no al subir D0. Verificación real del push en [registro](19-verificacion.md).
 
 Todos los proyectos en `usuario.github.io` comparten origen, cuota y acceso potencial a almacenamiento. Namespace y nombre de base evitan colisiones accidentales, no crean aislamiento de seguridad ni cuota exclusiva. `navigator.storage.estimate()` orienta sobre el origen completo, no sobre nuestra base. Comprobar cuota en cada escritura; documentar riesgo de compartir origen con aplicaciones no confiables y permitir exportación de respaldo.
 

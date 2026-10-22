@@ -8,7 +8,8 @@ sequenceDiagram
   loop Cada fold con grupos disjuntos
     CV->>W: INIT modelo nuevo y seed de fold
     W->>W: Fit pipeline solo train del fold
-    W->>W: Entrenar y evaluar val del fold
+    W->>W: Entrenar presupuesto fijo sin early stopping
+    W->>W: Evaluar fold sin usarlo para parar
     W-->>CV: Metricas e IDs usados
   end
   CV-->>UI: Media desviacion y tamanos

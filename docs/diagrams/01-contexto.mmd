@@ -3,7 +3,8 @@ flowchart LR
   Docente[Docente] --> App
   App --> Motor[Motor TS en Web Worker]
   App --> Vistas[Vistas equivalentes 2D y 3D]
-  App <--> Local[LocalStorage acotado]
+  App <--> Local[LocalStorage ajustes y progreso]
+  App <--> IDB[IndexedDB biblioteca y checkpoints]
   Archivos[Archivos CSV y JSON] <--> App
   Pages[Hosting estatico GitHub Pages] --> App
   SW[Service Worker y cache de recursos] --> App

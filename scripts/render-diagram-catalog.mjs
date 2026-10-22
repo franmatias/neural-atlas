@@ -9,7 +9,7 @@ const descriptions = {
   '06': ['Secuencia de importación', 'UML de secuencia: comprobar tamaño, mapear columnas y confirmar una sesión válida.'],
   '07': ['Estados de sesión', 'UML de estados: ejecución, pausa, cancelación y recuperación. Cerrar mientras se ejecuta exige cancelar primero.'],
   '08': ['Actividad del pipeline', 'Actividad representada en flowchart: ajustar solo con train y reservar test hasta congelar selección.'],
-  '09': ['Secuencia de guardado', 'UML de secuencia: checkpoint estable, presupuesto y escritura de biblioteca con recuperación.'],
+  '09': ['Secuencia de guardado', 'UML de secuencia: checkpoint estable, presupuesto y transacción IndexedDB con revisión y rollback.'],
   '10': ['Estados de una actividad', 'UML de estados: hipótesis, experimento, observación y reflexión, con reintentos.'],
   '11': ['Despliegue estático', 'Vista de despliegue aproximada mediante flowchart. CI y Pages son futuros, no un remoto ya creado.'],
   '12': ['Flujo Git de desarrollo', 'gitGraph ilustrativo del proceso acordado, no una copia del historial real ni trabajo funcional ya realizado.'],
@@ -21,13 +21,19 @@ const descriptions = {
   '18': ['Estados offline y actualización', 'UML de estados: descarga completa comprobada y activación después de guardar/detener sesión.'],
   '19': ['Clases del taller', 'UML de clases: definición declarativa, pasos, reglas y progreso local compatible.'],
   '20': ['Actividad de retropropagación', 'Actividad en flowchart: acumular gradientes antes de mutar parámetros y confirmar solo valores finitos.'],
+  '21': ['Secuencia BN cooperativa', 'UML de secuencia: troceo por capa/fase con estadísticas completas y descarte atómico de candidato.'],
+  '22': ['Estados de predicción previa', 'UML de estados: guardar hipótesis antes de actuar y contrastar con resultado o indeterminación.'],
+  '23': ['Diagnóstico por evidencia', 'Flujo de reglas deterministas, con soporte y ventanas, que propone hipótesis sin afirmar causas.'],
+  '24': ['Clases de aprendizaje', 'UML de clases: POE, reglas, plantilla editorial alineada, guía docente y evidencia.'],
+  '25': ['Datos persistidos', 'Entidad-relación de registros IDB. Dataset compartido entre experimentos; no equivale a una base SQL.'],
+  '26': ['Entregas y puertas', 'Roadmap por dependencias: MVP 1.0, alcance original ampliado en v1.1 y propuestas v1.2.'],
 };
 const files = (await readdir(new URL('docs/diagrams/',root))).filter(f=>f.endsWith('.mmd')).sort();
 let output = '# Diagramas de diseño\n\nDocumento generado desde los archivos `.mmd`. Editar las fuentes y ejecutar `npm run docs:diagrams`. Mermaid admite clases, secuencias y estados UML; para componentes, paquetes, actividades y despliegue se emplea flowchart como aproximación explícita, no notación UML estricta. Las fuentes son editables y no dependen de un servicio remoto.\n\n';
 for(const file of files){
   const [title,description]=descriptions[file.slice(0,2)] ?? [file,'Diagrama de diseño.'];
   const source=(await readFile(new URL(`docs/diagrams/${file}`,root),'utf8')).trimEnd();
-  output += `## ${file.slice(0,2)} · ${title}\n\n${description}\n\n[Fuente Mermaid](diagrams/${file})\n\n\`\`\`mermaid\n${source}\n\`\`\`\n\n`;
+  output += `## ${file.slice(0,2)} · ${title}\n\n${description}\n\n[Fuente Mermaid](diagrams/${file}) · [SVG exportado](diagrams/rendered/${file.replace(/\.mmd$/,'.svg')})\n\n\`\`\`mermaid\n${source}\n\`\`\`\n\n`;
 }
 const target=new URL('docs/15-diagramas.md',root);
 if(process.argv.includes('--check')){

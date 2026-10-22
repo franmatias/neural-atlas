@@ -5,7 +5,9 @@ flowchart TB
     Features --> Stores[Stores Pinia]
     Stores --> Render[Adapters SVG Canvas Three]
     Casos --> Ports[Puertos de aplicacion]
-    Ports --> Repo[Repositorio LocalStorage]
+    Ports --> Repo[Repositorio IDB transaccional]
+    Ports --> Prefs[LocalStorage de preferencias]
+    Features --> Learning[POE y diagnostico de solo lectura]
     Ports --> Files[Archivos y validadores]
     Ports --> Client[Cliente Worker]
   end
@@ -16,3 +18,5 @@ flowchart TB
   Client <-->|Mensajes versionados| Handler
   Handler -->|Snapshots y checkpoints| Client
   Client --> Stores
+  Client --> Recovery[Checkpoints automaticos RAM]
+  Recovery --> Repo

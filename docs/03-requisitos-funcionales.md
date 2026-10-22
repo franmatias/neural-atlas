@@ -6,7 +6,7 @@ RF-001–RF-068 describen el alcance completo conservado; RF-069–RF-088 incorp
 |---|---|---|
 | RF-001 | Navegar por inicio, 12 laboratorios, taller, biblioteca, glosario y ajustes | URL propia, atrás/adelante y recarga conservan ruta válida |
 | RF-002 | Mostrar tres niveles de explicación | Cambiar nivel conserva experimento y presenta números actuales en paso a paso |
-| RF-003 | Buscar conceptos y enlazarlos con experiencias | Los 140 conceptos iniciales tienen búsqueda por español/inglés y acceso al laboratorio; sin máximo fijo del catálogo |
+| RF-003 | Buscar conceptos y enlazarlos con experiencias | Los 152 conceptos previstos tienen búsqueda español/inglés y experiencia/estado de entrega; búsqueda MVP solo sobre contenido disponible; sin máximo fijo |
 | RF-004 | Ofrecer recorrido guiado y exploración libre | El usuario puede abandonar guía sin perder configuración |
 | RF-005 | Cambiar tema claro, oscuro o del sistema | Persiste preferencia; no destella el tema opuesto al recargar |
 | RF-006 | Panel de ajustes accesible | Tema, nivel, velocidad, movimiento, calidad, formato numérico, progreso y almacenamiento |

@@ -119,6 +119,8 @@ Cada rama contiene un incremento real, pruebas pertinentes y documentación; no 
 
 ## Flujo Git
 
-Comprobar árbol y rama → crear rama descriptiva → implementar/verificar incremento → commit coherente → integrar main con --no-ff → comprobar árbol limpio. Prefijos feat/fix/test/docs/chore. El agente hace commits durante trabajo autorizado; no hay daemon de autocommit. No reescribir historia ni hacer force-push. Mantener ramas documentales para revisar; original fuera del repo nuevo. D0 no crea remoto, issues, PR ni despliegue.
+Comprobar árbol y rama → crear rama descriptiva → implementar/verificar incremento → commit coherente → integrar main con --no-ff → comprobar árbol limpio. Prefijos feat/fix/test/docs/chore. El agente hace commits durante trabajo autorizado; no hay daemon de autocommit. No reescribir historia ni hacer force-push. Mantener ramas documentales para revisar; original fuera del repo nuevo. El usuario autorizó publicar D0 en franmatias/neural-atlas; esto no crea issues/PR ni despliega la aplicación.
+
+Las [dependencias críticas](fixtures/story-dependencies.json) se verifican sin ciclos ni referencias a fases futuras; cada fase además parte del main ya integrado de su predecesora. No es una estimación automática del calendario ni sustituye el orden de trabajo dentro de cada fase.
 
 La especificación 0.1 quedó en seis ramas documentales. La revisión 0.2 añade ramas reales de contratos, experiencias educativas, planificación/trazabilidad y verificación/diagramas. Los commits documentales no se presentan como historias funcionales implementadas. Tras revisar esta especificación se podrá iniciar D1; no se pide aprobación por cada commit reversible dentro de una fase autorizada.

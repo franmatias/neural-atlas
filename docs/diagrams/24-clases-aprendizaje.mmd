@@ -1,0 +1,34 @@
+classDiagram
+  class PredictionRecord {
+    +string actionSpec
+    +string baselineSnapshotId
+    +string predictedOutcome
+    +string observedSnapshotId
+    +string comparisonStatus
+    +string explanation
+  }
+  class DiagnosticRule {
+    +string ruleVersion
+    +WindowSpec window
+    +Thresholds thresholds
+    +evaluate(summary)
+  }
+  class Concept {
+    +LocalizedText title
+    +NumericExample numericExample
+    +Question selfAssessment
+    +ControlRef[] relatedControls
+    +string targetRelease
+  }
+  class TeachingPack {
+    +Manifest manifest
+    +TeacherGuide guide
+    +OptionalSolutions solutions
+  }
+  class EvidencePortfolio {
+    +exportMarkdown()
+  }
+  PredictionRecord --> Concept : contrasta
+  DiagnosticRule --> Concept : enlaza
+  EvidencePortfolio "1" o-- "0..*" PredictionRecord
+  TeachingPack --> Concept : referencias validadas

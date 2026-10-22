@@ -1,0 +1,26 @@
+erDiagram
+  DATASET ||--o{ EXPERIMENT : referencia
+  EXPERIMENT ||--o{ MODEL : conserva
+  EXPERIMENT ||--o{ CHECKPOINT : guarda
+  EXPERIMENT ||--o{ LEARNING_EVIDENCE : recoge
+  MODEL ||--o{ CHECKPOINT : estado
+  EXPERIMENT {
+    string id PK
+    number revision
+    string dataHash FK
+  }
+  DATASET {
+    string dataHash PK
+    object columns
+  }
+  CHECKPOINT {
+    string id PK
+    string experimentId FK
+    number update
+    buffer tensors
+  }
+  LEARNING_EVIDENCE {
+    string id PK
+    string experimentId FK
+    string predictionId
+  }

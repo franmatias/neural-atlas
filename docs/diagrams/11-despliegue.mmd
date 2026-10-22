@@ -6,6 +6,7 @@ flowchart TB
   Browser --> UI[Hilo principal Vue]
   Browser --> Worker[Worker de misma build]
   Browser --> SW[Service Worker de misma subruta]
-  UI --> LS[LocalStorage del origen con namespace]
+  UI --> LS[LocalStorage ajustes y progreso]
+  UI --> IDB[IndexedDB datos modelos y recovery]
   SW --> Cache[Cache de recursos revisionados]
   Browser <--> Files[Archivos locales por accion del usuario]

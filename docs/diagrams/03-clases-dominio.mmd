@@ -17,6 +17,7 @@ classDiagram
     +Target target
   }
   class DataSplit {
+    +SplitStrategy strategy
     +IdSet train
     +IdSet validation
     +IdSet test
@@ -37,6 +38,9 @@ classDiagram
     +OptimizerState optimizer
     +RngStates rng
     +BatchCursor cursor
+    +ExtensionState batchNorm
+    +ExtensionState earlyStopping
+    +number update
   }
   Experiment "1" *-- "1" Dataset
   Dataset "1" *-- "1..*" Sample

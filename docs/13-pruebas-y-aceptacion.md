@@ -145,7 +145,7 @@ P-S01 importaciones hostiles/profundidad/límites/CSV injection; P-S02 política
 | RNF-016/017 | Lint de límites/ciclos, tipos y umbrales V8 |
 | RNF-018 | P-D01/02 |
 | RNF-019/020 | P-O01/02/03 y P-E16/17 |
-| RNF-021 | P-I01/04 y revisión editorial |
+| RNF-021 | P-I01/04, P-A04, P-Q20 y revisión editorial |
 | RNF-024 | P-I08/14 y P-L12 |
 
 ## Definición de terminado
