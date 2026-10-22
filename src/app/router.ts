@@ -2,18 +2,50 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 export const routes = [
   { path: '/', name: 'home', component: () => import('@/features/home/HomePage.vue') },
-  { path: '/laboratorios', name: 'laboratories', component: () => import('@/features/laboratories/LaboratoriesPage.vue') },
-  { path: '/lab/neurona', name: 'neuron', component: () => import('@/features/neuron/NeuronPage.vue') },
-  { path: '/lab/:slug', name: 'planned-lab', component: () => import('@/features/planned/PlannedPage.vue') },
-  { path: '/glosario', name: 'glossary', component: () => import('@/features/glossary/GlossaryPage.vue') },
-  { path: '/ajustes', name: 'settings', component: () => import('@/features/settings/SettingsPage.vue') },
-  { path: '/taller', name: 'workshops', component: () => import('@/features/planned/PlannedPage.vue') },
-  { path: '/biblioteca', name: 'library', component: () => import('@/features/planned/PlannedPage.vue') },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/features/planned/NotFoundPage.vue') },
+  {
+    path: '/laboratorios',
+    name: 'laboratories',
+    component: () => import('@/features/laboratories/LaboratoriesPage.vue'),
+  },
+  {
+    path: '/lab/neurona',
+    name: 'neuron',
+    component: () => import('@/features/neuron/NeuronPage.vue'),
+  },
+  {
+    path: '/lab/:slug',
+    name: 'planned-lab',
+    component: () => import('@/features/planned/PlannedPage.vue'),
+  },
+  {
+    path: '/glosario',
+    name: 'glossary',
+    component: () => import('@/features/glossary/GlossaryPage.vue'),
+  },
+  {
+    path: '/ajustes',
+    name: 'settings',
+    component: () => import('@/features/settings/SettingsPage.vue'),
+  },
+  {
+    path: '/taller',
+    name: 'workshops',
+    component: () => import('@/features/planned/PlannedPage.vue'),
+  },
+  {
+    path: '/biblioteca',
+    name: 'library',
+    component: () => import('@/features/planned/PlannedPage.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/features/planned/NotFoundPage.vue'),
+  },
 ];
 
 export const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL), routes,
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  routes,
   scrollBehavior: () => ({ top: 0 }),
 });
-
