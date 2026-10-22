@@ -1,6 +1,6 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-Fecha: 22/10/2026. Esta carpeta conserva el diseño completo 0.2. La primera aplicación D1 se documenta en [implementación 0.3](23-implementacion-d1.md), con funciones reales, pruebas y limitaciones. Las fases posteriores siguen pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
+Fecha: 22/10/2026. Esta carpeta conserva el diseño completo 0.2. La aplicación D1 se documenta en [implementación 0.3](23-implementacion-d1.md) y el laboratorio de datos D2 en [implementación 0.4](25-implementacion-d2.md), con funciones reales, pruebas y limitaciones. D3 y siguientes continúan pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
 
 La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
 
@@ -54,6 +54,9 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [20 · Revisión](20-revision-y-respuestas.md) | Respuesta y decisiones frente a ambas revisiones |
 | [21 · Trazabilidad RF](21-trazabilidad-rf.md) | RF→módulo→historia→prueba→fase |
 | [22 · Experiencias educativas](22-experiencias-educativas.md) | POE, diagnóstico, activaciones y extensiones |
+| [23 · Implementación D1](23-implementacion-d1.md) | Neurona, interfaz y evidencia histórica |
+| [24 · GitHub Pages](24-despliegue-pages.md) | CI, publicación y comprobación pública |
+| [25 · Implementación D2](25-implementacion-d2.md) | Datos, formatos, split, pipeline y evidencia |
 
 ## Qué revisar antes de D1
 
