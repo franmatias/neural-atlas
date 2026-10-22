@@ -70,8 +70,8 @@ jobs:
           node-version: '24.19.0'
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npx playwright install --with-deps chromium
       - name: Verificar la aplicación pública
         env:
           PAGES_URL: ${{ needs.deploy.outputs.page_url }}
+          PAGES_BROWSER_CHANNEL: chrome
         run: node scripts/smoke-pages.mjs
