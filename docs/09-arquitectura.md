@@ -15,13 +15,13 @@ Diseño propuesto, aún no implementado. SPA estática en Vue con Composition AP
 | 3D | Three.js lazy para paisaje, red y regresión 2D→1 | Controlar ciclo de vida, dispose y pérdida de contexto; alternativa 2D |
 | PixiJS | Diferida, solo si medición demuestra necesidad | No cargar dos renderizadores GPU sin mejora demostrable |
 | Matemáticas | Motor propio pequeño en TS y Float64Array | CPU determinista e inspección, sin autodiff opaco ni WebGPU |
-| Validación | Zod para contratos externos, refinamientos de tamaños y finitud | Límite de bytes antes de parsear; versiones explícitas |
-| CSV | Papa Parse con análisis por chunks y cancelación | Tipado explícito de columnas y separador/decimal configurables |
+| Validación | Zod lazy para contratos externos, refinamientos de tamaños y finitud | Límite de bytes antes de parsear; versiones explícitas |
+| CSV | Papa Parse lazy con análisis por chunks y cancelación | Tipado explícito de columnas y separador/decimal configurables |
 | Fórmulas | KaTeX local, carga diferida; texto alternativo | `trust:false`, sin HTML arbitrario en contenidos |
 | Pruebas | Vitest, Vue Test Utils, fast-check, Playwright, axe | Separar unidad, integración, E2E y visual |
 | Offline | Service Worker generado con Workbox, manifest PWA | Caché solo de recursos, no persistencia de modelos |
 
-Se fijarán versiones compatibles y revisadas en D1. El entorno detectado Node 20.18.0 requiere actualización para el Vite propuesto; usar LTS compatible, mínimo 22.12 como base técnica consultada. No instalar herramientas globales como parte de la aplicación. La documentación de esta fase valida Mermaid con su propio conjunto mínimo de dependencias.
+Plataforma **Node 24 LTS**, versión exacta/lockfile verificados en D1; Node 20 no es plataforma admitida. La revisión documental usa Node 24.19.0 disponible, sin instalación global. Chunk inicial: Vue, Router, Pinia, shell, tokens y vistas mínimas; no incluye Zod, Papa Parse, KaTeX, D3 avanzado, Three.js, Worker ni contenido completo del catálogo. Importadores, matemáticas, contenidos y gráficos se cargan por ruta/tarea; P-P03 inspecciona el grafo de chunks real, no basta con escribir import dinámico si hay otro import eager.
 
 ## Árbol objetivo
 
@@ -57,7 +57,7 @@ src/
     ports/              # TrainingExecutor, ExperimentRepository, FileGateway
   infrastructure/
     workers/            # entry worker, protocolo, cliente y supervisión
-    persistence/        # LocalStorage, migraciones, presupuesto
+    persistence/        # IndexedDB biblioteca/checkpoints; LocalStorage ajustes/progreso
     serialization/      # schemas, parseadores CSV/JSON y exportadores
     offline/            # registro SW, actualización y estado de caché
   visualization/
@@ -86,7 +86,7 @@ La estructura anterior es una propuesta, no una lista de carpetas vacías ya cre
 
 ## Dirección de dependencias
 
-Dominio → solo tipos y módulos del propio dominio. Aplicación → dominio y puertos. Infraestructura → implementa puertos. Features → casos de uso, stores y visualización pública. Visualización → view-models sin controlar entrenamiento. `app` ensambla dependencias. ESLint bloquea imports invertidos y ciclos; alias `@domain`, `@application`, `@infra`, `@features`, `@viz`.
+Dominio → tipos y módulos propios, más una dependencia matemática pura SHA-256 explícitamente permitida; ninguna API de plataforma. Aplicación → dominio y puertos. Infraestructura → implementa puertos. Features → casos de uso, stores y visualización pública. Visualización → view-models sin controlar entrenamiento. `app` ensambla dependencias. ESLint bloquea imports invertidos y ciclos; alias `@domain`, `@application`, `@infra`, `@features`, `@viz`.
 
 Principios: una responsabilidad por módulo, cálculo puro donde sea posible, estado mutable encapsulado por sesión, contratos pequeños y composición sobre herencia. Optimizadores y transformadores implementan interfaces concretas; no hay contenedor de inyección complejo. Los fixtures prueban comportamientos públicos y no acceden por corte de texto fuente.
 
@@ -96,7 +96,7 @@ Una sesión mantiene configuración, IDs de dataset/split, estado del executor y
 
 Un Worker de sesión ejecuta entrenamiento o una tarea de análisis pesado, nunca ambas a la vez. Corte de pérdida y múltiples semillas se encolan tras pausar entrenamiento. Parseo y generación grande usan tareas acotadas en el mismo executor antes del modelo; el controlador puede terminar el Worker e inicializar una sesión nueva desde un checkpoint finito. A/B usa dos contextos independientes ejecutados secuencialmente.
 
-El reloj visual consume snapshots; interpolar posiciones/pulsos es cosmético y se etiqueta cuando representa una muestra. Se publica telemetría como máximo 10 Hz y parámetros reducidos a 5 Hz; curvas train/val como máximo una entrada por época. Máximo 2.000 puntos de historial en memoria mediante decimación que conserva extremos y épocas originales, mientras resúmenes/best checkpoint se conservan aparte.
+Reloj visual y límite de actualizaciones/s son independientes. PROGRESS barato tiene techo 10 Hz; mapas se adaptan a coste/red/dispositivo con presupuesto del 10 % y pueden actualizar solo en pausa. Curvas train/val una entrada por época; todas las vistas indican antigüedad de su snapshot. Máximo 2.000 puntos de historial con decimación que conserva extremos/épocas, sin inventar medidas. El controlador mantiene checkpoint inicial y dos copias RAM automáticas; IDB conserva recuperación periódica. Troceo BN por capa y fase, con estadísticas de lote completo. Contrato detallado en [Worker](11-datos-y-protocolo-worker.md).
 
 ## Puertos principales
 
@@ -109,7 +109,7 @@ El reloj visual consume snapshots; interpolar posiciones/pulsos es cosmético y 
 | ADR-001 | Motor TS explícito con Float64 | Inspección y gradientes verificables; más trabajo que delegar todo a TensorFlow.js |
 | ADR-002 | Worker propietario de cómputo | Protocolo y cancelación necesarios; no acoplar épocas a rAF |
 | ADR-003 | SVG + Canvas + Three.js | Cada renderer tiene responsabilidad acotada; Pixi pendiente de benchmark |
-| ADR-004 | LocalStorage acotado + archivos | Cumple uso local, exige presupuestos; IndexedDB requiere nueva decisión si cambia alcance |
+| ADR-004 | IndexedDB para datos/modelos/checkpoints; LocalStorage solo preferencias/progreso | Revisa la propuesta 0.1: transacciones asíncronas y buffers binarios soportan arquitectura máxima; cuotas reales siguen comprobándose |
 | ADR-005 | Hash routing + base de Vite | Recarga segura en Pages; URL con `#` aceptada |
 | ADR-006 | Tres formatos: dataset, modelo y experimento | Inferencia y reanudación no se confunden; más contratos que validar |
 | ADR-007 | Documentación antes de aplicación | Esta revisión no contiene UI funcional ni pruebas de producto ejecutadas |

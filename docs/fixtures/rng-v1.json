@@ -1,0 +1,13 @@
+{
+  "algorithm": "mulberry32-v1",
+  "derive": "fnv1a32-ascii(seed:purpose:v1)",
+  "uniform": "nextUint32 / 4294967296",
+  "boxMuller": "u1=1-uniform(); u2=uniform(); cache second normal",
+  "vectorsVerifiedWith": "Independent Python uint32 arithmetic and JavaScript Math.imul",
+  "vectors": [
+    { "seed": 42, "purpose": "generation", "derivedState": 1341525604, "firstUint32": [671119879, 2581101002, 904614614, 542972955, 3088894195] },
+    { "seed": 42, "purpose": "initialization", "derivedState": 3317977742, "firstUint32": [1802498521, 4030571452, 80669953, 3037192183, 517296239] },
+    { "seed": 42, "purpose": "dropout", "derivedState": 1780160389, "firstUint32": [2690537259, 1433088494, 2163104318, 471917001, 1175275813] },
+    { "seed": 42, "purpose": "fold-0", "derivedState": 2360981224, "firstUint32": [1337479955, 3154957043, 4201221622, 1179148311, 2001568940] }
+  ]
+}

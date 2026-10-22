@@ -1,26 +1,33 @@
 # Persistencia, offline y despliegue
 
-## LocalStorage
+## Responsabilidades de almacenamiento · ADR-004 revisado
 
-Solo el hilo principal accede a LocalStorage, mediante un repositorio; Worker y Service Worker no lo usan. Tres documentos JSON independientes:
+Se adopta **IndexedDB para biblioteca, datasets y checkpoints** tras revisar los tamaños reales. LocalStorage conserva solo preferencias y progreso. Esta decisión revisa la propuesta inicial, antes de implementar o generar datos de usuario. Todo almacenamiento es local al navegador; no se añade backend.
 
 | Clave | Contenido | Política |
 |---|---|---|
-| `neural-atlas:v1:preferences` | Tema, nivel, accesibilidad y visualización | Autosave 500 ms, pequeño; aplicar tema antes de montar UI |
-| `neural-atlas:v1:progress` | Talleres y respuestas/evidencias resumidas | Al completar paso, límite 256 KiB |
-| `neural-atlas:v1:library` | Índice y hasta 10 experimentos compactos completos | Guardado explícito, ≤512 KiB por entrada y presupuesto total compartido 3 MiB |
+| `neural-atlas:v1:preferences` | Tema, nivel, accesibilidad y visualización | Autosave 500 ms, ≤64 KiB UTF-16 estimados |
+| `neural-atlas:v1:progress` | Talleres y respuestas/evidencias resumidas | Al completar paso, ≤448 KiB UTF-16 estimados |
 
-Cada documento contiene schemaVersion, savedAt, appVersion y payload. La biblioteca se guarda en un único `setItem` después de validar, serializar y comprobar tamaño; si falla, el valor previo permanece. No simular una transacción con múltiples claves de experimentos. No existe transacción entre preferencias y progreso, que son independientes. Presupuesto aproximado `2*longitudString` para UTF-16; capturar QuotaExceededError y SecurityError incluso si la estimación dice que cabe.
+Cada documento pequeño contiene schemaVersion, savedAt, appVersion y payload. Solo el hilo principal accede a LocalStorage mediante adaptador, con captura de QuotaExceededError/SecurityError y modo memoria. Se estima `2*longitudString` para estos JSON; no se guardan tensores ahí ni se vuelve a serializar la biblioteca en cada operación.
 
-Al superar límites, ofrecer exportar archivo o retirar entradas elegidas por el usuario; nunca expulsar guardados automáticamente. No guardar dataset de 10.000 filas por defecto. Un compacto puede almacenar receta exacta+semilla si reproduce todas las ediciones; para importados/manuales se conservan filas si caben. Si no caben, se guarda solo configuración marcada «requiere archivo de datos» o se exporta todo, según elección explícita. El progreso no incluye decenas de snapshots ni capturas raster.
+IndexedDB `neural-atlas`, databaseVersion 1, stores: `experiments` por id con revision y manifiesto; `datasets` por dataHash en formato columnar; `models` y `checkpoints` por id con ArrayBuffer Float64; `contentPacks` por packId/version; `recovery` con dos slots por sesión. Índices por updatedAt y experimentId. El adaptador del hilo principal es el único escritor de la biblioteca para coordinar conflictos; el Worker entrega copias o buffers transferibles y no mantiene una segunda conexión escritora.
 
-Migración: leer a memoria → validar versión antigua → transformar en copia → validar nueva → escribir → conservar original si cualquier paso falla. JSON corrupto no bloquea arranque; ofrecer descargarlo para recuperar y resetear solo esa clave. Escuchar evento storage de otras pestañas y evitar sobrescribir biblioteca más reciente mediante número de revisión y aviso de conflicto. No prometer exclusión mutua fuerte de LocalStorage: dos guardados simultáneos se resuelven mediante exportación de la copia conflictiva, y la UI recomienda una sola pestaña editora.
+Guardar: preparar/validar/copiar fuera de transacción → transacción readwrite sobre los stores necesarios → comprobar revision esperada dentro de transacción → escribir registros y referencias → esperar `complete` antes de anunciar éxito. Error/abort conserva versión anterior; no incluir awaits ajenos a IDB en la transacción. No actualizar índices antes de confirmar datos. Dataset compartido se elimina solo cuando ninguna referencia viva lo requiere. Dos pestañas con la misma revisión: primera confirma, segunda recibe conflicto sin sobrescritura; BroadcastChannel/invalidation notifica cambios, pero la exclusión depende de la transacción.
+
+Presupuesto objetivo IDB **256 MiB**: hasta **5 experimentos, ≤40 MiB por experimento**, incluyendo todos sus datos referenciados imputados sin descuento por deduplicación; recuperación reservada ≤20 MiB y resto para metadatos/margen. 5×40+20=220 MiB. Uso por ArrayBuffer.byteLength, Blob.size y UTF-8 estimado de metadatos, con margen de backend; no es cuota garantizada. La topología máxima con BN+Adam ocupa 24.330×8×3=583.920 bytes de tensores principales, más BN/RNG/cursor: cabe holgadamente en un checkpoint de recuperación de ≤10 MiB. No guardar cachés de forward/backward como parte de checkpoint.
+
+Recuperación: dos checkpoints en RAM del controlador y hasta dos slots IDB (≤10 MiB cada uno). Copia RAM antes de READY, cada época y cada 2 s de cálculo activo en frontera confirmada; escritura IDB cada 30 s o 5 épocas, lo que ocurra antes, si hay espacio. Antes de persistir, garantizar que dataset/receta, split y config estén en la misma transacción o ya confirmados. La última copia RAM sirve si cae el Worker; la última copia IDB permite recuperación tras recarga y puede ser más antigua. Informar época/update y antigüedad, sin confundir esas garantías.
+
+Al superar presupuesto o fallar cuota real, ofrecer exportar archivo o retirar entradas elegidas; nunca expulsar biblioteca automáticamente. El slot automático antiguo se sustituye solo tras confirmar el nuevo; si no cabe, mantener el anterior y advertir del recovery desactualizado. Si IDB está denegado, la sesión continúa en RAM con exportación, sin caer a serializar modelos en LocalStorage.
+
+Migraciones: schemaVersion por registro y versionchange para stores; bloquear escrituras, validar una copia y conservar original ante fallo. Otra pestaña recibe petición de cierre de conexión, con aviso; `blocked` tiene salida recuperable. Registro corrupto se puede exportar como diagnóstico y excluir, sin resetear toda la base. La especificación 0.1 no llegó a producir una biblioteca de aplicación: no se inventa una migración de datos que nunca existieron.
 
 ## Service Worker y caché
 
 HTTPS en producción o localhost en desarrollo. Workbox genera precaché con revisiones de build: app shell, Worker, chunks de todos los laboratorios, contenido, iconos y presets pequeños. Los assets de cada build tienen hash; no usar CDN. Caché para recursos estáticos; no se usa Cache API como repositorio de experimentos.
 
-Primer arranque necesita conexión para descargar la aplicación. «Disponible sin conexión» solo después de comprobar el manifiesto completo; descarga incompleta enumera recursos pendientes y permite reintentar. Presupuesto precaché objetivo ≤8 MiB comprimidos transferidos, revisable con informe; no cachear bundles de pruebas o documentación de desarrollo.
+Primer arranque necesita conexión para descargar la aplicación. Si nunca se descargó y no hay red, la aplicación no puede mostrar su propia pantalla: el navegador informa del fallo y esta limitación se documenta en la guía. «Disponible sin conexión» solo después de comprobar el manifiesto completo; descarga incompleta enumera recursos pendientes y permite reintentar. Presupuesto precaché objetivo ≤8 MiB comprimidos transferidos, revisable con informe; no cachear bundles de pruebas o documentación de desarrollo.
 
 Nueva versión: instalar en espera → aviso → usuario guarda/exporta sesión → cancelar/terminar Worker → activar y recargar → comprobar versión de protocolo. No ejecutar skipWaiting automáticamente mientras se entrena. Limpiar únicamente cachés antiguas de Neural Atlas después de activar; no borrar otros datos del origen. Añadir scope que corresponda a la subruta publicada para no controlar otros proyectos.
 
@@ -30,17 +37,19 @@ Preparar futuro workflow con instalación por lockfile, tipos/lint/tests/coverag
 
 No hay remoto creado ni publicación en esta entrega. No asumir que el repositorio futuro usa el mismo propietario o configuración que el simulador anterior. El nombre final del remoto determina base. El historial Git local ya contiene ramas e integraciones documentales, sin requerir GitHub.
 
+Todos los proyectos en `usuario.github.io` comparten origen, cuota y acceso potencial a almacenamiento. Namespace y nombre de base evitan colisiones accidentales, no crean aislamiento de seguridad ni cuota exclusiva. `navigator.storage.estimate()` orienta sobre el origen completo, no sobre nuestra base. Comprobar cuota en cada escritura; documentar riesgo de compartir origen con aplicaciones no confiables y permitir exportación de respaldo.
+
 ## Seguridad y datos del usuario
 
 - Archivos elegidos por el usuario se procesan localmente. No hay transmisión de datos, analytics, píxeles externos o carga de scripts desde archivos importados.
 - Validar tamaño antes de parsear; JSON con claves `__proto__`, `constructor`, `prototype` no se mezcla en objetos de configuración. Usar esquemas estrictos y mapas seguros.
 - Texto importado se representa por interpolación escapada; no usar v-html ni eval. KaTeX recibe fórmulas editoriales empaquetadas y configuración sin trust.
 - Exportaciones descargan Blob, con nombre sanitizado y URL temporal revocada. Confirmar sustitución o borrado de guardados, no cada operación reversible de edición.
-- Política de contenido objetivo: recursos propios, Worker propio, sin scripts remotos; probar CSP compatible con bundler/estilos. GitHub Pages no permite configurar todas las cabeceras: usar meta CSP cuando proceda y documentar limitaciones, sin prometer aislamiento COOP/COEP o SharedArrayBuffer.
+- CSP se prueba ya en D1: `script-src 'self'`, `worker-src 'self'`, `connect-src 'self'`, `object-src 'none'`, `base-uri 'self'`; estilos `style-src 'self' 'unsafe-inline'` inicialmente por bindings Vue/KaTeX/Three.js, con motivo documentado. Bootstrap de tema en archivo propio antes de montar UI, o inline autorizado por hash exacto de build; no abrir scripts con unsafe-inline/unsafe-eval. GitHub Pages usa meta CSP compatible y no permite todas las cabeceras; no prometer COOP/COEP ni SharedArrayBuffer. La política final se valida con el build real y fuentes locales, no se presenta como probada ahora.
 - Sin claves secretas ni credenciales en bundle. Los hashes de integridad no convierten modelos importados en contenido confiable.
 
 ## Recuperación y observabilidad local
 
 Estado visible: versión, engineVersion, sessionId abreviado, último guardado y modo offline/memoria. El informe de diagnóstico optativo incluye configuración y códigos de error, omite filas y respuestas libres por defecto; descargar no envía nada. Error de WebGL conserva sesión y ofrece 2D. Error numérico conserva último checkpoint finito. Al borrar datos se selecciona qué categoría borrar y se avisa de irreversibilidad; el SW se gestiona por separado.
 
-Pruebas obligatorias: cuota agotada, almacenamiento denegado, JSON corrupto, conflicto entre pestañas, primera visita sin red, arranque offline con precaché, update con sesión activa y Worker de versión antigua. Véanse [pruebas](13-pruebas-y-aceptacion.md) y [secuencia de guardado](diagrams/09-secuencia-guardado.mmd).
+Pruebas obligatorias: transacción abortada, cuota agotada, IDB/LocalStorage denegados por separado, registro corrupto, conflicto/versionchange entre pestañas, documentación de primera visita sin red, arranque offline con precaché, update con sesión activa y Worker de versión antigua. Véanse [pruebas](13-pruebas-y-aceptacion.md) y [secuencia de guardado](diagrams/09-secuencia-guardado.mmd).

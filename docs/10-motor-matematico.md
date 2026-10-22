@@ -42,19 +42,19 @@ Verificación centrada: `(L(θ+ε)−L(θ−ε))/(2ε)`, ε=1e-5, error relativo
 
 Xavier uniforme `U(−sqrt(6/(fanIn+fanOut)), +sqrt(6/(fanIn+fanOut)))`; He normal `N(0,2/fanIn)` con Box–Muller. Sesgos a cero, gamma=1 y beta=0. Inicialización a cero disponible solo para demostrar simetría y señalada como tal. ReLU sugiere He y tanh/sigmoid Xavier, sin impedir comparación deliberada.
 
-PRNG propuesto Mulberry32 con estado uint32 y derivación determinista de streams mediante hash de semilla+propósito. Algoritmo, versión, estado y valor gaussiano cacheado se serializan; se testean vectores conocidos. Fisher–Yates para cada época. Ningún módulo del dominio llama a Math.random ni Date para obtener aleatoriedad.
+PRNG: Mulberry32-v1, estado uint32, derivación FNV-1a32 del ASCII `seed:purpose:v1` (seed decimal sin ceros iniciales; propósito validado `[a-z0-9-]+`, como generation, defects, split, initialization, batches, dropout o fold-0). FNV comienza en 2166136261; por byte hace XOR y multiplicación módulo 2^32 por 16777619. No depende de APIs de plataforma. Algoritmo exacto y vectores están en [la definición RNG](fixtures/rng-v1.json) y [su comprobador documental](../scripts/check-review-fixtures.mjs). Fisher–Yates consume un uniforme por intercambio, índice floor(u·(i+1)). Box–Muller toma u1=1−u (en (0,1]), u2=u, y conserva el segundo gaussiano cacheado. Estado y caché se serializan. Ningún módulo del dominio llama a Math.random ni Date.
 
 ## Lotes y contadores
 
-Train se recorre una vez por época, incluyendo cola incompleta. Sin BN, número de actualizaciones por época `ceil(Ntrain/B)`. SGD es B=1; batch GD B=Ntrain; mini-batch B intermedio. Optimizador y estrategia son controles independientes. Iteración significa actualización de parámetros, no mensaje de Worker ni fotograma.
+Train se recorre una vez por época, incluyendo cola incompleta. Sin BN, número de actualizaciones por época `ceil(Ntrain/B)`. Muestreo: «Lote de 1 (estocástico)», «Mini-lote» y «Lote completo». Solo mini-lote tiene límite configurable 2–min(512,Ntrain); lote completo usa B=Ntrain, aunque supere 512. En contexto teórico SGD describe descenso estocástico, pero en UI no nombra simultáneamente dos controles. El optimizador `sgd` se rotula «Descenso de gradiente simple». Iteración significa actualización de parámetros, no mensaje de Worker ni fotograma.
 
-BN requiere B efectivo≥2. Si el último lote sería de una muestra, se combina con el anterior, permitiendo tamaño efectivo B+1 y una actualización menos; el reproductor muestra tamaño efectivo y razón. Se bloquean SGD+BN y train con menos de dos muestras. Se registran IDs por lote para checkpoints y explicación; no se pierden muestras silenciosamente.
+BN requiere B efectivo≥2. Si el último lote sería de una muestra, se combina con el anterior, permitiendo tamaño efectivo B+1 y una actualización menos; el reproductor muestra tamaño efectivo y razón. Se bloquean lote de 1+BN y train con menos de dos muestras. Se registran IDs por lote para checkpoints y explicación; no se pierden muestras silenciosamente.
 
 ## Optimizadores
 
 Sea g gradiente tras regularización y clipping, η tasa actual, t contador de actualizaciones compartido por todos los parámetros. Estado de optimizador tiene misma forma que parámetros.
 
-- SGD: θ←θ−ηg.
+- Descenso de gradiente simple (`optimizer: sgd`): θ←θ−ηg.
 - Momentum: v←βv+g; θ←θ−ηv. Variante sin factor (1−β), sin Nesterov; v inicial cero.
 - RMSprop: s←ρs+(1−ρ)g²; θ←θ−ηg/(sqrt(s)+ε). Sin centrado ni momentum adicional.
 - Adam: m←β1m+(1−β1)g; v←β2v+(1−β2)g²; m̂=m/(1−β1ᵗ), v̂=v/(1−β2ᵗ); θ←θ−ηm̂/(sqrt(v̂)+ε).
@@ -93,4 +93,22 @@ Coste medio `Σ_{real,pred}C[real,pred]·count[real,pred]/N`. Matriz por defecto
 
 K-fold sobre desarrollo (train+val originales), con test excluido permanentemente; cada fold reconstruye pipeline/modelo y RNG derivado de seed/fold. Reportar media y desviación muestral de métricas de validación, además de tamaños; no tratar folds como mediciones independientes para intervalos sin justificación. Estratificación exige K≤menor recuento de clase; agrupada exige K≤número de grupos y no promete balance perfecto. Temporal usa holdout cronológico en esta versión, no K-fold barajado. Seleccionar hiperparámetros por CV y reajustar en desarrollo queda registrado como nueva ejecución antes del único test final.
 
+**Early stopping queda desactivado en CV v1.1**: cada fold usa un presupuesto fijo de épocas, sin inspeccionar su fold de evaluación para decidir la parada. Si la configuración de origen lo activa, el coordinador exige una copia con parada desactivada y lo muestra antes de ejecutar. Un futuro holdout interno requiere diseño nuevo, no reutilizar la métrica del fold como criterio de selección de epoch.
+
 Deriva de entradas cambia p(x) manteniendo receta del target condicional; deriva de concepto cambia coeficientes/regla objetivo en una cohorte posterior. Train-serving skew altera deliberadamente unidades o pipeline en un modo aislado rotulado incorrecto. Dispersión entre semillas se presenta como variabilidad del procedimiento, no intervalo de confianza calibrado ni medida completa de incertidumbre aleatoria/epistémica.
+
+## Perceptrón de Rosenblatt y límite XOR
+
+Entrenamiento independiente de backprop: para y∈{0,1}, ŷ=step(w·x+b), e=y−ŷ, w←w+ηe·x y b←b+ηe. η=0,1 por defecto, [0,001,1]; pesos iniciales cero o sembrados, orden Fisher–Yates. Parar al completar una época sin errores o a 100 épocas (configurable hasta 1.000). Conservar mejor snapshot por número de aciertos, desempate por primera aparición. Si no converge mostrar límite/presupuesto, no afirmar separabilidad a partir de un fracaso.
+
+Para los cuatro vértices XOR la imposibilidad de 4/4 se demuestra con desigualdades: clasificar (0,0) y (1,1) como 0 exige b<0 y w1+w2+b<0; clasificar (1,0) y (0,1) como 1 exige w1+b≥0 y w2+b≥0. Las dos últimas implican w1+w2+b≥−b>0, contradicción. Existe 3/4 con w1=w2=1, b=−0,5. El fixture usa ese testigo y la contradicción, no pretende que una búsqueda discreta pruebe óptimo para cualquier nube.
+
+## Contratos numéricos adicionales
+
+Clase positiva binaria: `positiveClassId=classOrder[1]` por defecto, visible en métricas y editable sin reentrenar. Cambiarla complementa p (o selecciona la otra salida softmax), remapea labels y redefine el umbral en el nuevo sentido; no aplica inversión doble. Registrar elección y recalcular confusion/ROC/PR/costes. El target interno de sigmoid conserva su mapeo de entrenamiento; el cambio de informe no altera pesos ni `classOrder`.
+
+Si se escala target, la pérdida de entrenamiento y sus gradientes usan el target transformado. Las métricas del informe aplican la inversa y mantienen unidades originales. Las curvas señalan «pérdida en espacio transformado»; no comparar sus magnitudes con MSE original como si fueran iguales.
+
+Normas por capa: publicar ||dW||₂ y ||db||₂ antes de clipping y después, normas de activación y máximo absoluto; capa BN añade ||dgamma||₂/||dbeta||₂. Cálculo de norma con acumulación escalada para evitar overflow intermedio. Acumular resúmenes durante backward, sin un forward adicional. Clipping global no equivale a clipping independiente por capa. Histogramas y escalas logarítmicas presentan ceros de forma explícita.
+
+Reproducibilidad estricta se limita al mismo motor JS y versión. Math.exp/log/tanh/log1p pueden variar entre motores; la app no incorpora fdlibm ni promete trayectorias idénticas entre navegadores. Exportar runtime/motor JS como metadato orientativo y engineVersion como contrato matemático. El SHA-256 puro y el RNG entero sí tienen vectores exactos independientes del motor.
