@@ -2,6 +2,8 @@
 
 Fecha: 22/10/2026. Esta carpeta conserva el diseño completo 0.2. La primera aplicación D1 se documenta en [implementación 0.3](23-implementacion-d1.md), con funciones reales, pruebas y limitaciones. Las fases posteriores siguen pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
 
+La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
+
 ## Resumen revisable
 
 12 laboratorios, 12 talleres previstos, **152 conceptos**, **88 RF**, 24 RNF, **65 historias** y **26 diagramas Mermaid**. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js. Biblioteca/checkpoints en IndexedDB y preferencias/progreso en LocalStorage. Repositorio destino [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
