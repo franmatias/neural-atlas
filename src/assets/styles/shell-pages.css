@@ -540,13 +540,19 @@
   min-width: 0;
   color: var(--ink);
 }
-.glossary-pagination {
+.glossary-page-size {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
   align-items: center;
-  justify-content: center;
-  margin: 26px 0;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.glossary-page-size select {
+  padding: 10px;
+  min-height: 44px;
+  border-radius: 8px;
+  color: var(--ink);
 }
 .reference-note {
   font-size: 0.8rem;
