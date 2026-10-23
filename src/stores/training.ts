@@ -21,6 +21,7 @@ import { defaultGenerator, type RecipeId } from '@/domain/data/types';
 import { transformRow } from '@/domain/data/pipeline';
 import type { Cell } from '@/domain/data/types';
 import { useDatasetsStore } from './datasets';
+import { useRecoveryStore } from './recovery';
 import { trainingBudget } from '@/domain/training/budget';
 import { nextTick } from 'vue';
 import {
@@ -30,6 +31,8 @@ import {
 } from '@/application/training/experiment';
 export const useTrainingStore = defineStore('training', () => {
   const data = useDatasetsStore();
+  const recovery = useRecoveryStore();
+  void recovery.load().then(() => saveRecovery());
   const config = ref<TrainingConfig>({
     spec: { ...defaultSpec, hidden: [8, 8] },
     seed: 42,
@@ -102,7 +105,30 @@ export const useTrainingStore = defineStore('training', () => {
       pendingTest = false;
       analyze('test');
     }
+    if (event.state && event.type !== 'ERROR')
+      saveRecovery(
+        event.state,
+        ['READY', 'PAUSED', 'CANCELLED', 'COMPLETED', 'FROZEN'].includes(event.type),
+      );
   }
+  function saveRecovery(checkpoint = state.value, force = false) {
+    if (!checkpoint || !input.value || !data.split || !data.prepared) return;
+    recovery.offer(
+      [
+        data.dataset,
+        data.split,
+        data.prepared.pipeline.options,
+        input.value.pipelineHash,
+        input.value.config,
+        checkpoint,
+        threshold.value,
+        positive.value,
+        consulted.value,
+      ],
+      force,
+    );
+  }
+  watch([threshold, positive, consulted], () => saveRecovery(state.value, true));
   const locked = computed(() => !!input.value);
   const running = computed(
     () =>
@@ -135,6 +161,7 @@ export const useTrainingStore = defineStore('training', () => {
   const budget = computed(() => (source.value ? trainingBudget(source.value.input) : undefined));
   watch(budget, () => (budgetAccepted.value = false));
   function reset() {
+    recovery.reset();
     client.dispose();
     input.value = undefined;
     test.value = undefined;
@@ -371,5 +398,6 @@ export const useTrainingStore = defineStore('training', () => {
     preset,
     capture,
     restore,
+    saveRecovery,
   };
 });

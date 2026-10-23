@@ -15,14 +15,14 @@ export function storageError(error: unknown) {
           : 'UNAVAILABLE',
       );
 }
-/** v2 adds learning evidence while preserving the two v1 experiment stores. */
+/** Additive migrations preserve all earlier experiment and workshop stores. */
 export function openNeuralDatabase(
   factory: () => IDBFactory = () => indexedDB,
 ): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     let blocked = false;
     try {
-      const request = factory().open('neural-atlas', 2);
+      const request = factory().open('neural-atlas', 3);
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains('experiments'))
@@ -34,6 +34,8 @@ export function openNeuralDatabase(
           );
         if (!db.objectStoreNames.contains('learningEvidence'))
           db.createObjectStore('learningEvidence', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('trainingRecovery'))
+          db.createObjectStore('trainingRecovery', { keyPath: 'id' });
       };
       request.onerror = () => reject(storageError(request.error));
       request.onblocked = () => {
