@@ -127,7 +127,7 @@ test('rutas bajo subcarpeta, salto al contenido y CSP sin infracciones', async (
     ['', 'Entiende lo que ocurre'],
     ['#/laboratorios', 'Un recorrido'],
     ['#/lab/datos', 'Todo empieza'],
-    ['#/taller', 'Taller de investigación'],
+    ['#/taller', 'Investiga antes de concluir.'],
     ['#/biblioteca', 'Guarda lo que descubres.'],
     ['#/modelos', 'Un modelo, nuevas muestras.'],
     ['#/desconocida', 'Este lugar'],
