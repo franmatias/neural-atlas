@@ -66,15 +66,18 @@ export const useTrainingStore = defineStore('training', () => {
     if (code !== 'RECOVERED') error.value = code;
   });
   function accept(event: TrainingEvent) {
-    status.value = event.status;
-    progress.value = {
-      epoch: event.epoch,
-      update: event.update,
-      batchIndex: event.batchIndex,
-      cursor: event.cursor,
-      maxSliceMs: event.maxSliceMs,
-    };
-    if (event.state) state.value = event.state;
+    const recoveryCopy = event.type === 'RECOVERY_CHECKPOINT' || event.type === 'CHECKPOINT_READY';
+    if (event.type !== 'ACK' && !recoveryCopy) {
+      status.value = event.status;
+      progress.value = {
+        epoch: event.epoch,
+        update: event.update,
+        batchIndex: event.batchIndex,
+        cursor: event.cursor,
+        maxSliceMs: event.maxSliceMs,
+      };
+    }
+    if (event.state && !recoveryCopy) state.value = event.state;
     if (event.type === 'ERROR') {
       error.value = event.code ?? 'INTERNAL_ERROR';
       pendingTest = false;
