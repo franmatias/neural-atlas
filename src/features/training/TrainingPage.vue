@@ -10,6 +10,7 @@ import type { RecipeId } from '@/domain/data/types';
 import { formatData } from '@/shared/utils/data-format';
 import TrainingControls from './TrainingControls.vue';
 import RecoveryPanel from './RecoveryPanel.vue';
+import GradientControlPanel from './GradientControlPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -234,6 +235,11 @@ const alerts: Record<string, string> = {
         :playing="session.running && !prefs.reducedMotion"
         :speed="prefs.value.speed"
       />
+      <GradientControlPanel
+        v-if="session.state.gradientControl"
+        :control="session.state.gradientControl"
+        :updates="session.state.updates"
+      />
       <details>
         <summary>Registro por época y último lote</summary>
         <p>
@@ -266,9 +272,9 @@ const alerts: Record<string, string> = {
           </table>
         </div>
         <p>
-          Normas ||dW|| por capa del último lote:
+          Normas ||dW|| por capa del último lote, tras regularización y antes del recorte:
           {{ session.state.gradientNorms.map(formatData).join(' · ') }}. Estas normas no incluyen
-          los sesgos ni aplican clipping.
+          los sesgos. El panel de recorte muestra también ||db|| y las normas aplicadas.
         </p>
       </details>
       <section class="training-panel">

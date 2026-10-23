@@ -78,7 +78,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Mejorar en train significa generalizar?',
     group: 'learning',
     phase: 'D6',
-    available: false,
+    available: true,
   },
   {
     id: 'L09',
