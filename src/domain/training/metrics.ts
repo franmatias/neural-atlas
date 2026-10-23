@@ -109,7 +109,7 @@ export function regressionMetrics(actual: number[], predicted: number[], baselin
     rmse: Math.sqrt(mse),
     baselineMse,
     baselineMae,
-    r2: variance === 0 ? null : 1 - mse / variance,
+    r2: variance === 0 || !Number.isFinite(1 - mse / variance) ? null : 1 - mse / variance,
     residuals,
   };
 }

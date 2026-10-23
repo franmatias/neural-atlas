@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { trainingFixture } from '../fixtures/training';
 import { createNetwork, defaultSpec, forward } from '@/domain/network/model';
-import { backward } from '@/domain/network/backprop';
+import { backward, batchGradient, applyGradient } from '@/domain/network/backprop';
 import { forwardChunks, backwardChunks, exhaust } from '@/domain/training/kernel';
 import {
   createOptimizer,
@@ -25,8 +25,39 @@ import {
 } from '@/domain/training/session';
 import { classificationMetrics, regressionMetrics } from '@/domain/training/metrics';
 import oracle from '../../docs/fixtures/review-math.json';
+import { trainingBudget } from '@/domain/training/budget';
 
 describe('motor de entrenamiento cooperativo', () => {
+  it('SGD promedia una sola vez y coincide con un paso de lote del motor D3', () => {
+    const { input } = trainingFixture();
+    input.config.optimizer.kind = 'sgd';
+    input.config.batchSize = input.train.ids.length;
+    const initial = exhaust(initialSession(input));
+    const indices = initial.order;
+    const gradient = batchGradient(
+      initial.model,
+      indices.map((i) => input.train.x[i]!),
+      indices.map((i) => input.train.y[i]!),
+      input.config.loss,
+    );
+    const expected = applyGradient(initial.model, gradient.gradient, input.config.optimizer.rate);
+    const next = exhaust(advanceBatch(initial, input));
+    expect(next.model).toEqual(expected);
+    expect(next.updates).toBe(1);
+    expect(next.epoch).toBe(1);
+  });
+  it('el presupuesto no inventa tiempos ni omite la cola de lote', () => {
+    const { input } = trainingFixture();
+    input.config.batchSize = 9;
+    const budget = trainingBudget(input);
+    expect(budget.updates).toBe(28);
+    expect(budget.upper).toBeGreaterThan(budget.lower);
+    expect(budget.numericBytes).toBeGreaterThan(0);
+    expect(budget.extensive).toBe(false);
+    input.config.epochs = 10000;
+    input.config.batchSize = 1;
+    expect(trainingBudget(input).extensive).toBe(true);
+  });
   it.each(['moons', 'flowers', 'sine'] as const)(
     'forward/backward fragmentados coinciden con el motor D3: %s',
     (recipe) => {
@@ -302,6 +333,8 @@ describe('métricas con soporte y casos no definidos', () => {
     expect(() => classificationMetrics([0], [[0.1]], 2, 0.5, 3)).toThrow();
   });
   it('regresión conserva residuos, unidades y baseline ajustado en train', () => {
+    expect(regressionMetrics([1, 1], [1, 1], 1).r2).toBeNull();
+    expect(regressionMetrics([1e-160, 2e-160], [1, 1], 0).r2).toBeNull();
     expect(regressionMetrics([1, 3], [2, 1], 2)).toEqual({
       mse: 2.5,
       mae: 1.5,

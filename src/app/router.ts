@@ -38,6 +38,23 @@ export const routes = [
     component: () => import('@/features/planned/PlannedPage.vue'),
   },
   {
+    path: '/lab/entrenamiento',
+    name: 'training',
+    component: () => import('@/features/training/TrainingPage.vue'),
+  },
+  {
+    path: '/lab/clasificacion',
+    name: 'classification',
+    component: () => import('@/features/training/EvaluationPage.vue'),
+    props: { mode: 'classification' },
+  },
+  {
+    path: '/lab/regresion',
+    name: 'regression',
+    component: () => import('@/features/training/EvaluationPage.vue'),
+    props: { mode: 'regression' },
+  },
+  {
     path: '/glosario',
     name: 'glossary',
     component: () => import('@/features/glossary/GlossaryPage.vue'),
