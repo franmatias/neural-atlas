@@ -31,8 +31,14 @@ async function walk(dir){
 }
 const markdown=['README.md',...await walk('docs')];
 let linkCount=0;
+let inlineDiagrams=0;
 for(const file of markdown){
-  const source=(await read(file)).replace(/```[^\n]*\n[\s\S]*?```/g,'');
+  const original=await read(file);
+  for(const match of original.matchAll(/```mermaid\r?\n([\s\S]*?)```/g)){
+    await mermaid.parse(match[1]);
+    inlineDiagrams++;
+  }
+  const source=original.replace(/```[^\n]*\n[\s\S]*?```/g,'');
   for(const match of source.matchAll(/!?\[[^\]]*\]\(([^\s)]+)\)/g)){
     const href=match[1];
     if(/^(https?:|mailto:|data:|#)/.test(href))continue;
@@ -44,6 +50,7 @@ for(const file of markdown){
   }
 }
 console.log(`${markdown.length} documentos y ${linkCount} enlaces locales correctos.`);
+console.log(`${inlineDiagrams} diagramas Mermaid incluidos en Markdown con sintaxis válida.`);
 
 function tableIds(source,prefix){
   return [...source.matchAll(new RegExp(`^\\| (${prefix}\\d{3,}) \\|`,'gm'))].map(m=>m[1]);
