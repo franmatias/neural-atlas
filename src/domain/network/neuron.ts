@@ -23,8 +23,10 @@ export const defaultNeuron: Readonly<NeuronConfig> = {
   activation: 'sigmoid',
 };
 
-export function activate(z: number, kind: Activation): number {
+export function activate(z: number, kind: Activation, alpha = 0.01): number {
   if (!Number.isFinite(z)) throw new RangeError('Activation requires a finite scalar');
+  if (!Number.isFinite(alpha) || alpha < 0.001 || alpha > 0.3)
+    throw new RangeError('Invalid alpha');
   switch (kind) {
     case 'sigmoid': {
       const exp = Math.exp(-Math.abs(z));
@@ -35,7 +37,7 @@ export function activate(z: number, kind: Activation): number {
     case 'relu':
       return Math.max(0, z);
     case 'leakyRelu':
-      return z > 0 ? z : 0.01 * z;
+      return z > 0 ? z : alpha * z;
     case 'linear':
       return z;
     case 'step':
@@ -44,8 +46,8 @@ export function activate(z: number, kind: Activation): number {
       throw new RangeError('Unknown activation');
   }
 }
-export function activationDerivative(z: number, kind: Activation): number | null {
-  const a = activate(z, kind);
+export function activationDerivative(z: number, kind: Activation, alpha = 0.01): number | null {
+  const a = activate(z, kind, alpha);
   switch (kind) {
     case 'sigmoid':
       return a * (1 - a);
@@ -54,7 +56,7 @@ export function activationDerivative(z: number, kind: Activation): number | null
     case 'relu':
       return z > 0 ? 1 : 0;
     case 'leakyRelu':
-      return z > 0 ? 1 : 0.01;
+      return z > 0 ? 1 : alpha;
     case 'linear':
       return 1;
     case 'step':
