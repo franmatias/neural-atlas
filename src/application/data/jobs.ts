@@ -2,6 +2,13 @@ import { generateDataset } from '@/domain/data/generate';
 import { inspectNetwork } from '@/domain/network/inspection';
 import { trainPerceptron, solveXor } from '@/domain/network/learning';
 import type { Network } from '@/domain/network/model';
+import {
+  importInferenceModel,
+  exportInferenceModel,
+  predictWithModel,
+  type InferenceModel,
+} from '@/application/training/inference-model';
+import type { Cell } from '@/domain/data/types';
 import { splitDataset } from '@/domain/data/split';
 import {
   fitPipeline,
@@ -26,6 +33,9 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  importModel: { text: string };
+  exportModel: { model: InferenceModel };
+  predictModel: { model: InferenceModel; values: Record<string, Cell> };
   inspectNetwork: {
     model: Network;
     input: number[];
@@ -50,6 +60,9 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  importModel: InferenceModel;
+  exportModel: string;
+  predictModel: ReturnType<typeof predictWithModel>;
   inspectNetwork: ReturnType<typeof inspectNetwork>;
   perceptron: ReturnType<typeof trainPerceptron>;
   solveXor: ReturnType<typeof solveXor>;
@@ -69,6 +82,12 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'importModel':
+      return importInferenceModel(job.payload.text);
+    case 'exportModel':
+      return exportInferenceModel(job.payload.model);
+    case 'predictModel':
+      return predictWithModel(job.payload.model, job.payload.values);
     case 'inspectNetwork': {
       const p = job.payload;
       return inspectNetwork(p.model, p.input, p.target, p.layer, p.neuron);

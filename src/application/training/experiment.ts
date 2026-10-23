@@ -12,18 +12,16 @@ import {
 } from '@/domain/training/session';
 import { trainingSource } from './source';
 import { appVersion } from '@/shared/version';
+import {
+  networkSpecSchema as spec,
+  networkWireSchema,
+  networkWire,
+  networkFromWire,
+} from './network-schema';
 
 export const experimentLimit = 64 * 1024 * 1024;
 const finite = z.number().finite();
 const vector = z.array(finite).max(25000);
-const spec = z.strictObject({
-  inputs: z.number(),
-  hidden: z.array(z.number()).max(6),
-  activation: z.enum(['linear', 'sigmoid', 'tanh', 'relu', 'leakyRelu']),
-  task: z.enum(['binary', 'multiclass', 'regression']),
-  classes: z.number(),
-  alpha: finite,
-});
 const configSchema = z.strictObject({
   spec,
   seed: z.number(),
@@ -54,22 +52,7 @@ const checkpointSchema = z.strictObject({
   version: z.literal(1),
   frozen: z.boolean(),
   configHash: z.string(),
-  model: z.strictObject({
-    version: z.literal(1),
-    spec,
-    layers: z
-      .array(
-        z.strictObject({
-          inputs: z.number(),
-          outputs: z.number(),
-          activation: z.enum(['linear', 'sigmoid', 'tanh', 'relu', 'leakyRelu', 'softmax']),
-          weights: vector,
-          biases: vector,
-        }),
-      )
-      .min(1)
-      .max(7),
-  }),
+  model: networkWireSchema,
   optimizer: z.strictObject({
     step: z.number(),
     first: z.array(vector).max(14),
@@ -136,14 +119,7 @@ export function experimentWire(value: Experiment) {
     ...value,
     checkpoint: {
       ...value.checkpoint,
-      model: {
-        ...value.checkpoint.model,
-        layers: value.checkpoint.model.layers.map((l) => ({
-          ...l,
-          weights: Array.from(l.weights),
-          biases: Array.from(l.biases),
-        })),
-      },
+      model: networkWire(value.checkpoint.model),
       optimizer: {
         step: value.checkpoint.optimizer.step,
         first: value.checkpoint.optimizer.first.map((v) => Array.from(v)),
@@ -222,14 +198,7 @@ export function importExperiment(text: string): Experiment {
     ...wire,
     checkpoint: {
       ...state,
-      model: {
-        ...state.model,
-        layers: state.model.layers.map((l) => ({
-          ...l,
-          weights: new Float64Array(l.weights),
-          biases: new Float64Array(l.biases),
-        })),
-      },
+      model: networkFromWire(state.model),
       optimizer: {
         step: state.optimizer.step,
         first: state.optimizer.first.map((v) => new Float64Array(v)),
