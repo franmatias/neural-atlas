@@ -59,6 +59,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [25 · Implementación D2](25-implementacion-d2.md) | Datos, formatos, split, pipeline y evidencia |
 | [26 · Implementación D3](26-implementacion-d3.md) | MLP/perceptrón, activaciones, gradientes y lotes |
 | [27 · Ampliación del catálogo](27-ampliacion-conceptos.md) | 500 conceptos C153–C652, agrupación y mantenimiento |
+| [28 · Paginador del glosario](28-paginador-glosario.md) | Páginas numeradas, tamaños y navegación accesible |
 
 ## Qué revisar antes de D1
 

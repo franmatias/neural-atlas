@@ -28,18 +28,48 @@ async function render(q?: string) {
   return { wrapper, router };
 }
 describe('catálogo grande accesible y filtrado', () => {
+  it('salta a extremos, cambia el tamaño y no deja páginas vacías al filtrar', async () => {
+    const { wrapper } = await render();
+    expect(wrapper.findAll('.glossary-pagination')).toHaveLength(2);
+    expect(wrapper.findAll('.glossary-pagination [aria-current="page"]')).toHaveLength(2);
+    await wrapper.get('[aria-label="Ir a la página 24"]').trigger('click');
+    expect(wrapper.findAll('.concept-card')).toHaveLength(17);
+    expect(wrapper.get('[role=status]').text()).toContain('553–569 de 569');
+    expect(
+      wrapper
+        .get('.glossary-pagination .pagination-direction:last-child button:first-child')
+        .attributes('disabled'),
+    ).toBeDefined();
+    await wrapper.get('#concept-page-size').setValue('96');
+    expect(wrapper.findAll('.concept-card')).toHaveLength(96);
+    expect(wrapper.get('[role=status]').text()).toContain('Página 1 de 6');
+    await wrapper.get('[aria-label="Ir a la página 6"]').trigger('click');
+    expect(wrapper.findAll('.concept-card')).toHaveLength(89);
+    await wrapper.get('input[type=search]').setValue('C652');
+    expect(wrapper.findAll('.glossary-pagination')).toHaveLength(0);
+    expect(wrapper.findAll('.concept-card')).toHaveLength(1);
+    await wrapper.get('input[type=search]').setValue('ningun-concepto-coincide-12345');
+    expect(wrapper.get('[role=status]').text()).toContain('0–0 de 0');
+    expect(wrapper.findAll('.glossary-pagination')).toHaveLength(0);
+  });
   it('pagina 569 fichas y combina filtros sin perder la primera página', async () => {
     const { wrapper } = await render();
     expect(wrapper.findAll('.concept-card')).toHaveLength(24);
     expect(wrapper.get('[role=status]').text()).toContain('569');
-    await wrapper.get('.glossary-pagination button:last-child').trigger('click');
+    await wrapper
+      .get('.glossary-pagination .pagination-direction:last-child button:first-child')
+      .trigger('click');
     expect(wrapper.get('[role=status]').text()).toContain('Página 2');
-    await wrapper.get('.glossary-pagination button:first-child').trigger('click');
+    await wrapper
+      .get('.glossary-pagination .pagination-direction:first-child button:last-child')
+      .trigger('click');
     await wrapper.get('#concept-kind').setValue('reference');
     expect(wrapper.get('[role=status]').text()).toContain('500');
     await wrapper.get('#concept-topic').setValue('attention');
     expect(wrapper.get('[role=status]').text()).toContain('25 conceptos');
-    await wrapper.get('.glossary-pagination button:last-child').trigger('click');
+    await wrapper
+      .get('.glossary-pagination .pagination-direction:last-child button:first-child')
+      .trigger('click');
     expect(wrapper.findAll('.concept-card')).toHaveLength(1);
     await wrapper.get('input[type=search]').setValue('key-value cache');
     expect(wrapper.findAll('.concept-card')).toHaveLength(1);
