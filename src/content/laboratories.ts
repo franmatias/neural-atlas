@@ -33,7 +33,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Por qué una sola recta no siempre es suficiente?',
     group: 'foundations',
     phase: 'D3',
-    available: false,
+    available: true,
   },
   {
     id: 'L04',
@@ -42,7 +42,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué aporta la no linealidad?',
     group: 'foundations',
     phase: 'D3',
-    available: false,
+    available: true,
   },
   {
     id: 'L05',
@@ -51,7 +51,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Cómo se reparte el error entre los pesos?',
     group: 'learning',
     phase: 'D3',
-    available: false,
+    available: true,
   },
   {
     id: 'L06',

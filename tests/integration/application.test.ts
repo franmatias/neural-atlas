@@ -35,7 +35,7 @@ describe('navegación y contenido disponible', () => {
     await router.push('/laboratorios');
     await flushPromises();
     expect(wrapper.findAll('.lab-card')).toHaveLength(12);
-    expect(wrapper.findAll('.lab-card.live')).toHaveLength(2);
+    expect(wrapper.findAll('.lab-card.live')).toHaveLength(5);
     for (const [path, text] of [
       ['/lab/datos', 'Todo empieza en los datos.'],
       ['/taller', 'Taller de investigación'],
@@ -62,7 +62,7 @@ describe('navegación y contenido disponible', () => {
   });
   it('busca por inglés, muestra los tres niveles y un estado vacío honesto', async () => {
     const { wrapper } = await render('/glosario');
-    expect(wrapper.findAll('.concept-card')).toHaveLength(35);
+    expect(wrapper.findAll('.concept-card')).toHaveLength(69);
     await wrapper.get('input[type=search]').setValue('bias');
     expect(wrapper.findAll('.concept-card')).toHaveLength(1);
     expect(wrapper.get('.concept-card h2').text()).toBe('Sesgo');

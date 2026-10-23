@@ -1,6 +1,8 @@
 import { dataEs } from './data-es';
+import { networkEs } from './network-es';
 export const es = {
   ...dataEs,
+  ...networkEs,
   'brand.tagline': 'APRENDE. EXPERIMENTA. COMPRENDE.',
   'nav.home': 'Inicio',
   'nav.labs': 'Laboratorios',
@@ -13,8 +15,8 @@ export const es = {
   'nav.label': 'Navegación principal',
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
-  'app.delivery': 'Datos y neurona · D2',
-  'app.available': '2 laboratorios disponibles',
+  'app.delivery': 'Datos y redes · D3',
+  'app.available': '5 laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',
   'home.eyebrow': 'EL CONOCIMIENTO SE CONSTRUYE EXPERIMENTANDO',
@@ -94,7 +96,7 @@ export const es = {
   'glossary.eyebrow': 'CONECTA LAS IDEAS',
   'glossary.title': 'Las palabras del aprendizaje.',
   'glossary.description':
-    'Conceptos para explorar los datos y la neurona. Busca en español o en inglés y llévalos al laboratorio.',
+    'Conceptos para explorar datos, neuronas y gradientes. Busca en español o en inglés y llévalos al laboratorio.',
   'glossary.search': 'Buscar un concepto',
   'glossary.placeholder': 'Prueba con «bias», «peso» o «sigmoid»…',
   'glossary.count': '{count} conceptos disponibles',
@@ -173,7 +175,7 @@ export const es = {
   'activation.sigmoid': 'Sigmoide',
   'activation.tanh': 'Tanh',
   'activation.relu': 'ReLU',
-  'activation.leakyRelu': 'Leaky ReLU (α = 0,01)',
+  'activation.leakyRelu': 'Leaky ReLU',
   'activation.linear': 'Lineal',
   'activation.step': 'Escalón',
   'neuron.manual': 'Parámetros manuales · sin entrenamiento',

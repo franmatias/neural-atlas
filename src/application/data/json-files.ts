@@ -84,7 +84,7 @@ export function exportDatasetJson(dataset: Dataset, split?: DataSplit): string {
     schemaVersion: 1,
     dataHash: datasetHash(dataset),
     provenance: {
-      appVersion: '0.4.0',
+      appVersion: '0.5.0',
       synthetic: Boolean(dataset.recipe),
       recipeExact: Boolean(dataset.recipe) && dataset.revision === 1,
     },

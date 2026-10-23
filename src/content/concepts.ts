@@ -1,4 +1,5 @@
 import { dataConcepts } from './data-concepts';
+import { networkConcepts } from './network-concepts';
 export interface Concept {
   lab?: string;
   id: string;
@@ -12,6 +13,7 @@ export interface Concept {
 }
 export const concepts: readonly Concept[] = [
   ...dataConcepts,
+  ...networkConcepts,
   {
     id: 'C011',
     title: 'Vector de características',

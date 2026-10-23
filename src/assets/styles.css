@@ -4,6 +4,7 @@
 @import './styles/neuron.css';
 @import './styles/responsive.css';
 @import './styles/datasets.css';
+@import './styles/network.css';
 @theme {
   --font-sans: 'Segoe UI', system-ui, sans-serif;
 }
