@@ -82,9 +82,20 @@ try {
       await page.getByRole('heading', { name: 'Resultados: validación' }).waitFor();
       await page.getByRole('button', { name: 'Predecir muestra', exact: true }).click();
       await page.locator('.prediction-result').waitFor();
+      await page.goto(new URL('#/biblioteca', url).href);
+      await page.getByRole('heading', { name: 'Guarda lo que descubres.', exact: true }).waitFor();
+      await page.getByLabel('Nombre del experimento', { exact: true }).fill('Comprobación CI');
+      await page.getByRole('button', { name: 'Guardar como nuevo', exact: true }).click();
+      await page.getByText('Experimento guardado.', { exact: false }).waitFor();
+      await page.reload();
+      await page.getByRole('button', { name: 'Abrir Comprobación CI', exact: true }).click();
+      await page.getByRole('button', { name: 'Confirmar cambio', exact: true }).click();
+      await page.getByText('Experimento abierto en una sesión nueva.', { exact: false }).waitFor();
+      await page.getByRole('link', { name: 'Ir al entrenamiento', exact: true }).click();
+      await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, data pipeline, learned XOR, softmax and nine gradients at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation and persistent experiment reload at ${url}`,
       );
       failure = undefined;
       break;

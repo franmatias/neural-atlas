@@ -39,7 +39,7 @@ describe('navegación y contenido disponible', () => {
     for (const [path, text] of [
       ['/lab/datos', 'Todo empieza en los datos.'],
       ['/taller', 'Taller de investigación'],
-      ['/biblioteca', 'Tu biblioteca'],
+      ['/biblioteca', 'Guarda lo que descubres.'],
       ['/lab/desconocido', 'Este lugar'],
       ['/inexistente', 'Este lugar'],
     ]) {

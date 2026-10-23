@@ -61,6 +61,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [27 · Ampliación del catálogo](27-ampliacion-conceptos.md) | 500 conceptos C153–C652, agrupación y mantenimiento |
 | [28 · Paginador del glosario](28-paginador-glosario.md) | Páginas numeradas, tamaños y navegación accesible |
 | [29 · Implementación D4](29-implementacion-d4.md) | Entrenamiento CPU, recuperación, evaluación y predicción |
+| [30 · Biblioteca D5](30-biblioteca-d5.md) | Guardado transaccional, reanudación e intercambio de experimentos |
 
 ## Qué revisar antes de D1
 

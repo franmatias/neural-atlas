@@ -72,7 +72,7 @@ export const routes = [
   {
     path: '/biblioteca',
     name: 'library',
-    component: () => import('@/features/planned/PlannedPage.vue'),
+    component: () => import('@/features/library/LibraryPage.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
