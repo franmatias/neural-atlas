@@ -1,12 +1,12 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-Fecha: 22/10/2026. Esta carpeta conserva el diseño completo 0.2. La aplicación D1 se documenta en [implementación 0.3](23-implementacion-d1.md) y el laboratorio de datos D2 en [implementación 0.4](25-implementacion-d2.md), con funciones reales, pruebas y limitaciones. D3 y siguientes continúan pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
+Diseño inicial: 22/10/2026. Esta carpeta conserva la especificación 0.2. D1 se documenta en [implementación 0.3](23-implementacion-d1.md), D2 en [implementación 0.4](25-implementacion-d2.md) y D3 en [implementación 0.5](26-implementacion-d3.md), con funciones reales, pruebas y límites. D4 y siguientes continúan pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
 
 La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
 
 ## Resumen revisable
 
-12 laboratorios, 12 talleres previstos, **152 conceptos**, **88 RF**, 24 RNF, **65 historias** y **26 diagramas Mermaid**. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js. Biblioteca/checkpoints en IndexedDB y preferencias/progreso en LocalStorage. Repositorio destino [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
+Alcance de diseño: 12 laboratorios, 12 talleres previstos, **152 conceptos**, **88 RF**, 24 RNF y **65 historias**. El catálogo contiene **28 diagramas Mermaid**: 26 de diseño y dos de implementación D3. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js por fases. Biblioteca/checkpoints en IndexedDB y progreso docente siguen pendientes; las preferencias ya usan LocalStorage. Repositorio: [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
 
 La lista original se conserva y amplía con 52 conceptos; siguiente ID disponible C153, sin máximo fijo. Cada concepto lleva estado y entrega. MVP D1–D5 prioriza POE, diagnóstico y mapas junto al núcleo y T01–T05; v1.1 completa el alcance original; seis extensiones v1.2 quedan propuestas, no prometidas para el MVP.
 
@@ -46,7 +46,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [12 · Persistencia/offline](12-persistencia-offline-y-seguridad.md) | Cuotas, recuperación, PWA, Pages y seguridad |
 | [13 · Pruebas](13-pruebas-y-aceptacion.md) | Unidad, integración, E2E, cobertura y calidad |
 | [14 · Historias](14-historias-y-plan-git.md) | 65 historias, dependencias, esfuerzo y MVP |
-| [15 · Diagramas](15-diagramas.md) | 26 diagramas y sus fuentes editables |
+| [15 · Diagramas](15-diagramas.md) | 28 diagramas y sus fuentes editables |
 | [16 · Riesgos](16-riesgos-y-decisiones.md) | Decisiones propuestas y revisión |
 | [17 · Desarrollo](17-guia-de-desarrollo.md) | Cómo comprobar y mantener esta fase |
 | [18 · Fuentes](18-fuentes.md) | Referencias oficiales consultadas |
@@ -57,6 +57,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [23 · Implementación D1](23-implementacion-d1.md) | Neurona, interfaz y evidencia histórica |
 | [24 · GitHub Pages](24-despliegue-pages.md) | CI, publicación y comprobación pública |
 | [25 · Implementación D2](25-implementacion-d2.md) | Datos, formatos, split, pipeline y evidencia |
+| [26 · Implementación D3](26-implementacion-d3.md) | MLP/perceptrón, activaciones, gradientes y lotes |
 
 ## Qué revisar antes de D1
 

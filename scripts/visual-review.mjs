@@ -5,6 +5,7 @@ import { readFile, readdir, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const root=fileURLToPath(new URL('../',import.meta.url));
+const selectedPrefixes=process.argv.find(arg=>arg.startsWith('--only='))?.slice(7).split(',');
 const modulePath=process.env.NEURAL_ATLAS_PLAYWRIGHT;
 const {chromium}=await import(modulePath?pathToFileURL(modulePath).href:'playwright');
 const server=createServer(async(req,res)=>{
@@ -28,7 +29,7 @@ try{
   browser=await chromium.launch({headless:true,channel:'chrome'});
   const page=await browser.newPage({viewport:{width:1440,height:960},deviceScaleFactor:1});
   await mkdir(path.join(root,'docs','design','previews'),{recursive:true});
-  for(const [file,width,height]of [['desktop-light',1440,960],['desktop-dark',1440,960],['mobile',390,844]]){
+  for(const [file,width,height]of (selectedPrefixes?[]:[['desktop-light',1440,960],['desktop-dark',1440,960],['mobile',390,844]])){
     await page.setViewportSize({width,height});
     await page.goto(`${origin}/docs/design/${file}.svg`);
     await page.screenshot({path:path.join(root,'docs','design','previews',`${file}.png`)});
@@ -40,7 +41,7 @@ try{
     mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'neutral'});
     window.reviewMermaid=mermaid;
   });
-  const files=(await readdir(path.join(root,'docs','diagrams'))).filter(f=>f.endsWith('.mmd')).sort();
+  const files=(await readdir(path.join(root,'docs','diagrams'))).filter(f=>f.endsWith('.mmd')&&(!selectedPrefixes||selectedPrefixes.includes(f.slice(0,2)))).sort();
   await mkdir(path.join(root,'docs','diagrams','rendered'),{recursive:true});
   await mkdir(path.join(root,'docs','diagrams','previews'),{recursive:true});
   for(const [index,file]of files.entries()){
@@ -54,10 +55,10 @@ try{
     },{source,index});
     if(result.error||result.width<=0||result.height<=0)throw new Error(`Diagrama no renderizable: ${file}`);
     await writeFile(path.join(root,'docs','diagrams','rendered',file.replace(/\.mmd$/,'.svg')),result.svg);
-    if(['21','22','26'].includes(file.slice(0,2)))await page.screenshot({path:path.join(root,'docs','diagrams','previews',file.replace(/\.mmd$/,'.png')),fullPage:true});
+    if(['21','22','26','27','28'].includes(file.slice(0,2)))await page.screenshot({path:path.join(root,'docs','diagrams','previews',file.replace(/\.mmd$/,'.png')),fullPage:true});
   }
-  console.log(`${files.length} diagramas renderizados en Chrome y 3 PNG de wireframes capturados.`);
-  await writeFile(path.join(root,'docs','design','previews','README.md'),'# Previsualizaciones\n\nPNG de los SVG de referencia, capturados en Chrome a escala 1. Son wireframes estáticos de especificación, no una aplicación implementada. Se regeneran con el script opcional `visual-review.mjs` en un entorno con Playwright y Chrome instalados.\n');
+  console.log(`${files.length} diagramas renderizados en Chrome${selectedPrefixes?'':'; 3 PNG de wireframes capturados'}.`);
+  if(!selectedPrefixes)await writeFile(path.join(root,'docs','design','previews','README.md'),'# Previsualizaciones\n\nPNG de los SVG de referencia, capturados en Chrome a escala 1. Son wireframes estáticos de especificación, no una aplicación implementada. Se regeneran con el script opcional `visual-review.mjs` en un entorno con Playwright y Chrome instalados.\n');
 }finally{
   if(browser)await browser.close();
   await new Promise(resolve=>server.close(resolve));
