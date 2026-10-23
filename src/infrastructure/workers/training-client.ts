@@ -61,15 +61,16 @@ export class TrainingClient {
     private readonly factory: () => TrainingWorkerPort = () =>
       new Worker(new URL('./training.worker.ts', import.meta.url), { type: 'module' }),
   ) {}
-  start(input: TrainingInput) {
+  start(input: TrainingInput, checkpoint?: TrainingState) {
     validateTraining(input);
+    if (checkpoint) validateCheckpoint(checkpoint, input);
     this.dispose();
     this.input = structuredClone(input);
     this.identity = { ...this.identity, runId: crypto.randomUUID() };
-    this.checkpoints = [];
-    this.updates = 0;
-    this.frozen = false;
-    this.boot();
+    this.checkpoints = checkpoint ? [cloneState(checkpoint)] : [];
+    this.updates = checkpoint?.updates ?? 0;
+    this.frozen = checkpoint?.frozen ?? false;
+    this.boot(checkpoint);
     this.timer = setInterval(() => {
       if (document.hidden) {
         this.heartbeat = performance.now();

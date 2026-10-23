@@ -22,6 +22,12 @@ import { transformRow } from '@/domain/data/pipeline';
 import type { Cell } from '@/domain/data/types';
 import { useDatasetsStore } from './datasets';
 import { trainingBudget } from '@/domain/training/budget';
+import { nextTick } from 'vue';
+import {
+  captureExperiment,
+  prepareExperiment,
+  type Experiment,
+} from '@/application/training/experiment';
 export const useTrainingStore = defineStore('training', () => {
   const data = useDatasetsStore();
   const config = ref<TrainingConfig>({
@@ -175,6 +181,52 @@ export const useTrainingStore = defineStore('training', () => {
       client.send({ type, payload: { pace: pace.value } });
     else client.send({ type, payload: {} });
   }
+  function capture(): Experiment {
+    if (
+      !state.value ||
+      !input.value ||
+      !data.split ||
+      !data.prepared ||
+      running.value ||
+      evaluating.value
+    )
+      throw new Error('EXPERIMENT_BUSY');
+    return captureExperiment(
+      data.dataset,
+      data.split,
+      data.prepared.pipeline.options,
+      input.value.pipelineHash,
+      input.value.config,
+      state.value,
+      threshold.value,
+      positive.value,
+      consulted.value,
+    );
+  }
+  async function restore(snapshot: Experiment) {
+    // Fully validate before replacing the current workspace. Never automatically RUN.
+    const restored = prepareExperiment(snapshot);
+    const restoredKey = `${restored.source.input.dataHash}:${restored.source.input.splitHash}`;
+    const previouslyConsulted = consulted.value && consultedKey === restoredKey;
+    reset();
+    data.replace(restored.dataset, restored.split);
+    data.prepared = restored.prepared;
+    config.value = restored.source.input.config;
+    await nextTick(); // Allow source invalidation watcher to finish before starting the new Worker.
+    input.value = restored.source.input;
+    test.value = restored.source.test;
+    threshold.value = snapshot.threshold;
+    positive.value = snapshot.positive;
+    consulted.value = snapshot.testConsulted || previouslyConsulted;
+    consultedKey = restoredKey;
+    status.value = 'initializing';
+    try {
+      client.start(restored.source.input, snapshot.checkpoint);
+    } catch (caught) {
+      status.value = 'error';
+      error.value = caught instanceof Error ? caught.message : 'INTERNAL_ERROR';
+    }
+  }
   function analyze(split: 'train' | 'validation' | 'test') {
     const samples = split === 'test' ? test.value : input.value?.[split];
     if (!samples || !state.value) return;
@@ -317,5 +369,7 @@ export const useTrainingStore = defineStore('training', () => {
     analyze,
     freezeAndTest,
     preset,
+    capture,
+    restore,
   };
 });

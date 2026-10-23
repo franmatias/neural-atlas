@@ -3,6 +3,7 @@ import { datasetHash, utf8Length } from '@/domain/data/integrity';
 import { validateDataset } from '@/domain/data/validation';
 import { validateSplit } from '@/domain/data/split';
 import { datasetFileSchema } from './json-schema';
+import { appVersion } from '@/shared/version';
 export const jsonLimit = 32 * 1024 * 1024;
 export function guardJson(value: unknown, depth = 0): void {
   if (depth > 20) throw new DataError('LIMIT', 'depth');
@@ -84,7 +85,7 @@ export function exportDatasetJson(dataset: Dataset, split?: DataSplit): string {
     schemaVersion: 1,
     dataHash: datasetHash(dataset),
     provenance: {
-      appVersion: '0.6.0',
+      appVersion,
       synthetic: Boolean(dataset.recipe),
       recipeExact: Boolean(dataset.recipe) && dataset.revision === 1,
     },
