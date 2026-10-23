@@ -70,6 +70,19 @@ try {
         9,
       );
       assert.deepEqual(errors, []);
+      await page.goto(new URL('#/lab/entrenamiento', url).href);
+      await page.getByRole('button', { name: 'Cargar ejemplo y sustituir datos' }).click();
+      await page.getByText('train 280 / validación 60 / test 60.', { exact: false }).waitFor();
+      await page.getByLabel('Épocas máximas', { exact: true }).fill('2');
+      await page.getByRole('button', { name: 'Inicializar modelo', exact: true }).click();
+      await page.getByRole('button', { name: 'Entrenar', exact: true }).click();
+      await page.locator('.training-status').filter({ hasText: 'Épocas completadas' }).waitFor();
+      await page.getByRole('link', { name: 'Evaluar este modelo' }).click();
+      await page.getByRole('button', { name: 'Evaluar validación', exact: true }).click();
+      await page.getByRole('heading', { name: 'Resultados: validación' }).waitFor();
+      await page.getByRole('button', { name: 'Predecir muestra', exact: true }).click();
+      await page.locator('.prediction-result').waitFor();
+      assert.deepEqual(errors, []);
       console.log(
         `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, data pipeline, learned XOR, softmax and nine gradients at ${url}`,
       );

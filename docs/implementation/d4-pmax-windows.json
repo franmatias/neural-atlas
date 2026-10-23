@@ -1,0 +1,81 @@
+{
+  "version": "0.6.0",
+  "environment": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "architecture": "x64",
+    "cpu": "AMD Ryzen 5 5600H with Radeon Graphics         ",
+    "logicalCpus": 12,
+    "memoryGiB": 14,
+    "node": "24.19.0",
+    "playwright": "1.64.1",
+    "browsers": [
+      {
+        "name": "chromium",
+        "revision": "1248",
+        "browserVersion": "156.0.8078.4"
+      },
+      {
+        "name": "webkit",
+        "revision": "2370",
+        "browserVersion": "27.2"
+      }
+    ]
+  },
+  "workerAsset": "training.worker-DaJpqupX.js",
+  "workerSha256": "b6f3876c4ce0ba754f48b61c474824f2cbaa2de3b6177c571239ce3a11a95be1",
+  "fixture": {
+    "samples": 10000,
+    "features": 32,
+    "classes": 10,
+    "hidden": [
+      64,
+      64,
+      64,
+      64,
+      64,
+      64
+    ],
+    "train": 8000,
+    "validation": 2000,
+    "batchSize": 8000,
+    "latenciesPerBrowser": 10,
+    "limitP95Ms": 250
+  },
+  "samples": [
+    {
+      "project": "chromium",
+      "latencies": [
+        1.5999999940395355,
+        2.1000000089406967,
+        3.699999988079071,
+        4.300000011920929,
+        1.7999999970197678,
+        1.5,
+        1.8999999910593033,
+        1.699999988079071,
+        1.699999988079071,
+        1.4000000059604645
+      ],
+      "p95": 4.300000011920929,
+      "maxSliceMs": 57.8999999910593
+    },
+    {
+      "project": "webkit",
+      "latencies": [
+        4,
+        2,
+        3,
+        2,
+        1,
+        4,
+        3,
+        1,
+        3,
+        2
+      ],
+      "p95": 4,
+      "maxSliceMs": 10
+    }
+  ]
+}

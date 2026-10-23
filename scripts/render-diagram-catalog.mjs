@@ -1,6 +1,8 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const descriptions = {
+  '29': ['Recuperación implementada en D4', 'UML de secuencia de la implementación: checkpoint cero, confirmación atómica, pausa y recuperación sin reanudación automática.'],
+  '30': ['Estados implementados en D4', 'UML de estados de entrenamiento y congelación: consultar test nunca habilita más aprendizaje en la misma sesión.'],
   '27': ['Inspección implementada en D3', 'UML de secuencia de la implementación real: Worker de datos, snapshot, mapa, normas y cancelación.'],
   '28': ['Actualización única en D3', 'UML de estados de la implementación real: inspección sin mutación y aplicación protegida de un gradiente.'],
   '01': ['Contexto del sistema', 'Contexto, en flowchart: personas, aplicación y almacenamiento. No representa un backend.'],
