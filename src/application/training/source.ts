@@ -57,6 +57,7 @@ export function trainingSource(
     config: {
       ...config,
       optimizer: { ...config.optimizer },
+      ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
       spec: {
         ...config.spec,
         hidden: [...config.spec.hidden],
