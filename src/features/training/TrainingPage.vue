@@ -9,6 +9,7 @@ import { parameterCount } from '@/domain/network/model';
 import type { RecipeId } from '@/domain/data/types';
 import { formatData } from '@/shared/utils/data-format';
 import TrainingControls from './TrainingControls.vue';
+import RecoveryPanel from './RecoveryPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -91,6 +92,7 @@ const alerts: Record<string, string> = {
       >
     </section>
     <TrainingControls />
+    <RecoveryPanel />
     <section v-if="session.budget" class="training-panel">
       <h2>Presupuesto del experimento</h2>
       <p>

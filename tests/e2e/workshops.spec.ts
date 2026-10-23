@@ -73,7 +73,7 @@ for (const id of ['T01', 'T02', 'T03', 'T04', 'T05']) {
     ).toBeVisible();
   });
 }
-test('migración nativa v1→v2 conserva experimentos y sus tensores', async ({ page }) => {
+test('migración nativa v1→v3 conserva experimentos y sus tensores', async ({ page }) => {
   await page.goto('#/');
   await page.evaluate(async () => {
     await new Promise<void>((resolve, reject) => {
@@ -120,7 +120,7 @@ test('migración nativa v1→v2 conserva experimentos y sus tensores', async ({ 
         };
       }),
   );
-  expect(result).toEqual({ version: 2, weights: [0.25, -0.5] });
+  expect(result).toEqual({ version: 3, weights: [0.25, -0.5] });
 });
 test('actividad compartida sin soluciones, archivo inválido y vista accesible', async ({
   page,
