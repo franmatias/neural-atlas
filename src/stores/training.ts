@@ -8,6 +8,7 @@ import type {
   AnalysisResult,
 } from '@/application/training/protocol';
 import { defaultOptimizer } from '@/domain/training/optimizer';
+import { defaultRegularization } from '@/domain/training/regularization';
 import {
   diagnostics,
   type TrainingConfig,
@@ -41,6 +42,7 @@ export const useTrainingStore = defineStore('training', () => {
     epochs: 300,
     batchSize: 16,
     loss: 'mse',
+    regularization: { ...defaultRegularization },
   });
   const input = shallowRef<TrainingInput>();
   const test = shallowRef<Samples>();

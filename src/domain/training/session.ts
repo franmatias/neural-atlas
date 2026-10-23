@@ -21,6 +21,14 @@ import {
   type OptimizerState,
 } from './optimizer';
 import { forwardChunks, backwardChunks } from './kernel';
+import {
+  controlGradient,
+  penalty,
+  validateRegularization,
+  validateGradientControl,
+  type Regularization,
+  type GradientControl,
+} from './regularization';
 export interface Samples {
   ids: string[];
   x: number[][];
@@ -34,6 +42,7 @@ export interface TrainingConfig {
   epochs: number;
   batchSize: number;
   loss: RegressionLoss;
+  regularization?: Regularization;
 }
 export interface TrainingInput {
   train: Samples;
@@ -52,6 +61,8 @@ export interface EpochPoint {
   trainScore: number;
   validationScore: number;
   gradientNorm: number;
+  regularizationPenalty?: number;
+  trainObjective?: number;
 }
 export interface TrainingState {
   frozen: boolean;
@@ -68,6 +79,7 @@ export interface TrainingState {
   history: EpochPoint[];
   gradientNorms: number[];
   baseline: number;
+  gradientControl?: GradientControl;
 }
 export function configHash(input: TrainingInput) {
   return hashValue({
@@ -76,7 +88,7 @@ export function configHash(input: TrainingInput) {
     splitHash: input.splitHash,
     pipelineHash: input.pipelineHash,
     classOrder: input.classOrder,
-    engineVersion: 1,
+    engineVersion: input.config.regularization ? 2 : 1,
   });
 }
 export function validateSamples(samples: Samples, config: TrainingConfig) {
@@ -105,6 +117,7 @@ export function validateTraining(input: TrainingInput) {
   validateSpec(c.spec);
   validateOptimizer(c.optimizer);
   validateSeed(c.seed);
+  if (c.regularization) validateRegularization(c.regularization);
   if (
     !Number.isInteger(c.epochs) ||
     c.epochs < 1 ||
@@ -194,10 +207,30 @@ export function* initialSession(input: TrainingInput): Generator<void, TrainingS
         trainScore: train.score,
         validationScore: validation.score,
         gradientNorm: 0,
+        ...(input.config.regularization
+          ? {
+              regularizationPenalty: penalty(model, input.config.regularization),
+              trainObjective: train.loss + penalty(model, input.config.regularization),
+            }
+          : {}),
       },
     ],
     gradientNorms: model.layers.map(() => 0),
     baseline,
+    ...(input.config.regularization
+      ? {
+          gradientControl: {
+            rawNorm: 0,
+            appliedNorm: 0,
+            scale: 1,
+            clippedUpdates: 0,
+            rawWeights: model.layers.map(() => 0),
+            rawBiases: model.layers.map(() => 0),
+            appliedWeights: model.layers.map(() => 0),
+            appliedBiases: model.layers.map(() => 0),
+          },
+        }
+      : {}),
   };
 }
 export function* advanceBatch(
@@ -229,14 +262,24 @@ export function* advanceBatch(
       yield;
     }
   }
+  const controlled = input.config.regularization
+    ? yield* controlGradient(
+        state.model,
+        gradient,
+        input.config.regularization,
+        state.gradientControl?.clippedUpdates ?? 0,
+      )
+    : undefined;
   const candidate = yield* optimizerStep(
     state.model,
     state.optimizer,
-    gradient,
+    controlled?.gradient ?? gradient,
     input.config.optimizer,
     learningRate(input.config.optimizer, state.epoch, input.config.epochs),
   );
-  const gradientNorms = state.model.layers.map((_, l) => stableNorm(gradient[l * 2]!));
+  const gradientNorms =
+    controlled?.telemetry.rawWeights ??
+    state.model.layers.map((_, l) => stableNorm(gradient[l * 2]!));
   if (gradientNorms.some((n) => !Number.isFinite(n))) throw new RangeError('NON_FINITE');
   const next: TrainingState = {
     ...state,
@@ -246,6 +289,7 @@ export function* advanceBatch(
     batchIndex: state.batchIndex + 1,
     lastBatchIds: indices.map((i) => input.train.ids[i]!),
     gradientNorms,
+    ...(controlled ? { gradientControl: controlled.telemetry } : {}),
   };
   if (next.cursor === state.order.length) {
     const train = yield* evaluateChunks(next.model, input.train, input.config.loss),
@@ -268,6 +312,12 @@ export function* advanceBatch(
         trainScore: train.score,
         validationScore: validation.score,
         gradientNorm: Math.max(...gradientNorms),
+        ...(input.config.regularization
+          ? {
+              regularizationPenalty: penalty(next.model, input.config.regularization),
+              trainObjective: train.loss + penalty(next.model, input.config.regularization),
+            }
+          : {}),
       },
     ];
   }
@@ -286,12 +336,56 @@ export function cloneState(state: TrainingState): TrainingState {
     lastBatchIds: [...state.lastBatchIds],
     history: state.history.map((p) => ({ ...p })),
     gradientNorms: [...state.gradientNorms],
+    ...(state.gradientControl
+      ? {
+          gradientControl: {
+            ...state.gradientControl,
+            rawWeights: [...state.gradientControl.rawWeights],
+            rawBiases: [...state.gradientControl.rawBiases],
+            appliedWeights: [...state.gradientControl.appliedWeights],
+            appliedBiases: [...state.gradientControl.appliedBiases],
+          },
+        }
+      : {}),
   };
 }
 export function validateCheckpoint(state: TrainingState, input: TrainingInput) {
   validateTraining(input);
   validateNetwork(state.model);
   validateOptimizerState(state.model, state.optimizer);
+  if (input.config.regularization) {
+    if (!state.gradientControl) throw new RangeError('CHECKPOINT');
+    validateGradientControl(
+      state.gradientControl,
+      state.model.layers.length,
+      state.updates,
+      input.config.regularization,
+    );
+    for (const point of state.history)
+      if (
+        point.regularizationPenalty === undefined ||
+        point.regularizationPenalty < 0 ||
+        point.trainObjective === undefined ||
+        Math.abs(point.trainObjective - point.trainLoss - point.regularizationPenalty) >
+          1e-10 * Math.max(1, point.trainObjective)
+      )
+        throw new RangeError('CHECKPOINT');
+    if (
+      state.cursor === 0 &&
+      Math.abs(
+        state.history.at(-1)!.regularizationPenalty! -
+          penalty(state.model, input.config.regularization),
+      ) >
+        1e-10 * Math.max(1, state.history.at(-1)!.regularizationPenalty!)
+    )
+      throw new RangeError('CHECKPOINT');
+  } else if (
+    state.gradientControl ||
+    state.history.some(
+      (point) => point.regularizationPenalty !== undefined || point.trainObjective !== undefined,
+    )
+  )
+    throw new RangeError('CHECKPOINT');
   const batches = Math.ceil(input.train.ids.length / input.config.batchSize);
   const expectedOrder = shuffle(
     input.train.ids.map((_, index) => index),

@@ -3,6 +3,11 @@ import { inspectNetwork } from '@/domain/network/inspection';
 import { trainPerceptron, solveXor } from '@/domain/network/learning';
 import type { Network } from '@/domain/network/model';
 import { runWorkshop } from '@/application/workshops/experiments';
+import {
+  compareGeneralization,
+  type GeneralizationOptions,
+  type GeneralizationResult,
+} from '@/application/training/generalization';
 import type { WorkshopEvidence, WorkshopOptions } from '@/application/workshops/contracts';
 import {
   importInferenceModel,
@@ -35,6 +40,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  generalization: GeneralizationOptions;
   workshop: { caseId: WorkshopEvidence['caseId']; options: WorkshopOptions };
   importModel: { text: string };
   exportModel: { model: InferenceModel };
@@ -63,6 +69,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  generalization: GeneralizationResult;
   workshop: WorkshopEvidence;
   importModel: InferenceModel;
   exportModel: string;
@@ -86,6 +93,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'generalization':
+      return compareGeneralization(job.payload);
     case 'workshop':
       return runWorkshop(job.payload.caseId, job.payload.options);
     case 'importModel':

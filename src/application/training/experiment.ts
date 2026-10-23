@@ -41,6 +41,13 @@ const configSchema = z.strictObject({
   epochs: z.number(),
   batchSize: z.number(),
   loss: z.enum(['mse', 'mae']),
+  regularization: z
+    .strictObject({
+      l1: finite.min(0).max(0.1),
+      l2: finite.min(0).max(0.1),
+      clipNorm: finite.refine((v) => v === 0 || (v >= 0.1 && v <= 100)),
+    })
+    .optional(),
 });
 const optionsSchema = z.strictObject({
   featureIds: z.array(z.string()).min(1).max(32),
@@ -74,16 +81,30 @@ const checkpointSchema = z.strictObject({
         trainScore: finite,
         validationScore: finite,
         gradientNorm: finite,
+        regularizationPenalty: finite.min(0).optional(),
+        trainObjective: finite.min(0).optional(),
       }),
     )
     .max(10001),
   gradientNorms: z.array(finite).max(7),
   baseline: finite,
+  gradientControl: z
+    .strictObject({
+      rawNorm: finite.min(0),
+      appliedNorm: finite.min(0),
+      scale: finite.min(0).max(1),
+      clippedUpdates: z.number().int().min(0),
+      rawWeights: z.array(finite.min(0)).max(7),
+      rawBiases: z.array(finite.min(0)).max(7),
+      appliedWeights: z.array(finite.min(0)).max(7),
+      appliedBiases: z.array(finite.min(0)).max(7),
+    })
+    .optional(),
 });
 const fileSchema = z.strictObject({
   format: z.literal('neural-atlas.experiment'),
-  schemaVersion: z.literal(1),
-  engineVersion: z.literal(1),
+  schemaVersion: z.union([z.literal(1), z.literal(2)]),
+  engineVersion: z.union([z.literal(1), z.literal(2)]),
   appVersion: z
     .string()
     .regex(/^\d+\.\d+\.\d+$/)
@@ -100,8 +121,8 @@ const fileSchema = z.strictObject({
 });
 export interface Experiment {
   format: 'neural-atlas.experiment';
-  schemaVersion: 1;
-  engineVersion: 1;
+  schemaVersion: 1 | 2;
+  engineVersion: 1 | 2;
   appVersion: string;
   savedAt: string;
   dataset: unknown;
@@ -130,6 +151,9 @@ export function experimentWire(value: Experiment) {
 }
 export function prepareExperiment(value: Experiment) {
   const wire = fileSchema.parse(experimentWire(value));
+  const version = wire.config.regularization ? 2 : 1;
+  if (wire.schemaVersion !== version || wire.engineVersion !== version)
+    throw new Error('EXPERIMENT_VERSION');
   const { dataset, split } = importDatasetJson(JSON.stringify(wire.dataset));
   if (!split) throw new Error('EXPERIMENT_SPLIT');
   const pipeline = fitPipeline(dataset, split, wire.pipelineOptions);
@@ -158,8 +182,8 @@ export function captureExperiment(
 ): Experiment {
   const result: Experiment = {
     format: 'neural-atlas.experiment',
-    schemaVersion: 1,
-    engineVersion: 1,
+    schemaVersion: config.regularization ? 2 : 1,
+    engineVersion: config.regularization ? 2 : 1,
     appVersion,
     savedAt: new Date().toISOString(),
     dataset: JSON.parse(exportDatasetJson(dataset, split)) as unknown,
@@ -169,6 +193,7 @@ export function captureExperiment(
       ...config,
       spec: { ...config.spec, hidden: [...config.spec.hidden] },
       optimizer: { ...config.optimizer },
+      ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
     },
     checkpoint: cloneState(checkpoint),
     threshold,
