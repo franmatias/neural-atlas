@@ -277,6 +277,7 @@ describe('une forward, backward y aplicación exactamente una vez', () => {
       .find((b) => b.text() === 'Aplicar una actualización')!
       .trigger('click');
     expect(state.applied).toBe(true);
+    expect(wrapper.get('#prop-rate').attributes('disabled')).toBeDefined();
     expect(state.after).toBeLessThan(state.trace.result.loss);
     expect(state.model).not.toEqual(before);
     await wrapper.get('.chain-stages button:first-child').trigger('click');
