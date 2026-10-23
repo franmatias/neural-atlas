@@ -31,9 +31,12 @@ try {
       await page.getByRole('button', { name: 'Oscuro', exact: true }).click();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
       await page.getByRole('link', { name: 'Conectar con el glosario' }).click();
-      await page.getByRole('searchbox').fill('bias');
+      await page.getByRole('searchbox').fill('C028');
       await page.locator('.concept-card').filter({ hasText: 'Sesgo' }).waitFor();
       assert.equal(await page.locator('.concept-card').count(), 1);
+      await page.getByRole('searchbox').fill('C652');
+      await page.locator('.concept-card').filter({hasText:'Paridad demográfica'}).waitFor();
+      assert.equal(await page.locator('.concept-card').count(),1);
       await page.goto(new URL('#/lab/datos', url).href);
       await page
         .getByRole('heading', { level: 1 })

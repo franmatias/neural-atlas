@@ -1,0 +1,3626 @@
+{
+  "format": "neural-atlas.reference-catalog",
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "algebra",
+      "title": "Álgebra lineal y geometría",
+      "entries": [
+        {
+          "id": "C153",
+          "title": "Producto de Hadamard",
+          "english": "Hadamard product",
+          "definition": "Multiplicación elemento a elemento de matrices de igual forma; no suma sobre índices como el producto matricial.",
+          "aliases": []
+        },
+        {
+          "id": "C154",
+          "title": "Producto de Kronecker",
+          "english": "Kronecker product",
+          "definition": "Construye una matriz por bloques multiplicando cada elemento de una matriz por todos los elementos de otra.",
+          "aliases": []
+        },
+        {
+          "id": "C155",
+          "title": "Producto exterior",
+          "english": "Outer product",
+          "definition": "Combina dos vectores en una matriz cuyos elementos son todos los productos entre sus componentes.",
+          "aliases": []
+        },
+        {
+          "id": "C156",
+          "title": "Transpuesta de una matriz",
+          "english": "Matrix transpose",
+          "definition": "Intercambia filas y columnas. En una capa densa permite expresar cómo se propagan contribuciones hacia las entradas.",
+          "aliases": []
+        },
+        {
+          "id": "C157",
+          "title": "Matriz identidad",
+          "english": "Identity matrix",
+          "definition": "Matriz cuadrada con unos en la diagonal y ceros fuera; multiplicarla conserva un vector compatible.",
+          "aliases": []
+        },
+        {
+          "id": "C158",
+          "title": "Matriz diagonal",
+          "english": "Diagonal matrix",
+          "definition": "Matriz cuyos elementos fuera de la diagonal son cero; representa escalados independientes de coordenadas.",
+          "aliases": []
+        },
+        {
+          "id": "C159",
+          "title": "Matriz simétrica",
+          "english": "Symmetric matrix",
+          "definition": "Matriz cuadrada igual a su transpuesta; las covarianzas y las Hessianas suficientemente regulares tienen esta estructura.",
+          "aliases": []
+        },
+        {
+          "id": "C160",
+          "title": "Matriz ortogonal",
+          "english": "Orthogonal matrix",
+          "definition": "Matriz real cuadrada cuya transpuesta es su inversa; conserva productos internos, distancias y normas euclídeas.",
+          "aliases": []
+        },
+        {
+          "id": "C161",
+          "title": "Matriz inversa",
+          "english": "Matrix inverse",
+          "definition": "Transformación que deshace una matriz cuadrada invertible; no existe si sus columnas son linealmente dependientes.",
+          "aliases": []
+        },
+        {
+          "id": "C162",
+          "title": "Pseudoinversa de Moore–Penrose",
+          "english": "Moore–Penrose pseudoinverse",
+          "definition": "Generaliza la inversa a matrices rectangulares o singulares y permite construir soluciones de mínimos cuadrados.",
+          "aliases": []
+        },
+        {
+          "id": "C163",
+          "title": "Rango matricial",
+          "english": "Matrix rank",
+          "definition": "Número de columnas o filas linealmente independientes; limita cuántas direcciones distintas puede representar una transformación.",
+          "aliases": []
+        },
+        {
+          "id": "C164",
+          "title": "Traza matricial",
+          "english": "Matrix trace",
+          "definition": "Suma de elementos diagonales de una matriz cuadrada; coincide con la suma de sus autovalores contando multiplicidades.",
+          "aliases": []
+        },
+        {
+          "id": "C165",
+          "title": "Determinante",
+          "english": "Determinant",
+          "definition": "Factor orientado de cambio de volumen de una transformación cuadrada; un valor cero indica singularidad.",
+          "aliases": []
+        },
+        {
+          "id": "C166",
+          "title": "Autovalor",
+          "english": "Eigenvalue",
+          "definition": "Escalar que describe el factor de cambio de un autovector cuando se aplica una transformación lineal.",
+          "aliases": []
+        },
+        {
+          "id": "C167",
+          "title": "Autovector",
+          "english": "Eigenvector",
+          "definition": "Vector no nulo cuya dirección permanece en su misma recta después de aplicar una matriz.",
+          "aliases": []
+        },
+        {
+          "id": "C168",
+          "title": "Descomposición espectral",
+          "english": "Spectral decomposition",
+          "definition": "Expresa una matriz diagonalizable mediante autovectores y autovalores; una matriz simétrica real admite una base ortonormal.",
+          "aliases": []
+        },
+        {
+          "id": "C169",
+          "title": "Descomposición en valores singulares",
+          "english": "Singular value decomposition",
+          "definition": "Factoriza una matriz como UΣVᵀ y permite estudiar rango, aproximaciones de bajo rango y direcciones dominantes.",
+          "aliases": ["SVD"]
+        },
+        {
+          "id": "C170",
+          "title": "Norma infinito",
+          "english": "Infinity norm",
+          "definition": "Para un vector, máximo valor absoluto de sus componentes; no equivale a sumar magnitudes.",
+          "aliases": []
+        },
+        {
+          "id": "C171",
+          "title": "Similitud coseno",
+          "english": "Cosine similarity",
+          "definition": "Producto interno dividido por las normas de dos vectores no nulos; compara orientación sin medir directamente distancia.",
+          "aliases": []
+        },
+        {
+          "id": "C172",
+          "title": "Distancia de Mahalanobis",
+          "english": "Mahalanobis distance",
+          "definition": "Mide separación teniendo en cuenta escalas y correlaciones mediante una matriz de covarianza invertible o regularizada.",
+          "aliases": []
+        },
+        {
+          "id": "C173",
+          "title": "Espacio columna",
+          "english": "Column space",
+          "definition": "Subespacio formado por todas las combinaciones lineales de las columnas de una matriz.",
+          "aliases": []
+        },
+        {
+          "id": "C174",
+          "title": "Núcleo de una transformación",
+          "english": "Null space",
+          "definition": "Conjunto de vectores que una transformación lineal envía al vector cero; identifica direcciones que pierde.",
+          "aliases": []
+        },
+        {
+          "id": "C175",
+          "title": "Base ortonormal",
+          "english": "Orthonormal basis",
+          "definition": "Conjunto de vectores unitarios mutuamente ortogonales que genera un espacio, facilitando representar coordenadas y proyecciones.",
+          "aliases": []
+        },
+        {
+          "id": "C176",
+          "title": "Proyección ortogonal",
+          "english": "Orthogonal projection",
+          "definition": "Componente de un vector en un subespacio que deja un residuo perpendicular a ese subespacio.",
+          "aliases": []
+        },
+        {
+          "id": "C177",
+          "title": "Número de condición",
+          "english": "Condition number",
+          "definition": "Cuantifica sensibilidad relativa de un problema a perturbaciones; un valor elevado puede amplificar errores de datos o redondeo.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "calculus",
+      "title": "Cálculo y métodos numéricos",
+      "entries": [
+        {
+          "id": "C178",
+          "title": "Matriz Jacobiana",
+          "english": "Jacobian matrix",
+          "definition": "Agrupa todas las derivadas parciales de una función vectorial; cada fila corresponde a una componente de salida.",
+          "aliases": []
+        },
+        {
+          "id": "C179",
+          "title": "Matriz Hessiana",
+          "english": "Hessian matrix",
+          "definition": "Matriz de segundas derivadas parciales de una función escalar; describe curvatura local bajo hipótesis de regularidad.",
+          "aliases": []
+        },
+        {
+          "id": "C180",
+          "title": "Operador laplaciano",
+          "english": "Laplacian operator",
+          "definition": "Suma de segundas derivadas respecto a las coordenadas; aparece en suavizado, ecuaciones diferenciales y geometría.",
+          "aliases": []
+        },
+        {
+          "id": "C181",
+          "title": "Expansión de Taylor",
+          "english": "Taylor expansion",
+          "definition": "Aproxima localmente una función usando derivadas en un punto; el error depende del orden y de la regularidad.",
+          "aliases": []
+        },
+        {
+          "id": "C182",
+          "title": "Derivada direccional",
+          "english": "Directional derivative",
+          "definition": "Variación infinitesimal de una función al desplazarse siguiendo una dirección concreta desde un punto.",
+          "aliases": []
+        },
+        {
+          "id": "C183",
+          "title": "Diferencial total",
+          "english": "Total differential",
+          "definition": "Aproximación lineal del cambio de una función diferenciable ante pequeñas variaciones simultáneas de sus entradas.",
+          "aliases": []
+        },
+        {
+          "id": "C184",
+          "title": "Regla del producto",
+          "english": "Product rule",
+          "definition": "La derivada de un producto suma la derivada de cada factor multiplicada por los demás factores.",
+          "aliases": []
+        },
+        {
+          "id": "C185",
+          "title": "Regla del cociente",
+          "english": "Quotient rule",
+          "definition": "Calcula la derivada de una razón de funciones donde el denominador no es cero.",
+          "aliases": []
+        },
+        {
+          "id": "C186",
+          "title": "Subgradiente",
+          "english": "Subgradient",
+          "definition": "Generaliza ciertas derivadas en funciones convexas no diferenciables mediante pendientes de hiperplanos de soporte.",
+          "aliases": []
+        },
+        {
+          "id": "C187",
+          "title": "Convexidad",
+          "english": "Convexity",
+          "definition": "Una función es convexa cuando su valor en una mezcla no supera la mezcla de valores; facilita garantías de optimización.",
+          "aliases": []
+        },
+        {
+          "id": "C188",
+          "title": "Convexidad estricta",
+          "english": "Strict convexity",
+          "definition": "Exige desigualdad estricta entre puntos distintos; si existe un mínimo, garantiza su unicidad sobre un dominio convexo.",
+          "aliases": []
+        },
+        {
+          "id": "C189",
+          "title": "Convexidad fuerte",
+          "english": "Strong convexity",
+          "definition": "Impone una cota cuadrática inferior de curvatura positiva, más exigente que la convexidad estricta.",
+          "aliases": []
+        },
+        {
+          "id": "C190",
+          "title": "Continuidad de Lipschitz",
+          "english": "Lipschitz continuity",
+          "definition": "Acota cuánto puede cambiar una función respecto a la distancia entre entradas mediante una constante.",
+          "aliases": []
+        },
+        {
+          "id": "C191",
+          "title": "Suavidad del gradiente",
+          "english": "Gradient smoothness",
+          "definition": "El gradiente es Lipschitz: su variación está acotada por la distancia entre parámetros.",
+          "aliases": []
+        },
+        {
+          "id": "C192",
+          "title": "Punto estacionario",
+          "english": "Stationary point",
+          "definition": "Punto diferenciable con gradiente cero; puede ser mínimo, máximo o punto de silla.",
+          "aliases": []
+        },
+        {
+          "id": "C193",
+          "title": "Matriz definida positiva",
+          "english": "Positive definite matrix",
+          "definition": "Matriz simétrica cuya forma cuadrática es positiva para cualquier vector no nulo.",
+          "aliases": []
+        },
+        {
+          "id": "C194",
+          "title": "Matriz semidefinida positiva",
+          "english": "Positive semidefinite matrix",
+          "definition": "Su forma cuadrática nunca es negativa; permite direcciones con valor cero y no implica invertibilidad.",
+          "aliases": []
+        },
+        {
+          "id": "C195",
+          "title": "Diferenciación automática en modo directo",
+          "english": "Forward-mode automatic differentiation",
+          "definition": "Propaga derivadas direccionales junto a los valores, útil cuando hay pocas entradas respecto a las salidas.",
+          "aliases": []
+        },
+        {
+          "id": "C196",
+          "title": "Diferenciación automática en modo inverso",
+          "english": "Reverse-mode automatic differentiation",
+          "definition": "Acumula sensibilidades desde las salidas hacia entradas; resulta eficiente para pérdidas escalares con numerosos parámetros.",
+          "aliases": []
+        },
+        {
+          "id": "C197",
+          "title": "Producto Jacobiano-vector",
+          "english": "Jacobian-vector product",
+          "definition": "Calcula la acción de una Jacobiana sobre un vector sin materializar necesariamente toda la matriz.",
+          "aliases": ["JVP"]
+        },
+        {
+          "id": "C198",
+          "title": "Producto vector-Jacobiano",
+          "english": "Vector-Jacobian product",
+          "definition": "Propaga una combinación de sensibilidades de salida hacia entradas, operación central del modo inverso.",
+          "aliases": ["VJP"]
+        },
+        {
+          "id": "C199",
+          "title": "Diferenciación simbólica",
+          "english": "Symbolic differentiation",
+          "definition": "Transforma expresiones algebraicas para obtener sus derivadas; difiere de evaluar una traza de operaciones numéricas.",
+          "aliases": []
+        },
+        {
+          "id": "C200",
+          "title": "Cancelación catastrófica",
+          "english": "Catastrophic cancellation",
+          "definition": "Restar números cercanos puede perder cifras significativas y degradar cálculos derivados.",
+          "aliases": []
+        },
+        {
+          "id": "C201",
+          "title": "Suma compensada de Kahan",
+          "english": "Kahan summation",
+          "definition": "Mantiene una corrección de redondeo para reducir el error acumulado al sumar números en coma flotante.",
+          "aliases": []
+        },
+        {
+          "id": "C202",
+          "title": "Subdesbordamiento numérico",
+          "english": "Floating-point underflow",
+          "definition": "Un resultado demasiado pequeño puede representarse como subnormal o cero, alterando probabilidades y gradientes extremos.",
+          "aliases": ["underflow", "desbordamiento por defecto"]
+        }
+      ]
+    },
+    {
+      "id": "probability",
+      "title": "Probabilidad y distribuciones",
+      "entries": [
+        {
+          "id": "C203",
+          "title": "Probabilidad condicionada",
+          "english": "Conditional probability",
+          "definition": "Probabilidad de un suceso al restringir el contexto a otro de probabilidad positiva.",
+          "aliases": []
+        },
+        {
+          "id": "C204",
+          "title": "Teorema de Bayes",
+          "english": "Bayes theorem",
+          "definition": "Relaciona probabilidades condicionadas mediante verosimilitud, probabilidad previa y evidencia.",
+          "aliases": []
+        },
+        {
+          "id": "C205",
+          "title": "Independencia probabilística",
+          "english": "Statistical independence",
+          "definition": "La distribución conjunta factoriza como producto de marginales; correlación cero no basta para demostrarla.",
+          "aliases": []
+        },
+        {
+          "id": "C206",
+          "title": "Independencia condicionada",
+          "english": "Conditional independence",
+          "definition": "Dos variables se vuelven independientes al conocer una tercera; no implica independencia sin ese condicionamiento.",
+          "aliases": []
+        },
+        {
+          "id": "C207",
+          "title": "Regla de la probabilidad total",
+          "english": "Law of total probability",
+          "definition": "Obtiene una probabilidad sumando probabilidades condicionadas sobre una partición ponderadas por sus probabilidades.",
+          "aliases": []
+        },
+        {
+          "id": "C208",
+          "title": "Regla de la cadena probabilística",
+          "english": "Probability chain rule",
+          "definition": "Factoriza una distribución conjunta en un producto de probabilidades condicionadas ordenadas.",
+          "aliases": []
+        },
+        {
+          "id": "C209",
+          "title": "Variable aleatoria discreta",
+          "english": "Discrete random variable",
+          "definition": "Asigna valores de un conjunto numerable a resultados aleatorios, con masas de probabilidad que suman uno.",
+          "aliases": []
+        },
+        {
+          "id": "C210",
+          "title": "Variable aleatoria continua",
+          "english": "Continuous random variable",
+          "definition": "Se describe mediante una densidad en el caso absolutamente continuo; la probabilidad de un punto individual es cero.",
+          "aliases": []
+        },
+        {
+          "id": "C211",
+          "title": "Función de distribución acumulada",
+          "english": "Cumulative distribution function",
+          "definition": "Da la probabilidad de que una variable aleatoria sea menor o igual que un umbral.",
+          "aliases": []
+        },
+        {
+          "id": "C212",
+          "title": "Función de densidad",
+          "english": "Probability density function",
+          "definition": "Su integral sobre una región produce probabilidades; su valor puntual puede superar uno.",
+          "aliases": []
+        },
+        {
+          "id": "C213",
+          "title": "Esperanza matemática",
+          "english": "Expected value",
+          "definition": "Promedio teórico ponderado por la distribución de una variable, cuando la integral correspondiente existe.",
+          "aliases": []
+        },
+        {
+          "id": "C214",
+          "title": "Varianza poblacional",
+          "english": "Population variance",
+          "definition": "Esperanza de la desviación cuadrática respecto a la media; mide dispersión en unidades al cuadrado.",
+          "aliases": []
+        },
+        {
+          "id": "C215",
+          "title": "Covarianza",
+          "english": "Covariance",
+          "definition": "Esperanza del producto de desviaciones respecto a las medias; describe asociación lineal con signo y escala.",
+          "aliases": []
+        },
+        {
+          "id": "C216",
+          "title": "Correlación de Pearson",
+          "english": "Pearson correlation",
+          "definition": "Covarianza normalizada por las desviaciones típicas; mide asociación lineal y no demuestra causalidad.",
+          "aliases": []
+        },
+        {
+          "id": "C217",
+          "title": "Distribución de Bernoulli",
+          "english": "Bernoulli distribution",
+          "definition": "Modela una observación con dos resultados mediante una probabilidad de éxito.",
+          "aliases": []
+        },
+        {
+          "id": "C218",
+          "title": "Distribución binomial",
+          "english": "Binomial distribution",
+          "definition": "Cuenta éxitos en un número fijo de ensayos Bernoulli independientes con la misma probabilidad.",
+          "aliases": []
+        },
+        {
+          "id": "C219",
+          "title": "Distribución categórica",
+          "english": "Categorical distribution",
+          "definition": "Modela una observación entre un número finito de categorías mediante un vector de probabilidades.",
+          "aliases": []
+        },
+        {
+          "id": "C220",
+          "title": "Distribución multinomial",
+          "english": "Multinomial distribution",
+          "definition": "Modela los recuentos de categorías en varios ensayos categóricos independientes con probabilidades constantes.",
+          "aliases": []
+        },
+        {
+          "id": "C221",
+          "title": "Distribución normal",
+          "english": "Normal distribution",
+          "definition": "Familia continua determinada por media y varianza, con densidad simétrica en forma de campana.",
+          "aliases": []
+        },
+        {
+          "id": "C222",
+          "title": "Distribución de Poisson",
+          "english": "Poisson distribution",
+          "definition": "Modela recuentos no negativos con media igual a varianza bajo sus supuestos.",
+          "aliases": []
+        },
+        {
+          "id": "C223",
+          "title": "Distribución exponencial",
+          "english": "Exponential distribution",
+          "definition": "Modela tiempos no negativos entre sucesos de un proceso de Poisson homogéneo y tiene falta de memoria.",
+          "aliases": []
+        },
+        {
+          "id": "C224",
+          "title": "Distribución beta",
+          "english": "Beta distribution",
+          "definition": "Familia sobre el intervalo entre cero y uno, útil para representar incertidumbre sobre una probabilidad.",
+          "aliases": []
+        },
+        {
+          "id": "C225",
+          "title": "Distribución de Dirichlet",
+          "english": "Dirichlet distribution",
+          "definition": "Familia sobre vectores de probabilidades que generaliza la distribución beta a varias categorías.",
+          "aliases": []
+        },
+        {
+          "id": "C226",
+          "title": "Ley de los grandes números",
+          "english": "Law of large numbers",
+          "definition": "Bajo condiciones adecuadas, el promedio muestral se aproxima a la esperanza al aumentar las observaciones.",
+          "aliases": ["LLN"]
+        },
+        {
+          "id": "C227",
+          "title": "Teorema central del límite",
+          "english": "Central limit theorem",
+          "definition": "Bajo sus hipótesis, la suma o media estandarizada tiende a una distribución normal, no necesariamente los datos originales.",
+          "aliases": ["CLT"]
+        }
+      ]
+    },
+    {
+      "id": "statistics",
+      "title": "Inferencia y diseño estadístico",
+      "entries": [
+        {
+          "id": "C228",
+          "title": "Muestra aleatoria simple",
+          "english": "Simple random sample",
+          "definition": "Diseño en el que todas las muestras del tamaño fijado tienen igual probabilidad de selección.",
+          "aliases": []
+        },
+        {
+          "id": "C229",
+          "title": "Estimador estadístico",
+          "english": "Statistical estimator",
+          "definition": "Regla que convierte una muestra en una estimación de un parámetro poblacional.",
+          "aliases": []
+        },
+        {
+          "id": "C230",
+          "title": "Sesgo de un estimador",
+          "english": "Estimator bias",
+          "definition": "Diferencia entre la esperanza de un estimador y el parámetro que estima; no es el sesgo de una neurona.",
+          "aliases": []
+        },
+        {
+          "id": "C231",
+          "title": "Consistencia estadística",
+          "english": "Statistical consistency",
+          "definition": "El estimador se aproxima al parámetro verdadero al aumentar el tamaño muestral bajo los supuestos del modelo.",
+          "aliases": []
+        },
+        {
+          "id": "C232",
+          "title": "Eficiencia de un estimador",
+          "english": "Estimator efficiency",
+          "definition": "Compara la variabilidad de estimadores para un mismo objetivo dentro de una clase y supuestos determinados.",
+          "aliases": []
+        },
+        {
+          "id": "C233",
+          "title": "Intervalo de confianza",
+          "english": "Confidence interval",
+          "definition": "Procedimiento que cubre el parámetro en una proporción fijada de muestras repetidas bajo sus supuestos.",
+          "aliases": []
+        },
+        {
+          "id": "C234",
+          "title": "Error estándar",
+          "english": "Standard error",
+          "definition": "Desviación típica de la distribución muestral de un estimador; no es la dispersión de las observaciones individuales.",
+          "aliases": []
+        },
+        {
+          "id": "C235",
+          "title": "Hipótesis nula",
+          "english": "Null hypothesis",
+          "definition": "Afirmación de referencia contra la que se evalúa la compatibilidad de los datos en una prueba.",
+          "aliases": []
+        },
+        {
+          "id": "C236",
+          "title": "Hipótesis alternativa",
+          "english": "Alternative hypothesis",
+          "definition": "Conjunto de situaciones que la prueba contrapone a la hipótesis nula.",
+          "aliases": []
+        },
+        {
+          "id": "C237",
+          "title": "Valor p",
+          "english": "P-value",
+          "definition": "Probabilidad, suponiendo la hipótesis nula, de un estadístico tan extremo o más que el observado.",
+          "aliases": []
+        },
+        {
+          "id": "C238",
+          "title": "Nivel de significación",
+          "english": "Significance level",
+          "definition": "Cota prefijada para la probabilidad de rechazar una hipótesis nula verdadera en el diseño de una prueba.",
+          "aliases": []
+        },
+        {
+          "id": "C239",
+          "title": "Error de tipo I",
+          "english": "Type I error",
+          "definition": "Rechazar la hipótesis nula cuando es verdadera; su control requiere respetar el procedimiento de prueba.",
+          "aliases": []
+        },
+        {
+          "id": "C240",
+          "title": "Error de tipo II",
+          "english": "Type II error",
+          "definition": "No rechazar la hipótesis nula bajo una alternativa concreta cuando es falsa.",
+          "aliases": []
+        },
+        {
+          "id": "C241",
+          "title": "Potencia estadística",
+          "english": "Statistical power",
+          "definition": "Probabilidad de rechazar la hipótesis nula bajo una alternativa especificada; depende del efecto y del tamaño muestral.",
+          "aliases": []
+        },
+        {
+          "id": "C242",
+          "title": "Tamaño del efecto",
+          "english": "Effect size",
+          "definition": "Magnitud de una diferencia o asociación; un valor p pequeño no garantiza que el efecto tenga relevancia práctica.",
+          "aliases": []
+        },
+        {
+          "id": "C243",
+          "title": "Prueba t",
+          "english": "T-test",
+          "definition": "Familia de contrastes sobre medias que utiliza una distribución t bajo hipótesis específicas.",
+          "aliases": []
+        },
+        {
+          "id": "C244",
+          "title": "ANOVA",
+          "english": "Analysis of variance",
+          "definition": "Contrasta diferencias entre medias comparando variabilidad entre grupos y dentro de grupos bajo un modelo.",
+          "aliases": []
+        },
+        {
+          "id": "C245",
+          "title": "Prueba de chi-cuadrado",
+          "english": "Chi-squared test",
+          "definition": "Compara frecuencias observadas y esperadas para estudiar ajuste o asociación bajo condiciones de aproximación.",
+          "aliases": []
+        },
+        {
+          "id": "C246",
+          "title": "Prueba de permutación",
+          "english": "Permutation test",
+          "definition": "Construye una distribución nula reordenando etiquetas o asignaciones bajo un supuesto de intercambiabilidad válido.",
+          "aliases": []
+        },
+        {
+          "id": "C247",
+          "title": "Remuestreo bootstrap",
+          "english": "Bootstrap resampling",
+          "definition": "Aproxima variabilidad de un estimador mediante muestras con reemplazo de los datos observados.",
+          "aliases": []
+        },
+        {
+          "id": "C248",
+          "title": "Jackknife",
+          "english": "Jackknife",
+          "definition": "Estudia la sensibilidad de un estimador al retirar observaciones o grupos de forma sistemática.",
+          "aliases": []
+        },
+        {
+          "id": "C249",
+          "title": "Corrección de Bonferroni",
+          "english": "Bonferroni correction",
+          "definition": "Controla el error familiar ajustando el umbral de cada contraste según el número de pruebas.",
+          "aliases": []
+        },
+        {
+          "id": "C250",
+          "title": "Tasa de descubrimientos falsos",
+          "english": "False discovery rate",
+          "definition": "Esperanza de la proporción de rechazos incorrectos entre todos los rechazos, con una convención para ausencia de rechazos.",
+          "aliases": []
+        },
+        {
+          "id": "C251",
+          "title": "Procedimiento de Benjamini–Hochberg",
+          "english": "Benjamini–Hochberg procedure",
+          "definition": "Controla la tasa de descubrimientos falsos ordenando valores p bajo condiciones sobre su dependencia.",
+          "aliases": []
+        },
+        {
+          "id": "C252",
+          "title": "Tamaño muestral efectivo",
+          "english": "Effective sample size",
+          "definition": "Número orientativo de observaciones independientes equivalentes cuando existen dependencia, ponderación o autocorrelación.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "information",
+      "title": "Información y divergencias",
+      "entries": [
+        {
+          "id": "C253",
+          "title": "Entropía de Shannon",
+          "english": "Shannon entropy",
+          "definition": "Incertidumbre media de una distribución discreta; la base del logaritmo fija si se mide en bits o nats.",
+          "aliases": []
+        },
+        {
+          "id": "C254",
+          "title": "Entropía diferencial",
+          "english": "Differential entropy",
+          "definition": "Análogo basado en densidades continuas; puede ser negativa y cambia al transformar las unidades.",
+          "aliases": []
+        },
+        {
+          "id": "C255",
+          "title": "Entropía condicionada",
+          "english": "Conditional entropy",
+          "definition": "Incertidumbre residual de una variable al conocer otra, promediada sobre los valores de la condición.",
+          "aliases": []
+        },
+        {
+          "id": "C256",
+          "title": "Entropía conjunta",
+          "english": "Joint entropy",
+          "definition": "Incertidumbre de una distribución conjunta; no es siempre la suma de las entropías marginales.",
+          "aliases": []
+        },
+        {
+          "id": "C257",
+          "title": "Información mutua",
+          "english": "Mutual information",
+          "definition": "Cuantifica dependencia comparando la distribución conjunta con el producto de marginales.",
+          "aliases": []
+        },
+        {
+          "id": "C258",
+          "title": "Información mutua condicionada",
+          "english": "Conditional mutual information",
+          "definition": "Mide dependencia entre dos variables después de condicionar en una tercera.",
+          "aliases": []
+        },
+        {
+          "id": "C259",
+          "title": "Divergencia de Kullback–Leibler",
+          "english": "Kullback–Leibler divergence",
+          "definition": "Diferencia informativa dirigida entre distribuciones compatibles; no es simétrica ni una distancia métrica.",
+          "aliases": ["KL"]
+        },
+        {
+          "id": "C260",
+          "title": "Divergencia de Jensen–Shannon",
+          "english": "Jensen–Shannon divergence",
+          "definition": "Promedia divergencias hacia una distribución mezcla y es simétrica; su raíz define una métrica.",
+          "aliases": ["JSD"]
+        },
+        {
+          "id": "C261",
+          "title": "Divergencia de Rényi",
+          "english": "Rényi divergence",
+          "definition": "Familia parametrizada de discrepancias entre distribuciones que recupera KL como límite bajo condiciones adecuadas.",
+          "aliases": []
+        },
+        {
+          "id": "C262",
+          "title": "Divergencia de Bregman",
+          "english": "Bregman divergence",
+          "definition": "Discrepancia inducida por una función convexa diferenciable al comparar su valor con una aproximación tangente.",
+          "aliases": []
+        },
+        {
+          "id": "C263",
+          "title": "Distancia de variación total",
+          "english": "Total variation distance",
+          "definition": "Máxima diferencia de probabilidad que dos distribuciones asignan a un mismo suceso.",
+          "aliases": []
+        },
+        {
+          "id": "C264",
+          "title": "Distancia de Hellinger",
+          "english": "Hellinger distance",
+          "definition": "Compara raíces cuadradas de probabilidades o densidades; es simétrica y acotada bajo su convención habitual.",
+          "aliases": []
+        },
+        {
+          "id": "C265",
+          "title": "Distancia de Wasserstein",
+          "english": "Wasserstein distance",
+          "definition": "Coste óptimo de transportar masa de una distribución a otra según una distancia base.",
+          "aliases": []
+        },
+        {
+          "id": "C266",
+          "title": "Transporte óptimo",
+          "english": "Optimal transport",
+          "definition": "Busca un acoplamiento entre distribuciones que minimice un coste de desplazamiento de masa.",
+          "aliases": []
+        },
+        {
+          "id": "C267",
+          "title": "Divergencia de chi-cuadrado",
+          "english": "Chi-squared divergence",
+          "definition": "Compara distribuciones ponderando discrepancias cuadráticas por la distribución de referencia.",
+          "aliases": []
+        },
+        {
+          "id": "C268",
+          "title": "Divergencia f",
+          "english": "F-divergence",
+          "definition": "Familia de discrepancias construidas integrando una función convexa de la razón entre densidades.",
+          "aliases": []
+        },
+        {
+          "id": "C269",
+          "title": "Desigualdad de Gibbs",
+          "english": "Gibbs inequality",
+          "definition": "Establece la no negatividad de KL cuando está bien definida y su igualdad para distribuciones coincidentes.",
+          "aliases": []
+        },
+        {
+          "id": "C270",
+          "title": "Desigualdad de procesamiento de datos",
+          "english": "Data processing inequality",
+          "definition": "Procesar una observación mediante una cadena de Markov no aumenta su información mutua sobre la fuente.",
+          "aliases": []
+        },
+        {
+          "id": "C271",
+          "title": "Desigualdad de Fano",
+          "english": "Fano inequality",
+          "definition": "Relaciona la incertidumbre condicionada de una etiqueta finita con la probabilidad de error de un estimador.",
+          "aliases": []
+        },
+        {
+          "id": "C272",
+          "title": "Principio de máxima entropía",
+          "english": "Maximum entropy principle",
+          "definition": "Elige la distribución de mayor entropía entre las que satisfacen restricciones explícitas.",
+          "aliases": []
+        },
+        {
+          "id": "C273",
+          "title": "Cuello de botella informativo",
+          "english": "Information bottleneck",
+          "definition": "Busca una representación que comprima la entrada conservando información relevante para una variable objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C274",
+          "title": "Longitud mínima de descripción",
+          "english": "Minimum description length",
+          "definition": "Compara modelos por la longitud necesaria para codificar el modelo y los datos mediante él.",
+          "aliases": ["MDL"]
+        },
+        {
+          "id": "C275",
+          "title": "Complejidad de Kolmogórov",
+          "english": "Kolmogorov complexity",
+          "definition": "Longitud del programa más corto que genera un objeto en una máquina universal fijada; no es computable en general.",
+          "aliases": []
+        },
+        {
+          "id": "C276",
+          "title": "Información puntual mutua",
+          "english": "Pointwise mutual information",
+          "definition": "Compara la probabilidad conjunta de dos resultados con el producto de sus probabilidades marginales mediante un logaritmo.",
+          "aliases": []
+        },
+        {
+          "id": "C277",
+          "title": "Información propia",
+          "english": "Self-information",
+          "definition": "Sorpresa de un suceso de probabilidad positiva, definida como el logaritmo negativo de su probabilidad.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "data-quality",
+      "title": "Datos, codificación y calidad",
+      "entries": [
+        {
+          "id": "C278",
+          "title": "Faltantes completamente aleatorios",
+          "english": "Missing completely at random",
+          "definition": "El mecanismo de ausencia no depende de valores observados ni no observados; es una hipótesis fuerte, no comprobable solo por intuición.",
+          "aliases": ["MCAR"]
+        },
+        {
+          "id": "C279",
+          "title": "Faltantes aleatorios condicionados",
+          "english": "Missing at random",
+          "definition": "La ausencia puede depender de variables observadas, pero no de valores faltantes una vez condicionado en aquellas.",
+          "aliases": ["MAR"]
+        },
+        {
+          "id": "C280",
+          "title": "Faltantes no aleatorios",
+          "english": "Missing not at random",
+          "definition": "La ausencia depende de información no observada incluso tras condicionar en los datos disponibles.",
+          "aliases": ["MNAR"]
+        },
+        {
+          "id": "C281",
+          "title": "Imputación por vecinos",
+          "english": "KNN imputation",
+          "definition": "Estima un valor ausente usando observaciones cercanas según una distancia y características disponibles.",
+          "aliases": []
+        },
+        {
+          "id": "C282",
+          "title": "Imputación múltiple",
+          "english": "Multiple imputation",
+          "definition": "Genera varios datasets plausibles para reflejar incertidumbre de faltantes y combinar posteriormente las estimaciones.",
+          "aliases": []
+        },
+        {
+          "id": "C283",
+          "title": "Imputación iterativa encadenada",
+          "english": "Chained equations imputation",
+          "definition": "Modela sucesivamente cada variable incompleta a partir de otras, según un esquema iterativo y supuestos explícitos.",
+          "aliases": []
+        },
+        {
+          "id": "C284",
+          "title": "Variable nominal",
+          "english": "Nominal variable",
+          "definition": "Categoría sin orden intrínseco; asignarle enteros no justifica interpretar distancias entre códigos.",
+          "aliases": []
+        },
+        {
+          "id": "C285",
+          "title": "Variable ordinal",
+          "english": "Ordinal variable",
+          "definition": "Categoría con orden, pero sin garantía de que las separaciones entre niveles sean iguales.",
+          "aliases": []
+        },
+        {
+          "id": "C286",
+          "title": "Codificación ordinal",
+          "english": "Ordinal encoding",
+          "definition": "Asigna números a categorías ordenadas o codificadas; el modelo puede interpretar relaciones numéricas no justificadas.",
+          "aliases": []
+        },
+        {
+          "id": "C287",
+          "title": "Codificación binaria de categorías",
+          "english": "Binary encoding",
+          "definition": "Representa un identificador categórico mediante varios bits, reduciendo columnas frente a una codificación indicadora completa.",
+          "aliases": []
+        },
+        {
+          "id": "C288",
+          "title": "Codificación por frecuencia",
+          "english": "Frequency encoding",
+          "definition": "Sustituye una categoría por su frecuencia estimada exclusivamente en el conjunto de ajuste permitido.",
+          "aliases": []
+        },
+        {
+          "id": "C289",
+          "title": "Codificación del objetivo por categoría",
+          "english": "Target encoding",
+          "definition": "Resume el objetivo por categoría; requiere estrategias como ajuste fuera de pliegue para evitar fuga.",
+          "aliases": []
+        },
+        {
+          "id": "C290",
+          "title": "Codificación por hashing",
+          "english": "Feature hashing",
+          "definition": "Asigna características a un espacio de dimensión fija usando una función hash; pueden producirse colisiones.",
+          "aliases": []
+        },
+        {
+          "id": "C291",
+          "title": "Discretización por intervalos",
+          "english": "Binning",
+          "definition": "Agrupa valores continuos en rangos; los límites deben aprenderse sin usar información de evaluación.",
+          "aliases": []
+        },
+        {
+          "id": "C292",
+          "title": "Discretización por cuantiles",
+          "english": "Quantile binning",
+          "definition": "Construye intervalos con frecuencias aproximadamente similares en los datos de ajuste, salvo empates y otras restricciones.",
+          "aliases": []
+        },
+        {
+          "id": "C293",
+          "title": "Winsorización",
+          "english": "Winsorization",
+          "definition": "Sustituye valores extremos por umbrales fijados; modifica observaciones y debe distinguirse de eliminarlas.",
+          "aliases": []
+        },
+        {
+          "id": "C294",
+          "title": "Transformación logarítmica",
+          "english": "Log transformation",
+          "definition": "Comprime escalas positivas mediante un logaritmo; cambia la interpretación de diferencias y requiere un dominio válido.",
+          "aliases": []
+        },
+        {
+          "id": "C295",
+          "title": "Transformación Box–Cox",
+          "english": "Box–Cox transformation",
+          "definition": "Familia de potencias para variables estrictamente positivas, con parámetro estimado sobre los datos de ajuste.",
+          "aliases": []
+        },
+        {
+          "id": "C296",
+          "title": "Transformación Yeo–Johnson",
+          "english": "Yeo–Johnson transformation",
+          "definition": "Familia de potencias relacionada con Box–Cox que admite valores cero y negativos.",
+          "aliases": []
+        },
+        {
+          "id": "C297",
+          "title": "Transformación por rangos",
+          "english": "Rank transformation",
+          "definition": "Sustituye magnitudes por posiciones relativas; conserva orden, pero pierde información sobre distancias originales.",
+          "aliases": []
+        },
+        {
+          "id": "C298",
+          "title": "Test de integridad referencial",
+          "english": "Referential integrity check",
+          "definition": "Verifica que identificadores relacionados apunten a registros válidos y no a referencias inexistentes o ambiguas.",
+          "aliases": []
+        },
+        {
+          "id": "C299",
+          "title": "Restricción de unicidad",
+          "english": "Uniqueness constraint",
+          "definition": "Exige que una clave identifique un único registro dentro del ámbito definido.",
+          "aliases": []
+        },
+        {
+          "id": "C300",
+          "title": "Cardinalidad categórica",
+          "english": "Categorical cardinality",
+          "definition": "Número de valores distintos de una variable categórica; condiciona memoria, codificación y soporte por categoría.",
+          "aliases": []
+        },
+        {
+          "id": "C301",
+          "title": "Valores centinela",
+          "english": "Sentinel values",
+          "definition": "Códigos especiales usados para representar estados como ausencia; deben distinguirse de mediciones numéricas válidas.",
+          "aliases": []
+        },
+        {
+          "id": "C302",
+          "title": "Diccionario de datos",
+          "english": "Data dictionary",
+          "definition": "Documenta significado, unidades, tipos, dominios permitidos y procedencia de las variables de un dataset.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "supervised",
+      "title": "Modelos supervisados y kernels",
+      "entries": [
+        {
+          "id": "C303",
+          "title": "Máquina de vectores de soporte",
+          "english": "Support vector machine",
+          "definition": "Clasificador que busca separación con margen y penaliza violaciones según una formulación y un parámetro de regularización.",
+          "aliases": ["SVM"]
+        },
+        {
+          "id": "C304",
+          "title": "Margen geométrico",
+          "english": "Geometric margin",
+          "definition": "Distancia entre observaciones y una frontera separadora, normalizada respecto a la escala de sus coeficientes.",
+          "aliases": []
+        },
+        {
+          "id": "C305",
+          "title": "Truco del kernel",
+          "english": "Kernel trick",
+          "definition": "Calcula productos internos en un espacio de características implícito sin construir explícitamente sus coordenadas.",
+          "aliases": []
+        },
+        {
+          "id": "C306",
+          "title": "Kernel gaussiano RBF",
+          "english": "Gaussian RBF kernel",
+          "definition": "Mide similitud como una exponencial decreciente de la distancia cuadrática; su anchura controla localidad.",
+          "aliases": ["RBF"]
+        },
+        {
+          "id": "C307",
+          "title": "Kernel polinómico",
+          "english": "Polynomial kernel",
+          "definition": "Construye similitudes que corresponden a combinaciones polinómicas de características bajo parámetros determinados.",
+          "aliases": []
+        },
+        {
+          "id": "C308",
+          "title": "Kernel de Mercer",
+          "english": "Mercer kernel",
+          "definition": "Kernel que, bajo hipótesis del teorema de Mercer, admite una representación espectral asociada a un operador positivo.",
+          "aliases": []
+        },
+        {
+          "id": "C309",
+          "title": "Regresión de vectores de soporte",
+          "english": "Support vector regression",
+          "definition": "Ajusta una función mediante una pérdida con zona de tolerancia y una penalización de complejidad.",
+          "aliases": ["SVR"]
+        },
+        {
+          "id": "C310",
+          "title": "Pérdida épsilon-insensible",
+          "english": "Epsilon-insensitive loss",
+          "definition": "No penaliza errores dentro de una banda épsilon y penaliza el exceso fuera de ella.",
+          "aliases": []
+        },
+        {
+          "id": "C311",
+          "title": "Naive Bayes",
+          "english": "Naive Bayes",
+          "definition": "Familia de clasificadores generativos que asume independencia condicional de características dado el objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C312",
+          "title": "Naive Bayes gaussiano",
+          "english": "Gaussian naive Bayes",
+          "definition": "Modela cada característica continua mediante una normal específica de clase dentro del supuesto condicional de Naive Bayes.",
+          "aliases": []
+        },
+        {
+          "id": "C313",
+          "title": "Naive Bayes multinomial",
+          "english": "Multinomial naive Bayes",
+          "definition": "Modela recuentos o frecuencias no negativas por clase, utilizado frecuentemente con representaciones de texto.",
+          "aliases": []
+        },
+        {
+          "id": "C314",
+          "title": "Naive Bayes Bernoulli",
+          "english": "Bernoulli naive Bayes",
+          "definition": "Modela características binarias como indicadores de presencia o ausencia bajo independencia condicional.",
+          "aliases": []
+        },
+        {
+          "id": "C315",
+          "title": "Análisis discriminante lineal",
+          "english": "Linear discriminant analysis",
+          "definition": "Clasificador generativo con distribuciones normales por clase y covarianza compartida, que induce fronteras lineales.",
+          "aliases": ["LDA"]
+        },
+        {
+          "id": "C316",
+          "title": "Análisis discriminante cuadrático",
+          "english": "Quadratic discriminant analysis",
+          "definition": "Permite una covarianza distinta por clase en un modelo normal, generando fronteras cuadráticas.",
+          "aliases": ["QDA"]
+        },
+        {
+          "id": "C317",
+          "title": "Regresión por procesos gaussianos",
+          "english": "Gaussian process regression",
+          "definition": "Define una distribución sobre funciones mediante media y kernel para predecir valores e incertidumbre bajo el modelo.",
+          "aliases": ["GPR"]
+        },
+        {
+          "id": "C318",
+          "title": "Clasificación por procesos gaussianos",
+          "english": "Gaussian process classification",
+          "definition": "Combina una función latente gaussiana con una verosimilitud de clasificación, normalmente requiriendo inferencia aproximada.",
+          "aliases": ["GPC"]
+        },
+        {
+          "id": "C319",
+          "title": "Modelo lineal generalizado",
+          "english": "Generalized linear model",
+          "definition": "Relaciona la media de una distribución de la familia exponencial con un predictor lineal mediante una función de enlace.",
+          "aliases": ["GLM"]
+        },
+        {
+          "id": "C320",
+          "title": "Función de enlace",
+          "english": "Link function",
+          "definition": "Transforma la media condicional de un modelo lineal generalizado a la escala del predictor lineal.",
+          "aliases": []
+        },
+        {
+          "id": "C321",
+          "title": "Regresión de Poisson",
+          "english": "Poisson regression",
+          "definition": "Modelo para recuentos con media condicional normalmente conectada al predictor mediante un enlace logarítmico.",
+          "aliases": []
+        },
+        {
+          "id": "C322",
+          "title": "Regresión binomial negativa",
+          "english": "Negative binomial regression",
+          "definition": "Modelo de recuentos que permite variabilidad superior a la media mediante un parámetro adicional.",
+          "aliases": []
+        },
+        {
+          "id": "C323",
+          "title": "Regresión cuantílica",
+          "english": "Quantile regression",
+          "definition": "Estima cuantiles condicionados del objetivo en lugar de limitarse a su media.",
+          "aliases": []
+        },
+        {
+          "id": "C324",
+          "title": "Regresión ordinal",
+          "english": "Ordinal regression",
+          "definition": "Modela un objetivo categórico ordenado conservando su estructura de niveles.",
+          "aliases": []
+        },
+        {
+          "id": "C325",
+          "title": "Modelo probit",
+          "english": "Probit model",
+          "definition": "Relaciona una probabilidad binaria con un predictor mediante la función de distribución normal estándar.",
+          "aliases": []
+        },
+        {
+          "id": "C326",
+          "title": "Modelo de riesgos proporcionales de Cox",
+          "english": "Cox proportional hazards model",
+          "definition": "Modelo de supervivencia que supone razones de riesgo constantes entre perfiles según sus covariables.",
+          "aliases": []
+        },
+        {
+          "id": "C327",
+          "title": "Modelo de tiempo de fallo acelerado",
+          "english": "Accelerated failure time model",
+          "definition": "Expresa cómo las covariables escalan el tiempo hasta un evento bajo una distribución y relación especificadas.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "clustering",
+      "title": "Clustering y mezclas",
+      "entries": [
+        {
+          "id": "C328",
+          "title": "K-means",
+          "english": "K-means",
+          "definition": "Asigna puntos a centroides para reducir distancias euclídeas cuadráticas internas; depende de inicialización, escala y número de grupos.",
+          "aliases": []
+        },
+        {
+          "id": "C329",
+          "title": "K-means++",
+          "english": "K-means++",
+          "definition": "Inicializa centroides de forma probabilística favoreciendo puntos alejados de los ya seleccionados.",
+          "aliases": []
+        },
+        {
+          "id": "C330",
+          "title": "K-medoids",
+          "english": "K-medoids",
+          "definition": "Representa cada grupo mediante una observación real y puede utilizar disimilitudes distintas de la euclídea.",
+          "aliases": []
+        },
+        {
+          "id": "C331",
+          "title": "Clustering jerárquico aglomerativo",
+          "english": "Agglomerative clustering",
+          "definition": "Comienza con grupos pequeños y los fusiona sucesivamente según una regla de enlace.",
+          "aliases": []
+        },
+        {
+          "id": "C332",
+          "title": "Clustering jerárquico divisivo",
+          "english": "Divisive clustering",
+          "definition": "Parte de un grupo amplio y lo divide recursivamente siguiendo un criterio de separación.",
+          "aliases": []
+        },
+        {
+          "id": "C333",
+          "title": "Enlace simple",
+          "english": "Single linkage",
+          "definition": "Define distancia entre grupos como la menor distancia entre un par de observaciones de ambos grupos.",
+          "aliases": []
+        },
+        {
+          "id": "C334",
+          "title": "Enlace completo",
+          "english": "Complete linkage",
+          "definition": "Define distancia entre grupos mediante el par de observaciones más separado entre ambos.",
+          "aliases": []
+        },
+        {
+          "id": "C335",
+          "title": "Enlace promedio",
+          "english": "Average linkage",
+          "definition": "Promedia distancias entre pares de observaciones de dos grupos para decidir sus fusiones.",
+          "aliases": []
+        },
+        {
+          "id": "C336",
+          "title": "Criterio de Ward",
+          "english": "Ward linkage",
+          "definition": "Fusiona grupos buscando el menor incremento de variación interna cuadrática bajo su geometría euclídea.",
+          "aliases": []
+        },
+        {
+          "id": "C337",
+          "title": "Dendrograma",
+          "english": "Dendrogram",
+          "definition": "Árbol que representa fusiones o divisiones jerárquicas y permite inspeccionar agrupaciones a distintas alturas.",
+          "aliases": []
+        },
+        {
+          "id": "C338",
+          "title": "DBSCAN",
+          "english": "DBSCAN",
+          "definition": "Agrupa regiones densas mediante una vecindad y un mínimo de puntos, dejando algunas observaciones como ruido.",
+          "aliases": []
+        },
+        {
+          "id": "C339",
+          "title": "HDBSCAN",
+          "english": "HDBSCAN",
+          "definition": "Construye una jerarquía de densidad y selecciona agrupaciones estables, tolerando diferencias de densidad mejor que un único umbral.",
+          "aliases": []
+        },
+        {
+          "id": "C340",
+          "title": "OPTICS",
+          "english": "OPTICS",
+          "definition": "Ordena observaciones según conectividad de densidad para explorar agrupaciones a varias escalas de vecindad.",
+          "aliases": []
+        },
+        {
+          "id": "C341",
+          "title": "Mean Shift",
+          "english": "Mean Shift",
+          "definition": "Desplaza candidatos hacia modos de densidad estimada; la anchura del kernel determina la escala de agrupación.",
+          "aliases": []
+        },
+        {
+          "id": "C342",
+          "title": "Clustering espectral",
+          "english": "Spectral clustering",
+          "definition": "Usa autovectores de una representación de afinidad para agrupar estructuras que pueden no ser convexas.",
+          "aliases": []
+        },
+        {
+          "id": "C343",
+          "title": "Propagación de afinidad",
+          "english": "Affinity propagation",
+          "definition": "Intercambia mensajes entre observaciones para seleccionar ejemplos representativos y sus grupos.",
+          "aliases": []
+        },
+        {
+          "id": "C344",
+          "title": "Modelo de mezcla gaussiana",
+          "english": "Gaussian mixture model",
+          "definition": "Representa una distribución mediante componentes normales con pesos, medias y covarianzas específicos.",
+          "aliases": []
+        },
+        {
+          "id": "C345",
+          "title": "Algoritmo esperanza-maximización",
+          "english": "Expectation maximization",
+          "definition": "Alterna expectativas de variables latentes con optimización de parámetros para aumentar una cota o la verosimilitud.",
+          "aliases": []
+        },
+        {
+          "id": "C346",
+          "title": "Responsabilidad de una componente",
+          "english": "Mixture responsibility",
+          "definition": "Probabilidad posterior de que una componente de mezcla explique una observación según el modelo actual.",
+          "aliases": []
+        },
+        {
+          "id": "C347",
+          "title": "Mezcla bayesiana de procesos de Dirichlet",
+          "english": "Dirichlet process mixture",
+          "definition": "Modelo de mezcla bayesiano cuyo prior permite un número no fijado de componentes potenciales.",
+          "aliases": []
+        },
+        {
+          "id": "C348",
+          "title": "Coeficiente de silueta",
+          "english": "Silhouette coefficient",
+          "definition": "Compara cohesión de cada punto con separación respecto a otro grupo usando disimilitudes definidas.",
+          "aliases": []
+        },
+        {
+          "id": "C349",
+          "title": "Índice de Davies–Bouldin",
+          "english": "Davies–Bouldin index",
+          "definition": "Resume similitud entre grupos según dispersión interna y separación; valores menores suelen indicar mayor separación bajo esa geometría.",
+          "aliases": []
+        },
+        {
+          "id": "C350",
+          "title": "Índice de Calinski–Harabasz",
+          "english": "Calinski–Harabasz index",
+          "definition": "Compara dispersión entre grupos y dentro de grupos ajustando por sus tamaños y número.",
+          "aliases": []
+        },
+        {
+          "id": "C351",
+          "title": "Índice Rand ajustado",
+          "english": "Adjusted Rand index",
+          "definition": "Compara dos particiones corrigiendo coincidencias esperadas bajo un modelo de azar; puede tomar valores negativos.",
+          "aliases": []
+        },
+        {
+          "id": "C352",
+          "title": "Información mutua normalizada de particiones",
+          "english": "Normalized mutual information",
+          "definition": "Compara dos asignaciones de grupos mediante información compartida y una regla explícita de normalización.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "dimension",
+      "title": "Reducción dimensional y variedades",
+      "entries": [
+        {
+          "id": "C353",
+          "title": "Análisis de componentes principales",
+          "english": "Principal component analysis",
+          "definition": "Busca direcciones ortogonales de máxima varianza sobre datos centrados; la escala de las variables influye en el resultado.",
+          "aliases": ["PCA"]
+        },
+        {
+          "id": "C354",
+          "title": "PCA incremental",
+          "english": "Incremental PCA",
+          "definition": "Actualiza una aproximación de componentes principales por bloques para limitar memoria en datasets grandes.",
+          "aliases": []
+        },
+        {
+          "id": "C355",
+          "title": "PCA disperso",
+          "english": "Sparse PCA",
+          "definition": "Busca componentes con pocos coeficientes activos, sacrificando propiedades del PCA ordinario según la formulación.",
+          "aliases": []
+        },
+        {
+          "id": "C356",
+          "title": "PCA con kernel",
+          "english": "Kernel PCA",
+          "definition": "Aplica una construcción de componentes principales en un espacio implícito definido por un kernel.",
+          "aliases": []
+        },
+        {
+          "id": "C357",
+          "title": "SVD truncada",
+          "english": "Truncated SVD",
+          "definition": "Conserva un número limitado de componentes singulares para aproximar una matriz, frecuentemente sin centrar matrices dispersas.",
+          "aliases": []
+        },
+        {
+          "id": "C358",
+          "title": "Factorización matricial no negativa",
+          "english": "Non-negative matrix factorization",
+          "definition": "Aproxima una matriz no negativa con factores también no negativos, favoreciendo representaciones aditivas.",
+          "aliases": ["NMF"]
+        },
+        {
+          "id": "C359",
+          "title": "Análisis de componentes independientes",
+          "english": "Independent component analysis",
+          "definition": "Busca componentes estadísticamente independientes bajo supuestos de mezcla, más exigentes que decorrelación.",
+          "aliases": ["ICA"]
+        },
+        {
+          "id": "C360",
+          "title": "Análisis factorial",
+          "english": "Factor analysis",
+          "definition": "Modela covarianzas mediante factores latentes y ruido específico; no equivale a maximizar varianza explicada como PCA.",
+          "aliases": []
+        },
+        {
+          "id": "C361",
+          "title": "Escalado multidimensional",
+          "english": "Multidimensional scaling",
+          "definition": "Construye coordenadas de baja dimensión que aproximan distancias o disimilitudes entre objetos.",
+          "aliases": ["MDS"]
+        },
+        {
+          "id": "C362",
+          "title": "Isomap",
+          "english": "Isomap",
+          "definition": "Estima distancias geodésicas mediante un grafo de vecinos y aplica escalado multidimensional sobre ellas.",
+          "aliases": []
+        },
+        {
+          "id": "C363",
+          "title": "Embedding localmente lineal",
+          "english": "Locally linear embedding",
+          "definition": "Preserva relaciones de reconstrucción lineal local al buscar coordenadas de menor dimensión.",
+          "aliases": ["LLE"]
+        },
+        {
+          "id": "C364",
+          "title": "Mapas propios laplacianos",
+          "english": "Laplacian eigenmaps",
+          "definition": "Construyen una representación usando autovectores del laplaciano de un grafo de vecindad.",
+          "aliases": []
+        },
+        {
+          "id": "C365",
+          "title": "t-SNE",
+          "english": "t-distributed stochastic neighbor embedding",
+          "definition": "Construye una visualización que prioriza vecindades mediante distribuciones de similitud; distancias globales requieren cautela.",
+          "aliases": []
+        },
+        {
+          "id": "C366",
+          "title": "Perplejidad de t-SNE",
+          "english": "t-SNE perplexity",
+          "definition": "Controla una escala efectiva de vecindad basada en la entropía de las afinidades locales.",
+          "aliases": []
+        },
+        {
+          "id": "C367",
+          "title": "Problema de aglomeración",
+          "english": "Crowding problem",
+          "definition": "Al reducir dimensión puede faltar espacio para preservar simultáneamente separaciones entre numerosas vecindades.",
+          "aliases": []
+        },
+        {
+          "id": "C368",
+          "title": "UMAP",
+          "english": "Uniform manifold approximation and projection",
+          "definition": "Construye y optimiza una representación de un grafo de relaciones locales bajo supuestos geométricos del método.",
+          "aliases": []
+        },
+        {
+          "id": "C369",
+          "title": "Proyección aleatoria",
+          "english": "Random projection",
+          "definition": "Reduce dimensión mediante una transformación aleatoria que puede preservar aproximadamente distancias bajo condiciones adecuadas.",
+          "aliases": []
+        },
+        {
+          "id": "C370",
+          "title": "Lema de Johnson–Lindenstrauss",
+          "english": "Johnson–Lindenstrauss lemma",
+          "definition": "Garantiza una proyección de conjuntos finitos a dimensión menor que preserva distancias euclídeas dentro de una tolerancia.",
+          "aliases": ["JL"]
+        },
+        {
+          "id": "C371",
+          "title": "Blanqueamiento de datos",
+          "english": "Whitening",
+          "definition": "Transforma datos para obtener covarianza identidad bajo la estimación usada; puede amplificar direcciones de varianza pequeña.",
+          "aliases": []
+        },
+        {
+          "id": "C372",
+          "title": "Hipótesis de variedad",
+          "english": "Manifold hypothesis",
+          "definition": "Supone que datos de alta dimensión se concentran cerca de una estructura de dimensión intrínseca menor.",
+          "aliases": []
+        },
+        {
+          "id": "C373",
+          "title": "Dimensión intrínseca",
+          "english": "Intrinsic dimension",
+          "definition": "Número de grados de libertad necesarios para describir localmente o globalmente una estructura de datos.",
+          "aliases": []
+        },
+        {
+          "id": "C374",
+          "title": "Hubness",
+          "english": "Hubness",
+          "definition": "Fenómeno por el que algunas observaciones aparecen como vecinas de muchas otras, especialmente en ciertos espacios de alta dimensión.",
+          "aliases": []
+        },
+        {
+          "id": "C375",
+          "title": "Análisis topológico de datos",
+          "english": "Topological data analysis",
+          "definition": "Estudia estructuras como componentes, ciclos y cavidades para caracterizar la forma de los datos.",
+          "aliases": []
+        },
+        {
+          "id": "C376",
+          "title": "Homología persistente",
+          "english": "Persistent homology",
+          "definition": "Sigue la aparición y desaparición de características topológicas al variar una escala de construcción.",
+          "aliases": []
+        },
+        {
+          "id": "C377",
+          "title": "Aproximación Barnes–Hut",
+          "english": "Barnes–Hut approximation",
+          "definition": "Agrupa interacciones lejanas mediante una estructura jerárquica para acelerar ciertos cálculos, incluido un algoritmo de t-SNE.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "ensembles",
+      "title": "Ensembles y combinación de modelos",
+      "entries": [
+        {
+          "id": "C378",
+          "title": "Bagging",
+          "english": "Bagging",
+          "definition": "Combina modelos ajustados sobre remuestras para reducir variabilidad cuando sus errores no están completamente correlacionados.",
+          "aliases": []
+        },
+        {
+          "id": "C379",
+          "title": "Boosting",
+          "english": "Boosting",
+          "definition": "Construye una combinación secuencial de modelos en la que cada etapa atiende al objetivo definido por las anteriores.",
+          "aliases": []
+        },
+        {
+          "id": "C380",
+          "title": "AdaBoost",
+          "english": "AdaBoost",
+          "definition": "Repondera ejemplos para enfatizar errores de etapas previas y combina clasificadores con pesos aprendidos.",
+          "aliases": []
+        },
+        {
+          "id": "C381",
+          "title": "Gradient boosting",
+          "english": "Gradient boosting",
+          "definition": "Añade modelos que aproximan direcciones de descenso de una pérdida en el espacio de funciones.",
+          "aliases": []
+        },
+        {
+          "id": "C382",
+          "title": "Bosque aleatorio",
+          "english": "Random forest",
+          "definition": "Combina árboles con aleatoriedad de muestras y características para diversificar sus errores.",
+          "aliases": []
+        },
+        {
+          "id": "C383",
+          "title": "Árboles extremadamente aleatorizados",
+          "english": "Extra Trees",
+          "definition": "Introduce aleatoriedad adicional en umbrales de partición al construir un ensemble de árboles.",
+          "aliases": []
+        },
+        {
+          "id": "C384",
+          "title": "XGBoost",
+          "english": "XGBoost",
+          "definition": "Sistema de boosting de árboles con objetivo regularizado y aproximaciones que utilizan información de derivadas de la pérdida.",
+          "aliases": []
+        },
+        {
+          "id": "C385",
+          "title": "LightGBM",
+          "english": "LightGBM",
+          "definition": "Implementación de boosting de árboles basada en histogramas y estrategias eficientes de crecimiento y muestreo.",
+          "aliases": []
+        },
+        {
+          "id": "C386",
+          "title": "CatBoost",
+          "english": "CatBoost",
+          "definition": "Sistema de boosting que incorpora tratamiento de variables categóricas y estrategias ordenadas para reducir determinados sesgos de ajuste.",
+          "aliases": []
+        },
+        {
+          "id": "C387",
+          "title": "Votación dura",
+          "english": "Hard voting",
+          "definition": "Combina decisiones de clasificadores mediante recuento de votos, con una regla explícita para los empates.",
+          "aliases": []
+        },
+        {
+          "id": "C388",
+          "title": "Votación blanda",
+          "english": "Soft voting",
+          "definition": "Combina probabilidades de varios clasificadores y decide a partir del vector agregado.",
+          "aliases": []
+        },
+        {
+          "id": "C389",
+          "title": "Stacking",
+          "english": "Stacking",
+          "definition": "Entrena un metamodelo sobre predicciones de modelos base, generadas fuera de muestra para evitar fuga.",
+          "aliases": ["apilamiento"]
+        },
+        {
+          "id": "C390",
+          "title": "Blending",
+          "english": "Blending",
+          "definition": "Ajusta un combinador de modelos usando predicciones sobre un conjunto de reserva separado.",
+          "aliases": []
+        },
+        {
+          "id": "C391",
+          "title": "Evaluación fuera de bolsa",
+          "english": "Out-of-bag evaluation",
+          "definition": "Usa observaciones no seleccionadas en una remuestra bootstrap para evaluar sus modelos asociados.",
+          "aliases": ["OOB"]
+        },
+        {
+          "id": "C392",
+          "title": "Submuestreo de características por nodo",
+          "english": "Node-wise feature subsampling",
+          "definition": "Limita aleatoriamente los predictores candidatos en cada partición de un árbol para diversificar sus decisiones.",
+          "aliases": []
+        },
+        {
+          "id": "C393",
+          "title": "Método de subespacios aleatorios",
+          "english": "Random subspace method",
+          "definition": "Ajusta modelos sobre subconjuntos de características y combina sus resultados.",
+          "aliases": []
+        },
+        {
+          "id": "C394",
+          "title": "Códigos correctores de errores para clasificación",
+          "english": "Error-correcting output codes",
+          "definition": "Transforma un problema multiclase en varios problemas binarios definidos por palabras de código.",
+          "aliases": []
+        },
+        {
+          "id": "C395",
+          "title": "Selección dinámica de ensembles",
+          "english": "Dynamic ensemble selection",
+          "definition": "Elige modelos o sus pesos para cada consulta según una estimación local de competencia.",
+          "aliases": []
+        },
+        {
+          "id": "C396",
+          "title": "Diversidad del ensemble",
+          "english": "Ensemble diversity",
+          "definition": "Diferencia entre respuestas o errores de modelos; más diversidad no garantiza por sí sola mejor rendimiento.",
+          "aliases": []
+        },
+        {
+          "id": "C397",
+          "title": "Aprendiz débil",
+          "english": "Weak learner",
+          "definition": "Modelo cuyo rendimiento satisface una ventaja limitada frente a una referencia bajo los supuestos de un algoritmo de boosting.",
+          "aliases": []
+        },
+        {
+          "id": "C398",
+          "title": "Tocón de decisión",
+          "english": "Decision stump",
+          "definition": "Árbol de una sola partición, usado como componente simple en algunos ensembles.",
+          "aliases": []
+        },
+        {
+          "id": "C399",
+          "title": "Aprendizaje con correlación negativa",
+          "english": "Negative correlation learning",
+          "definition": "Añade objetivos que buscan reducir correlación de errores entre miembros de una combinación.",
+          "aliases": []
+        },
+        {
+          "id": "C400",
+          "title": "Ensemble de snapshots",
+          "english": "Snapshot ensemble",
+          "definition": "Combina estados de un entrenamiento guardados en distintos momentos, buscando diversidad sin entrenar todos desde cero.",
+          "aliases": []
+        },
+        {
+          "id": "C401",
+          "title": "Promedio bayesiano de modelos",
+          "english": "Bayesian model averaging",
+          "definition": "Combina predicciones ponderando modelos por sus probabilidades posteriores bajo un marco bayesiano.",
+          "aliases": []
+        },
+        {
+          "id": "C402",
+          "title": "Mezcla de expertos",
+          "english": "Mixture of experts",
+          "definition": "Combina expertos mediante una función de enrutamiento que puede asignar contribuciones diferentes a cada entrada.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "optimization-advanced",
+      "title": "Optimización avanzada",
+      "entries": [
+        {
+          "id": "C403",
+          "title": "AdamW",
+          "english": "AdamW",
+          "definition": "Separa el decaimiento de pesos de los momentos adaptativos de Adam; no equivale a añadir L2 a su gradiente.",
+          "aliases": []
+        },
+        {
+          "id": "C404",
+          "title": "Momento de Nesterov",
+          "english": "Nesterov momentum",
+          "definition": "Usa una corrección anticipada de la dirección de movimiento; su formulación debe distinguirse del momentum clásico.",
+          "aliases": []
+        },
+        {
+          "id": "C405",
+          "title": "Adagrad",
+          "english": "Adagrad",
+          "definition": "Escala actualizaciones por coordenada usando la suma acumulada de gradientes cuadrados; sus tasas efectivas tienden a disminuir.",
+          "aliases": []
+        },
+        {
+          "id": "C406",
+          "title": "Adadelta",
+          "english": "Adadelta",
+          "definition": "Adapta actualizaciones mediante promedios móviles de gradientes cuadrados y de cambios previos.",
+          "aliases": []
+        },
+        {
+          "id": "C407",
+          "title": "NAdam",
+          "english": "NAdam",
+          "definition": "Combina adaptación por momentos de Adam con una modificación inspirada en el momento de Nesterov.",
+          "aliases": []
+        },
+        {
+          "id": "C408",
+          "title": "AMSGrad",
+          "english": "AMSGrad",
+          "definition": "Variante de Adam que conserva máximos de estimaciones de segundo momento para controlar determinados comportamientos de adaptación.",
+          "aliases": []
+        },
+        {
+          "id": "C409",
+          "title": "Lion",
+          "english": "Lion optimizer",
+          "definition": "Optimizador que utiliza signos de combinaciones de gradiente y momento para definir la dirección de actualización.",
+          "aliases": []
+        },
+        {
+          "id": "C410",
+          "title": "L-BFGS",
+          "english": "Limited-memory BFGS",
+          "definition": "Aproxima información de curvatura mediante un historial limitado de diferencias de parámetros y gradientes.",
+          "aliases": ["LBFGS"]
+        },
+        {
+          "id": "C411",
+          "title": "Método de Newton",
+          "english": "Newton method",
+          "definition": "Usa gradiente y Hessiana para construir un paso local; requiere tratar singularidad, coste y posibles curvaturas indefinidas.",
+          "aliases": []
+        },
+        {
+          "id": "C412",
+          "title": "Método de Gauss–Newton",
+          "english": "Gauss–Newton method",
+          "definition": "Aproxima la Hessiana de objetivos de mínimos cuadrados mediante productos de Jacobianas.",
+          "aliases": []
+        },
+        {
+          "id": "C413",
+          "title": "Gradiente natural",
+          "english": "Natural gradient",
+          "definition": "Ajusta la dirección de descenso según una métrica del espacio de distribuciones, frecuentemente basada en información de Fisher.",
+          "aliases": []
+        },
+        {
+          "id": "C414",
+          "title": "Matriz de información de Fisher",
+          "english": "Fisher information matrix",
+          "definition": "Describe sensibilidad local de una familia probabilística mediante momentos de las derivadas del logaritmo de su densidad.",
+          "aliases": []
+        },
+        {
+          "id": "C415",
+          "title": "Búsqueda de línea",
+          "english": "Line search",
+          "definition": "Elige una longitud de paso evaluando un objetivo o condiciones a lo largo de una dirección.",
+          "aliases": []
+        },
+        {
+          "id": "C416",
+          "title": "Condiciones de Wolfe",
+          "english": "Wolfe conditions",
+          "definition": "Criterios de descenso suficiente y curvatura empleados para aceptar pasos en ciertas búsquedas de línea.",
+          "aliases": []
+        },
+        {
+          "id": "C417",
+          "title": "Método de región de confianza",
+          "english": "Trust-region method",
+          "definition": "Optimiza un modelo local dentro de una zona donde se considera suficientemente fiable.",
+          "aliases": []
+        },
+        {
+          "id": "C418",
+          "title": "Gradiente conjugado",
+          "english": "Conjugate gradient",
+          "definition": "Resuelve ciertos sistemas lineales simétricos definidos positivos mediante direcciones conjugadas sin invertir explícitamente la matriz.",
+          "aliases": []
+        },
+        {
+          "id": "C419",
+          "title": "Gradiente proximal",
+          "english": "Proximal gradient",
+          "definition": "Combina un paso sobre una parte suave del objetivo con un operador proximal para otra parte.",
+          "aliases": []
+        },
+        {
+          "id": "C420",
+          "title": "Descenso por coordenadas",
+          "english": "Coordinate descent",
+          "definition": "Actualiza parámetros o bloques de ellos manteniendo los demás fijos durante cada subproblema.",
+          "aliases": []
+        },
+        {
+          "id": "C421",
+          "title": "Algoritmo de Frank–Wolfe",
+          "english": "Frank–Wolfe algorithm",
+          "definition": "Optimiza sobre un conjunto convexo mediante subproblemas lineales y combinaciones convexas, evitando ciertas proyecciones.",
+          "aliases": []
+        },
+        {
+          "id": "C422",
+          "title": "Paso de Polyak",
+          "english": "Polyak step size",
+          "definition": "Relaciona la longitud de paso con la diferencia respecto al valor óptimo y la norma del gradiente bajo una formulación específica.",
+          "aliases": []
+        },
+        {
+          "id": "C423",
+          "title": "Tasa de aprendizaje cíclica",
+          "english": "Cyclical learning rate",
+          "definition": "Hace variar la tasa entre límites según ciclos definidos, en lugar de reducirla siempre monótonamente.",
+          "aliases": []
+        },
+        {
+          "id": "C424",
+          "title": "Política de un ciclo",
+          "english": "One-cycle policy",
+          "definition": "Programa una subida y bajada principal de la tasa, a menudo acompañada de variaciones del momento.",
+          "aliases": []
+        },
+        {
+          "id": "C425",
+          "title": "Calentamiento de tasa",
+          "english": "Learning-rate warmup",
+          "definition": "Incrementa gradualmente la tasa al inicio para moderar actualizaciones tempranas.",
+          "aliases": []
+        },
+        {
+          "id": "C426",
+          "title": "Reinicios cálidos del scheduler",
+          "english": "Warm restarts",
+          "definition": "Reinicia un calendario de tasas sin necesariamente reinicializar los parámetros del modelo.",
+          "aliases": []
+        },
+        {
+          "id": "C427",
+          "title": "Optimización de segundo orden",
+          "english": "Second-order optimization",
+          "definition": "Utiliza información de curvatura exacta o aproximada además del gradiente para construir actualizaciones.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "regularization-advanced",
+      "title": "Regularización y normalización avanzadas",
+      "entries": [
+        {
+          "id": "C428",
+          "title": "Normalización espectral",
+          "english": "Spectral normalization",
+          "definition": "Restringe o reescala una matriz según su mayor valor singular, controlando la amplificación lineal que produce.",
+          "aliases": []
+        },
+        {
+          "id": "C429",
+          "title": "Normalización de pesos",
+          "english": "Weight normalization",
+          "definition": "Reparametriza un vector de pesos separando su magnitud y dirección para modificar la geometría del ajuste.",
+          "aliases": []
+        },
+        {
+          "id": "C430",
+          "title": "Normalización por capa",
+          "english": "Layer normalization",
+          "definition": "Normaliza características dentro de cada ejemplo según ejes definidos, sin depender de estadísticas de otros ejemplos del lote.",
+          "aliases": ["LayerNorm"]
+        },
+        {
+          "id": "C431",
+          "title": "Normalización por instancia",
+          "english": "Instance normalization",
+          "definition": "Normaliza cada ejemplo y canal sobre sus dimensiones espaciales en usos habituales de visión.",
+          "aliases": []
+        },
+        {
+          "id": "C432",
+          "title": "Normalización por grupos",
+          "english": "Group normalization",
+          "definition": "Divide canales en grupos y normaliza estadísticas dentro de cada grupo de cada ejemplo.",
+          "aliases": []
+        },
+        {
+          "id": "C433",
+          "title": "RMSNorm",
+          "english": "RMS normalization",
+          "definition": "Reescala activaciones mediante su raíz cuadrática media sin restar explícitamente la media.",
+          "aliases": ["RMS Normalization"]
+        },
+        {
+          "id": "C434",
+          "title": "Suavizado de etiquetas",
+          "english": "Label smoothing",
+          "definition": "Sustituye objetivos categóricos rígidos por distribuciones suavizadas; altera el objetivo de entrenamiento.",
+          "aliases": []
+        },
+        {
+          "id": "C435",
+          "title": "Mixup",
+          "english": "Mixup",
+          "definition": "Entrena con combinaciones convexas de entradas y de sus etiquetas bajo una política de mezcla.",
+          "aliases": []
+        },
+        {
+          "id": "C436",
+          "title": "CutMix",
+          "english": "CutMix",
+          "definition": "Combina regiones de imágenes y mezcla etiquetas según la proporción de área sustituida.",
+          "aliases": []
+        },
+        {
+          "id": "C437",
+          "title": "Cutout",
+          "english": "Cutout",
+          "definition": "Oculta regiones de una imagen durante entrenamiento para reducir dependencia de señales locales concretas.",
+          "aliases": []
+        },
+        {
+          "id": "C438",
+          "title": "SpecAugment",
+          "english": "SpecAugment",
+          "definition": "Aplica transformaciones como máscaras temporales y de frecuencia a representaciones espectrales de audio.",
+          "aliases": []
+        },
+        {
+          "id": "C439",
+          "title": "DropConnect",
+          "english": "DropConnect",
+          "definition": "Enmascara conexiones o pesos durante entrenamiento, en contraste con enmascarar activaciones completas.",
+          "aliases": []
+        },
+        {
+          "id": "C440",
+          "title": "Dropout espacial",
+          "english": "Spatial dropout",
+          "definition": "Elimina grupos estructurados de activaciones, como mapas de características completos, en vez de elementos independientes.",
+          "aliases": []
+        },
+        {
+          "id": "C441",
+          "title": "Profundidad estocástica",
+          "english": "Stochastic depth",
+          "definition": "Omite bloques de una red durante entrenamiento según una política aleatoria, manteniendo una regla coherente de inferencia.",
+          "aliases": []
+        },
+        {
+          "id": "C442",
+          "title": "Restricción max-norm",
+          "english": "Max-norm constraint",
+          "definition": "Limita la norma de determinados vectores de pesos mediante proyección o reescalado.",
+          "aliases": []
+        },
+        {
+          "id": "C443",
+          "title": "Regularización ortogonal",
+          "english": "Orthogonal regularization",
+          "definition": "Penaliza desviaciones respecto a relaciones de ortogonalidad entre vectores o matrices de parámetros.",
+          "aliases": []
+        },
+        {
+          "id": "C444",
+          "title": "Regularización de Jacobiana",
+          "english": "Jacobian regularization",
+          "definition": "Penaliza sensibilidades de las salidas respecto a entradas o representaciones para promover suavidad local.",
+          "aliases": []
+        },
+        {
+          "id": "C445",
+          "title": "Entrenamiento adversarial",
+          "english": "Adversarial training",
+          "definition": "Ajusta el modelo usando perturbaciones elegidas para aumentar su pérdida dentro de restricciones definidas.",
+          "aliases": []
+        },
+        {
+          "id": "C446",
+          "title": "Destilación de conocimiento",
+          "english": "Knowledge distillation",
+          "definition": "Entrena un estudiante usando información de un modelo docente, como probabilidades suavizadas o representaciones.",
+          "aliases": []
+        },
+        {
+          "id": "C447",
+          "title": "Autodestilación",
+          "english": "Self-distillation",
+          "definition": "Transfiere información entre etapas, versiones o partes relacionadas de un mismo proceso de entrenamiento.",
+          "aliases": []
+        },
+        {
+          "id": "C448",
+          "title": "Hipótesis del billete de lotería",
+          "english": "Lottery ticket hypothesis",
+          "definition": "Propone que ciertas redes contienen subredes que pueden entrenarse eficazmente con inicializaciones adecuadas.",
+          "aliases": []
+        },
+        {
+          "id": "C449",
+          "title": "Regularización implícita",
+          "english": "Implicit regularization",
+          "definition": "Preferencias del procedimiento de ajuste que influyen en la solución sin aparecer como penalización explícita.",
+          "aliases": []
+        },
+        {
+          "id": "C450",
+          "title": "Doble descenso",
+          "english": "Double descent",
+          "definition": "Patrón en el que el error de evaluación puede volver a disminuir tras una región asociada a interpolación.",
+          "aliases": []
+        },
+        {
+          "id": "C451",
+          "title": "Minimización consciente de agudeza",
+          "english": "Sharpness-aware minimization",
+          "definition": "Optimiza considerando un vecindario de parámetros para favorecer soluciones con buen comportamiento local del objetivo.",
+          "aliases": ["SAM"]
+        },
+        {
+          "id": "C452",
+          "title": "Cotas PAC-Bayes",
+          "english": "PAC-Bayes bounds",
+          "definition": "Relacionan riesgo y complejidad de distribuciones sobre hipótesis bajo supuestos probabilísticos y una elección de prior.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "vision",
+      "title": "Convolución y visión artificial",
+      "entries": [
+        {
+          "id": "C453",
+          "title": "Convolución unidimensional",
+          "english": "One-dimensional convolution",
+          "definition": "Aplica filtros compartidos sobre una dimensión, como tiempo o posición de una secuencia.",
+          "aliases": []
+        },
+        {
+          "id": "C454",
+          "title": "Convolución bidimensional",
+          "english": "Two-dimensional convolution",
+          "definition": "Desplaza filtros sobre dos dimensiones espaciales; las bibliotecas suelen implementar correlación cruzada bajo este nombre.",
+          "aliases": []
+        },
+        {
+          "id": "C455",
+          "title": "Convolución tridimensional",
+          "english": "Three-dimensional convolution",
+          "definition": "Extiende el filtrado a tres ejes, útil para volúmenes o patrones espaciotemporales.",
+          "aliases": []
+        },
+        {
+          "id": "C456",
+          "title": "Convolución agrupada",
+          "english": "Grouped convolution",
+          "definition": "Divide canales en grupos y restringe las conexiones del filtro dentro de cada grupo.",
+          "aliases": []
+        },
+        {
+          "id": "C457",
+          "title": "Convolución separable en profundidad",
+          "english": "Depthwise separable convolution",
+          "definition": "Combina filtrado independiente por canal con mezcla puntual de canales para reducir operaciones.",
+          "aliases": []
+        },
+        {
+          "id": "C458",
+          "title": "Convolución transpuesta",
+          "english": "Transposed convolution",
+          "definition": "Aplica la transformación lineal transpuesta de una convolución configurada; no es en general su inversa.",
+          "aliases": []
+        },
+        {
+          "id": "C459",
+          "title": "Convolución dilatada",
+          "english": "Dilated convolution",
+          "definition": "Separa posiciones del filtro mediante huecos para ampliar campo receptivo sin aumentar todos sus parámetros.",
+          "aliases": []
+        },
+        {
+          "id": "C460",
+          "title": "Convolución puntual",
+          "english": "Pointwise convolution",
+          "definition": "Usa filtros espaciales de tamaño uno para mezclar canales en cada posición.",
+          "aliases": []
+        },
+        {
+          "id": "C461",
+          "title": "Campo receptivo",
+          "english": "Receptive field",
+          "definition": "Región de la entrada que puede influir en una activación determinada de la red.",
+          "aliases": []
+        },
+        {
+          "id": "C462",
+          "title": "Paso espacial de filtro",
+          "english": "Stride",
+          "definition": "Desplazamiento entre posiciones sucesivas del filtro; afecta resolución de salida y cobertura.",
+          "aliases": []
+        },
+        {
+          "id": "C463",
+          "title": "Correlación cruzada",
+          "english": "Cross-correlation",
+          "definition": "Combina un filtro con desplazamientos de una señal sin invertir el filtro como en la convolución matemática.",
+          "aliases": []
+        },
+        {
+          "id": "C464",
+          "title": "Pooling promedio",
+          "english": "Average pooling",
+          "definition": "Resume regiones tomando la media de sus activaciones bajo una ventana y un paso definidos.",
+          "aliases": []
+        },
+        {
+          "id": "C465",
+          "title": "Pooling promedio global",
+          "english": "Global average pooling",
+          "definition": "Promedia cada canal sobre todas sus posiciones espaciales para obtener una representación compacta.",
+          "aliases": []
+        },
+        {
+          "id": "C466",
+          "title": "ResNet",
+          "english": "Residual network",
+          "definition": "Arquitectura que introduce caminos de identidad o proyección para aprender transformaciones residuales entre bloques.",
+          "aliases": []
+        },
+        {
+          "id": "C467",
+          "title": "DenseNet",
+          "english": "DenseNet",
+          "definition": "Conecta bloques mediante concatenación de características de capas anteriores, favoreciendo reutilización de representaciones.",
+          "aliases": []
+        },
+        {
+          "id": "C468",
+          "title": "U-Net",
+          "english": "U-Net",
+          "definition": "Arquitectura de codificador y decodificador con conexiones entre escalas, utilizada en segmentación y otras tareas.",
+          "aliases": []
+        },
+        {
+          "id": "C469",
+          "title": "Bloque Inception",
+          "english": "Inception block",
+          "definition": "Combina ramas de procesamiento a distintas escalas y concatena sus características.",
+          "aliases": []
+        },
+        {
+          "id": "C470",
+          "title": "Transformador de visión",
+          "english": "Vision Transformer",
+          "definition": "Procesa representaciones de parches de imagen mediante bloques de atención y otras transformaciones.",
+          "aliases": ["ViT"]
+        },
+        {
+          "id": "C471",
+          "title": "Pirámide de características",
+          "english": "Feature pyramid network",
+          "definition": "Combina información de diferentes resoluciones para producir representaciones multiescala.",
+          "aliases": []
+        },
+        {
+          "id": "C472",
+          "title": "ROI Align",
+          "english": "ROI Align",
+          "definition": "Extrae características de regiones usando interpolación y evitando determinados redondeos de límites espaciales.",
+          "aliases": ["Region of Interest Align"]
+        },
+        {
+          "id": "C473",
+          "title": "Intersección sobre unión",
+          "english": "Intersection over union",
+          "definition": "Divide el área o volumen compartido por dos regiones entre el de su unión.",
+          "aliases": ["IoU"]
+        },
+        {
+          "id": "C474",
+          "title": "Supresión no máxima",
+          "english": "Non-maximum suppression",
+          "definition": "Elimina detecciones redundantes atendiendo a puntuaciones y solapamientos bajo una política definida.",
+          "aliases": []
+        },
+        {
+          "id": "C475",
+          "title": "Segmentación semántica",
+          "english": "Semantic segmentation",
+          "definition": "Asigna una clase a cada píxel o posición sin distinguir necesariamente instancias separadas de la misma clase.",
+          "aliases": []
+        },
+        {
+          "id": "C476",
+          "title": "Segmentación de instancias",
+          "english": "Instance segmentation",
+          "definition": "Distingue objetos individuales y asigna una máscara a cada instancia detectada.",
+          "aliases": []
+        },
+        {
+          "id": "C477",
+          "title": "Detección de objetos",
+          "english": "Object detection",
+          "definition": "Localiza objetos y estima sus clases, normalmente mediante regiones o cajas con puntuaciones asociadas.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "sequences",
+      "title": "Secuencias y series temporales",
+      "entries": [
+        {
+          "id": "C478",
+          "title": "Red neuronal recurrente",
+          "english": "Recurrent neural network",
+          "definition": "Mantiene un estado que se actualiza al procesar una secuencia y permite representar dependencias temporales.",
+          "aliases": ["RNN"]
+        },
+        {
+          "id": "C479",
+          "title": "LSTM",
+          "english": "Long short-term memory",
+          "definition": "Celda recurrente con compuertas y estado de memoria que regula conservación y actualización de información.",
+          "aliases": ["Long Short-Term Memory"]
+        },
+        {
+          "id": "C480",
+          "title": "GRU",
+          "english": "Gated recurrent unit",
+          "definition": "Unidad recurrente con compuertas de actualización y reinicio que combina memoria y estado en una formulación compacta.",
+          "aliases": ["Gated Recurrent Unit"]
+        },
+        {
+          "id": "C481",
+          "title": "Retropropagación a través del tiempo",
+          "english": "Backpropagation through time",
+          "definition": "Despliega una red recurrente a lo largo de pasos temporales para calcular gradientes de sus parámetros compartidos.",
+          "aliases": ["BPTT"]
+        },
+        {
+          "id": "C482",
+          "title": "Retropropagación temporal truncada",
+          "english": "Truncated BPTT",
+          "definition": "Limita la longitud temporal por la que se propagan gradientes, reduciendo coste y alcance de dependencia.",
+          "aliases": ["TBPTT"]
+        },
+        {
+          "id": "C483",
+          "title": "Teacher forcing",
+          "english": "Teacher forcing",
+          "definition": "Durante entrenamiento suministra al siguiente paso el objetivo previo en lugar de la predicción generada.",
+          "aliases": []
+        },
+        {
+          "id": "C484",
+          "title": "Muestreo programado en secuencias",
+          "english": "Scheduled sampling",
+          "definition": "Alterna entradas previas reales y generadas siguiendo una política durante entrenamiento autorregresivo.",
+          "aliases": []
+        },
+        {
+          "id": "C485",
+          "title": "Modelo secuencia a secuencia",
+          "english": "Sequence-to-sequence model",
+          "definition": "Transforma una secuencia de entrada en otra secuencia que puede tener longitud distinta.",
+          "aliases": []
+        },
+        {
+          "id": "C486",
+          "title": "Red recurrente bidireccional",
+          "english": "Bidirectional recurrent network",
+          "definition": "Combina procesamiento hacia delante y hacia atrás; requiere disponibilidad del contexto futuro utilizado.",
+          "aliases": []
+        },
+        {
+          "id": "C487",
+          "title": "Clasificación temporal conexionista",
+          "english": "Connectionist temporal classification",
+          "definition": "Define una pérdida para secuencias sin alineación temporal explícita usando símbolos de blanco y suma de alineaciones.",
+          "aliases": ["CTC"]
+        },
+        {
+          "id": "C488",
+          "title": "Búsqueda en haz",
+          "english": "Beam search",
+          "definition": "Conserva varios prefijos candidatos en cada paso de generación; no garantiza hallar la secuencia globalmente más probable.",
+          "aliases": []
+        },
+        {
+          "id": "C489",
+          "title": "Decodificación voraz",
+          "english": "Greedy decoding",
+          "definition": "Selecciona la opción local de mayor puntuación en cada paso sin reconsiderar elecciones anteriores.",
+          "aliases": []
+        },
+        {
+          "id": "C490",
+          "title": "Algoritmo de Viterbi",
+          "english": "Viterbi algorithm",
+          "definition": "Encuentra la secuencia de estados de mayor puntuación en modelos con estructura de dependencia adecuada.",
+          "aliases": []
+        },
+        {
+          "id": "C491",
+          "title": "Modelo oculto de Markov",
+          "english": "Hidden Markov model",
+          "definition": "Describe observaciones emitidas por estados latentes que evolucionan mediante transiciones markovianas.",
+          "aliases": ["HMM"]
+        },
+        {
+          "id": "C492",
+          "title": "Campo aleatorio condicional",
+          "english": "Conditional random field",
+          "definition": "Modela una distribución condicionada de etiquetas estructuradas dadas observaciones mediante factores y normalización.",
+          "aliases": ["CRF"]
+        },
+        {
+          "id": "C493",
+          "title": "Propiedad de Markov",
+          "english": "Markov property",
+          "definition": "El futuro es independiente del pasado al condicionar en un estado que resume la información pertinente.",
+          "aliases": []
+        },
+        {
+          "id": "C494",
+          "title": "Autocorrelación",
+          "english": "Autocorrelation",
+          "definition": "Asociación entre valores de una señal separados por un desfase temporal.",
+          "aliases": []
+        },
+        {
+          "id": "C495",
+          "title": "Estacionariedad débil",
+          "english": "Weak stationarity",
+          "definition": "Exige media constante y covarianza que dependa del desfase, con segundos momentos finitos.",
+          "aliases": []
+        },
+        {
+          "id": "C496",
+          "title": "ARIMA",
+          "english": "Autoregressive integrated moving average",
+          "definition": "Combina términos autorregresivos, diferenciación y media móvil para modelar series temporales.",
+          "aliases": []
+        },
+        {
+          "id": "C497",
+          "title": "SARIMA",
+          "english": "Seasonal ARIMA",
+          "definition": "Añade componentes estacionales autorregresivos, de diferenciación y de media móvil a un modelo ARIMA.",
+          "aliases": []
+        },
+        {
+          "id": "C498",
+          "title": "Vector autorregresivo",
+          "english": "Vector autoregression",
+          "definition": "Modela varias series mediante dependencias lineales de sus propios retardos y de los de otras series.",
+          "aliases": ["VAR"]
+        },
+        {
+          "id": "C499",
+          "title": "Descomposición estacional",
+          "english": "Seasonal decomposition",
+          "definition": "Separa una serie en componentes como tendencia, estacionalidad y residuo bajo una estructura elegida.",
+          "aliases": []
+        },
+        {
+          "id": "C500",
+          "title": "Red convolucional temporal",
+          "english": "Temporal convolutional network",
+          "definition": "Usa convoluciones, frecuentemente causales y dilatadas, para representar dependencias en secuencias.",
+          "aliases": ["TCN"]
+        },
+        {
+          "id": "C501",
+          "title": "Alineamiento temporal dinámico",
+          "english": "Dynamic time warping",
+          "definition": "Busca una correspondencia no lineal entre posiciones de dos secuencias mediante un coste acumulado.",
+          "aliases": ["DTW"]
+        },
+        {
+          "id": "C502",
+          "title": "Horizonte de predicción",
+          "english": "Forecast horizon",
+          "definition": "Distancia temporal entre el momento de emitir una predicción y el instante que se quiere anticipar.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "attention",
+      "title": "Atención, tokenización y transformers",
+      "entries": [
+        {
+          "id": "C503",
+          "title": "Autoatención",
+          "english": "Self-attention",
+          "definition": "Calcula representaciones de una secuencia usando consultas, claves y valores derivados de esa misma secuencia.",
+          "aliases": ["self-attention"]
+        },
+        {
+          "id": "C504",
+          "title": "Atención cruzada",
+          "english": "Cross-attention",
+          "definition": "Relaciona consultas de una representación con claves y valores procedentes de otra.",
+          "aliases": []
+        },
+        {
+          "id": "C505",
+          "title": "Atención por producto escalar escalado",
+          "english": "Scaled dot-product attention",
+          "definition": "Pondera valores mediante softmax de productos consulta-clave divididos por una escala, habitualmente la raíz de la dimensión.",
+          "aliases": []
+        },
+        {
+          "id": "C506",
+          "title": "Atención multicabeza",
+          "english": "Multi-head attention",
+          "definition": "Combina varias operaciones de atención sobre proyecciones aprendidas para representar relaciones distintas.",
+          "aliases": []
+        },
+        {
+          "id": "C507",
+          "title": "Máscara causal",
+          "english": "Causal attention mask",
+          "definition": "Impide atender a posiciones futuras no disponibles en una tarea autorregresiva.",
+          "aliases": []
+        },
+        {
+          "id": "C508",
+          "title": "Máscara de relleno",
+          "english": "Padding mask",
+          "definition": "Evita que posiciones añadidas solo para igualar longitudes contribuyan como contenido válido.",
+          "aliases": []
+        },
+        {
+          "id": "C509",
+          "title": "Codificación posicional",
+          "english": "Positional encoding",
+          "definition": "Introduce información sobre posiciones u orden que una atención sin esa señal no identifica por sí sola.",
+          "aliases": []
+        },
+        {
+          "id": "C510",
+          "title": "Embedding posicional rotatorio",
+          "english": "Rotary position embedding",
+          "definition": "Aplica rotaciones dependientes de posición a consultas y claves para incorporar relaciones posicionales en sus productos.",
+          "aliases": ["RoPE"]
+        },
+        {
+          "id": "C511",
+          "title": "ALiBi",
+          "english": "Attention with linear biases",
+          "definition": "Añade sesgos dependientes de distancia a puntuaciones de atención para incorporar información posicional.",
+          "aliases": []
+        },
+        {
+          "id": "C512",
+          "title": "Caché de claves y valores",
+          "english": "Key-value cache",
+          "definition": "Reutiliza claves y valores de tokens ya procesados durante generación, intercambiando cómputo por memoria.",
+          "aliases": []
+        },
+        {
+          "id": "C513",
+          "title": "Atención de consultas agrupadas",
+          "english": "Grouped-query attention",
+          "definition": "Varias cabezas de consulta comparten grupos de cabezas de claves y valores.",
+          "aliases": ["GQA"]
+        },
+        {
+          "id": "C514",
+          "title": "Atención multiconsulta",
+          "english": "Multi-query attention",
+          "definition": "Comparte una cabeza de claves y valores entre varias cabezas de consulta para reducir memoria de caché.",
+          "aliases": ["MQA"]
+        },
+        {
+          "id": "C515",
+          "title": "Codificador transformer",
+          "english": "Transformer encoder",
+          "definition": "Bloque o conjunto de bloques que construye representaciones contextualizadas mediante atención y transformaciones por posición.",
+          "aliases": []
+        },
+        {
+          "id": "C516",
+          "title": "Decodificador transformer",
+          "english": "Transformer decoder",
+          "definition": "Procesa secuencias con restricciones de atención apropiadas a generación; puede incluir atención cruzada según la arquitectura.",
+          "aliases": []
+        },
+        {
+          "id": "C517",
+          "title": "Transformer codificador-decodificador",
+          "english": "Encoder-decoder transformer",
+          "definition": "Combina un codificador de entrada con un decodificador que atiende a sus representaciones.",
+          "aliases": []
+        },
+        {
+          "id": "C518",
+          "title": "Prenormalización",
+          "english": "Pre-norm transformer",
+          "definition": "Coloca normalización antes de los subbloques de atención o transformación dentro de una conexión residual.",
+          "aliases": []
+        },
+        {
+          "id": "C519",
+          "title": "Posnormalización",
+          "english": "Post-norm transformer",
+          "definition": "Coloca normalización después de combinar un subbloque con su conexión residual.",
+          "aliases": []
+        },
+        {
+          "id": "C520",
+          "title": "Bloque feed-forward del transformer",
+          "english": "Transformer feed-forward block",
+          "definition": "Transformación por posición que suele expandir y contraer dimensión mediante capas aprendidas y una no linealidad.",
+          "aliases": []
+        },
+        {
+          "id": "C521",
+          "title": "Conexión residual",
+          "english": "Residual connection",
+          "definition": "Suma una señal de entrada a la salida de una transformación compatible para crear un camino alternativo.",
+          "aliases": []
+        },
+        {
+          "id": "C522",
+          "title": "Embedding de token",
+          "english": "Token embedding",
+          "definition": "Vector aprendido o construido que representa un símbolo del vocabulario; no equivale necesariamente a una palabra completa.",
+          "aliases": []
+        },
+        {
+          "id": "C523",
+          "title": "Codificación por pares de bytes",
+          "english": "Byte-pair encoding",
+          "definition": "Tokenización basada en fusiones sucesivas de unidades frecuentes; las variantes definen de forma concreta su unidad inicial.",
+          "aliases": ["BPE"]
+        },
+        {
+          "id": "C524",
+          "title": "SentencePiece",
+          "english": "SentencePiece",
+          "definition": "Sistema de tokenización que puede aprender unidades subléxicas a partir de texto sin una segmentación previa en palabras.",
+          "aliases": []
+        },
+        {
+          "id": "C525",
+          "title": "Tokenizador unigram",
+          "english": "Unigram tokenizer",
+          "definition": "Selecciona segmentaciones mediante un modelo de probabilidades de unidades subléxicas y una estrategia de aprendizaje del vocabulario.",
+          "aliases": []
+        },
+        {
+          "id": "C526",
+          "title": "Ventana de contexto",
+          "english": "Context window",
+          "definition": "Cantidad de posiciones que un modelo puede procesar en una configuración; no garantiza uso fiable de toda la información.",
+          "aliases": []
+        },
+        {
+          "id": "C527",
+          "title": "Complejidad cuadrática de atención",
+          "english": "Quadratic attention complexity",
+          "definition": "La atención densa completa compara pares de posiciones, haciendo crecer su matriz de puntuaciones con el cuadrado de la longitud.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "generative",
+      "title": "Modelos generativos y probabilísticos",
+      "entries": [
+        {
+          "id": "C528",
+          "title": "Autoencoder",
+          "english": "Autoencoder",
+          "definition": "Aprende un codificador y un decodificador para reconstruir entradas mediante una representación intermedia y restricciones elegidas.",
+          "aliases": ["AE"]
+        },
+        {
+          "id": "C529",
+          "title": "Autoencoder con eliminación de ruido",
+          "english": "Denoising autoencoder",
+          "definition": "Reconstruye una entrada limpia a partir de una versión corrompida bajo una política de corrupción.",
+          "aliases": ["DAE"]
+        },
+        {
+          "id": "C530",
+          "title": "Autoencoder disperso",
+          "english": "Sparse autoencoder",
+          "definition": "Favorece que pocas unidades latentes estén activas por observación mediante una restricción o penalización.",
+          "aliases": ["SAE"]
+        },
+        {
+          "id": "C531",
+          "title": "Autoencoder variacional",
+          "english": "Variational autoencoder",
+          "definition": "Modelo generativo latente que aprende una distribución aproximada de inferencia y un decodificador probabilístico.",
+          "aliases": ["VAE"]
+        },
+        {
+          "id": "C532",
+          "title": "Cota inferior de evidencia",
+          "english": "Evidence lower bound",
+          "definition": "Objetivo variacional que acota por debajo la log-evidencia y combina ajuste de datos con una discrepancia de distribuciones.",
+          "aliases": ["ELBO"]
+        },
+        {
+          "id": "C533",
+          "title": "Truco de reparametrización",
+          "english": "Reparameterization trick",
+          "definition": "Expresa una muestra mediante ruido auxiliar y una transformación diferenciable para estimar determinados gradientes.",
+          "aliases": []
+        },
+        {
+          "id": "C534",
+          "title": "Colapso del posterior",
+          "english": "Posterior collapse",
+          "definition": "El posterior aproximado deja de aprovechar información de la observación y se aproxima al prior en ciertos modelos latentes.",
+          "aliases": []
+        },
+        {
+          "id": "C535",
+          "title": "Red generativa antagónica",
+          "english": "Generative adversarial network",
+          "definition": "Entrena un generador y un discriminador mediante objetivos enfrentados para aproximar una distribución de datos.",
+          "aliases": ["GAN"]
+        },
+        {
+          "id": "C536",
+          "title": "GAN de Wasserstein",
+          "english": "Wasserstein GAN",
+          "definition": "Usa un crítico con restricciones de Lipschitz para construir un objetivo relacionado con transporte de masa.",
+          "aliases": ["WGAN"]
+        },
+        {
+          "id": "C537",
+          "title": "Crítico generativo",
+          "english": "Generative critic",
+          "definition": "Función de puntuación utilizada para comparar muestras o distribuciones; no siempre produce una probabilidad de clase.",
+          "aliases": []
+        },
+        {
+          "id": "C538",
+          "title": "Penalización de gradiente del crítico",
+          "english": "Critic gradient penalty",
+          "definition": "Penaliza propiedades de la norma del gradiente del crítico en puntos muestreados según una política.",
+          "aliases": []
+        },
+        {
+          "id": "C539",
+          "title": "Colapso de modos",
+          "english": "Mode collapse",
+          "definition": "Un generador produce variedad insuficiente y omite partes relevantes de la distribución objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C540",
+          "title": "GAN condicional",
+          "english": "Conditional GAN",
+          "definition": "Condiciona generación y evaluación adversarial en información adicional, como etiquetas o contexto.",
+          "aliases": []
+        },
+        {
+          "id": "C541",
+          "title": "Flujo normalizante",
+          "english": "Normalizing flow",
+          "definition": "Transforma una distribución base mediante funciones invertibles cuya densidad puede calcularse usando Jacobianas.",
+          "aliases": []
+        },
+        {
+          "id": "C542",
+          "title": "Cambio de variable en densidades",
+          "english": "Change of variables for densities",
+          "definition": "Relaciona densidades antes y después de una transformación invertible mediante el determinante absoluto de su Jacobiana.",
+          "aliases": []
+        },
+        {
+          "id": "C543",
+          "title": "Modelo de difusión DDPM",
+          "english": "Denoising diffusion probabilistic model",
+          "definition": "Aprende un proceso inverso de una corrupción progresiva por ruido mediante un objetivo probabilístico.",
+          "aliases": []
+        },
+        {
+          "id": "C544",
+          "title": "Ajuste de score",
+          "english": "Score matching",
+          "definition": "Entrena una función para aproximar el gradiente del logaritmo de una densidad bajo un objetivo apropiado.",
+          "aliases": []
+        },
+        {
+          "id": "C545",
+          "title": "Ajuste de score con eliminación de ruido",
+          "english": "Denoising score matching",
+          "definition": "Aprende scores de distribuciones perturbadas usando datos corrompidos y objetivos derivados del mecanismo de ruido.",
+          "aliases": []
+        },
+        {
+          "id": "C546",
+          "title": "Difusión latente",
+          "english": "Latent diffusion",
+          "definition": "Realiza el proceso de difusión sobre representaciones comprimidas en lugar de operar directamente sobre todos los datos originales.",
+          "aliases": []
+        },
+        {
+          "id": "C547",
+          "title": "Guía sin clasificador",
+          "english": "Classifier-free guidance",
+          "definition": "Combina predicciones condicionadas y no condicionadas de un generador para modular la fuerza del condicionamiento.",
+          "aliases": []
+        },
+        {
+          "id": "C548",
+          "title": "Generación autorregresiva",
+          "english": "Autoregressive generation",
+          "definition": "Produce una secuencia factorizando cada elemento condicionado en los anteriores bajo un orden definido.",
+          "aliases": []
+        },
+        {
+          "id": "C549",
+          "title": "Modelado de lenguaje enmascarado",
+          "english": "Masked language modeling",
+          "definition": "Aprende a predecir unidades ocultadas usando el contexto disponible, que puede incluir posiciones posteriores.",
+          "aliases": ["MLM"]
+        },
+        {
+          "id": "C550",
+          "title": "Modelado causal de lenguaje",
+          "english": "Causal language modeling",
+          "definition": "Predice el siguiente token utilizando solo el prefijo permitido por la tarea.",
+          "aliases": ["CLM"]
+        },
+        {
+          "id": "C551",
+          "title": "Log-verosimilitud negativa",
+          "english": "Negative log-likelihood",
+          "definition": "Objetivo que penaliza asignar baja probabilidad o densidad a observaciones; su forma depende del modelo probabilístico.",
+          "aliases": []
+        },
+        {
+          "id": "C552",
+          "title": "Perplejidad de lenguaje",
+          "english": "Language-model perplexity",
+          "definition": "Exponencial de la log-verosimilitud negativa media por token bajo una base y tokenización determinadas; no mide directamente veracidad.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "representation",
+      "title": "Aprendizaje de representaciones y supervisión limitada",
+      "entries": [
+        {
+          "id": "C553",
+          "title": "Aprendizaje contrastivo",
+          "english": "Contrastive learning",
+          "definition": "Aprende representaciones comparando relaciones de similitud entre observaciones o vistas según un objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C554",
+          "title": "Pérdida InfoNCE",
+          "english": "InfoNCE loss",
+          "definition": "Objetivo contrastivo que distingue una pareja asociada frente a alternativas bajo una construcción de muestreo.",
+          "aliases": []
+        },
+        {
+          "id": "C555",
+          "title": "SimCLR",
+          "english": "SimCLR",
+          "definition": "Método contrastivo que aprende a acercar representaciones de vistas aumentadas de una misma imagen.",
+          "aliases": []
+        },
+        {
+          "id": "C556",
+          "title": "MoCo",
+          "english": "Momentum contrast",
+          "definition": "Aprende representaciones contrastivas utilizando un codificador actualizado por momento y una colección de representaciones comparables.",
+          "aliases": []
+        },
+        {
+          "id": "C557",
+          "title": "BYOL",
+          "english": "Bootstrap your own latent",
+          "definition": "Aprende a predecir representaciones de una red objetivo actualizada por promedio móvil sin negativos explícitos en su objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C558",
+          "title": "SimSiam",
+          "english": "SimSiam",
+          "definition": "Método de representaciones con ramas siamesas, predictor y detención de gradiente, sin negativos explícitos.",
+          "aliases": []
+        },
+        {
+          "id": "C559",
+          "title": "Barlow Twins",
+          "english": "Barlow Twins",
+          "definition": "Busca invariancia y reducción de redundancia haciendo que una matriz de correlación cruzada se aproxime a la identidad.",
+          "aliases": []
+        },
+        {
+          "id": "C560",
+          "title": "VICReg",
+          "english": "VICReg",
+          "definition": "Combina términos de invariancia, varianza y covarianza para aprender representaciones y combatir soluciones colapsadas.",
+          "aliases": []
+        },
+        {
+          "id": "C561",
+          "title": "DINO",
+          "english": "DINO self-distillation",
+          "definition": "Método de autodestilación sin etiquetas que relaciona salidas de estudiante y docente sobre vistas de una observación.",
+          "aliases": []
+        },
+        {
+          "id": "C562",
+          "title": "Autoencoder enmascarado",
+          "english": "Masked autoencoder",
+          "definition": "Aprende reconstruyendo partes ocultadas de una entrada a partir de su contenido visible.",
+          "aliases": ["MAE autoencoder"]
+        },
+        {
+          "id": "C563",
+          "title": "Tarea pretexto",
+          "english": "Pretext task",
+          "definition": "Objetivo auxiliar diseñado para aprender una representación útil sin depender necesariamente de etiquetas de la tarea final.",
+          "aliases": []
+        },
+        {
+          "id": "C564",
+          "title": "Pareja negativa",
+          "english": "Negative pair",
+          "definition": "Par de observaciones tratado como no asociado en un objetivo contrastivo; esa decisión puede contener falsos negativos.",
+          "aliases": []
+        },
+        {
+          "id": "C565",
+          "title": "Pareja positiva",
+          "english": "Positive pair",
+          "definition": "Par tratado como asociado para aprendizaje de similitud, por ejemplo dos vistas válidas de una misma observación.",
+          "aliases": []
+        },
+        {
+          "id": "C566",
+          "title": "Colapso de representaciones",
+          "english": "Representation collapse",
+          "definition": "La representación pierde distinciones relevantes, por ejemplo asignando prácticamente el mismo vector a todas las entradas.",
+          "aliases": []
+        },
+        {
+          "id": "C567",
+          "title": "Pérdida triplete",
+          "english": "Triplet loss",
+          "definition": "Compara un ancla con un ejemplo asociado y otro no asociado, exigiendo separación relativa según un margen.",
+          "aliases": []
+        },
+        {
+          "id": "C568",
+          "title": "Red siamesa",
+          "english": "Siamese network",
+          "definition": "Arquitectura con ramas que comparten parámetros para comparar entradas mediante representaciones compatibles.",
+          "aliases": []
+        },
+        {
+          "id": "C569",
+          "title": "Aprendizaje de métricas",
+          "english": "Metric learning",
+          "definition": "Aprende representaciones o funciones de distancia para que relaciones geométricas reflejen asociaciones de interés.",
+          "aliases": []
+        },
+        {
+          "id": "C570",
+          "title": "Clustering profundo",
+          "english": "Deep clustering",
+          "definition": "Combina aprendizaje de representaciones con asignaciones de grupos que pueden actuar como señales de entrenamiento.",
+          "aliases": []
+        },
+        {
+          "id": "C571",
+          "title": "Supervisión débil",
+          "english": "Weak supervision",
+          "definition": "Aprende con señales incompletas, imprecisas o generadas por reglas, que requieren considerar su incertidumbre.",
+          "aliases": []
+        },
+        {
+          "id": "C572",
+          "title": "Aprendizaje semisupervisado",
+          "english": "Semi-supervised learning",
+          "definition": "Combina observaciones etiquetadas y no etiquetadas bajo supuestos que relacionan su distribución con el objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C573",
+          "title": "Pseudoetiquetado",
+          "english": "Pseudo-labeling",
+          "definition": "Usa predicciones del modelo como etiquetas de datos no etiquetados; puede reforzar errores existentes.",
+          "aliases": []
+        },
+        {
+          "id": "C574",
+          "title": "Regularización por consistencia",
+          "english": "Consistency regularization",
+          "definition": "Favorece predicciones o representaciones compatibles ante perturbaciones que deberían preservar la información pertinente.",
+          "aliases": []
+        },
+        {
+          "id": "C575",
+          "title": "Aprendizaje activo",
+          "english": "Active learning",
+          "definition": "Selecciona qué observaciones solicitar para etiquetado con el objetivo de mejorar el aprendizaje bajo un presupuesto.",
+          "aliases": []
+        },
+        {
+          "id": "C576",
+          "title": "Consulta por comité",
+          "english": "Query by committee",
+          "definition": "Selecciona ejemplos según desacuerdo entre modelos para priorizar nuevas etiquetas.",
+          "aliases": []
+        },
+        {
+          "id": "C577",
+          "title": "Muestreo por incertidumbre",
+          "english": "Uncertainty sampling",
+          "definition": "Prioriza observaciones con predicciones inciertas según una medida explícita, que puede fallar si el modelo está mal calibrado.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "reinforcement",
+      "title": "Aprendizaje por refuerzo",
+      "entries": [
+        {
+          "id": "C578",
+          "title": "Proceso de decisión de Markov",
+          "english": "Markov decision process",
+          "definition": "Modelo de interacción definido por estados, acciones, transiciones y recompensas con una estructura markoviana.",
+          "aliases": ["MDP"]
+        },
+        {
+          "id": "C579",
+          "title": "Estado en refuerzo",
+          "english": "Reinforcement-learning state",
+          "definition": "Representación de la situación usada para decidir; debe incluir la información pertinente para el supuesto markoviano adoptado.",
+          "aliases": []
+        },
+        {
+          "id": "C580",
+          "title": "Acción en refuerzo",
+          "english": "Reinforcement-learning action",
+          "definition": "Decisión disponible para un agente que puede modificar transiciones, observaciones y recompensas posteriores.",
+          "aliases": []
+        },
+        {
+          "id": "C581",
+          "title": "Política de un agente",
+          "english": "Policy",
+          "definition": "Regla determinista o distribución condicionada que selecciona acciones a partir de la información disponible.",
+          "aliases": []
+        },
+        {
+          "id": "C582",
+          "title": "Recompensa",
+          "english": "Reward",
+          "definition": "Señal numérica emitida por una interacción; no equivale necesariamente al objetivo humano completo.",
+          "aliases": []
+        },
+        {
+          "id": "C583",
+          "title": "Retorno acumulado",
+          "english": "Return",
+          "definition": "Suma, a menudo descontada, de recompensas futuras según la convención temporal de la tarea.",
+          "aliases": []
+        },
+        {
+          "id": "C584",
+          "title": "Factor de descuento",
+          "english": "Discount factor",
+          "definition": "Pondera recompensas futuras y afecta al horizonte efectivo del objetivo.",
+          "aliases": []
+        },
+        {
+          "id": "C585",
+          "title": "Función de valor de estado",
+          "english": "State-value function",
+          "definition": "Esperanza del retorno al comenzar en un estado y seguir una política especificada.",
+          "aliases": []
+        },
+        {
+          "id": "C586",
+          "title": "Función de valor de acción",
+          "english": "Action-value function",
+          "definition": "Esperanza del retorno al elegir una acción en un estado y continuar según una política.",
+          "aliases": []
+        },
+        {
+          "id": "C587",
+          "title": "Ecuación de Bellman",
+          "english": "Bellman equation",
+          "definition": "Expresa valor como recompensa inmediata esperada más valor futuro, bajo una política u operador de optimalidad.",
+          "aliases": []
+        },
+        {
+          "id": "C588",
+          "title": "Iteración de valores",
+          "english": "Value iteration",
+          "definition": "Actualiza valores mediante un operador de optimalidad de Bellman para aproximar una solución bajo sus condiciones.",
+          "aliases": []
+        },
+        {
+          "id": "C589",
+          "title": "Iteración de políticas",
+          "english": "Policy iteration",
+          "definition": "Alterna evaluar una política y mejorarla respecto a los valores estimados.",
+          "aliases": []
+        },
+        {
+          "id": "C590",
+          "title": "Control Monte Carlo",
+          "english": "Monte Carlo control",
+          "definition": "Estima retornos a partir de episodios o trayectorias para mejorar una política sin necesitar un modelo completo de transiciones.",
+          "aliases": []
+        },
+        {
+          "id": "C591",
+          "title": "Aprendizaje por diferencias temporales",
+          "english": "Temporal-difference learning",
+          "definition": "Actualiza estimaciones usando recompensas observadas y una estimación posterior como objetivo parcial.",
+          "aliases": []
+        },
+        {
+          "id": "C592",
+          "title": "Q-learning",
+          "english": "Q-learning",
+          "definition": "Actualiza valores de acción mediante una regla de optimalidad que utiliza la mejor acción estimada para el siguiente estado.",
+          "aliases": []
+        },
+        {
+          "id": "C593",
+          "title": "SARSA",
+          "english": "SARSA",
+          "definition": "Actualiza un valor de acción usando la siguiente acción realmente elegida por la política que genera la trayectoria.",
+          "aliases": []
+        },
+        {
+          "id": "C594",
+          "title": "Red Q profunda",
+          "english": "Deep Q-network",
+          "definition": "Aproxima valores de acción mediante una red, habitualmente combinada con red objetivo y reproducción de experiencias.",
+          "aliases": ["DQN"]
+        },
+        {
+          "id": "C595",
+          "title": "Double DQN",
+          "english": "Double DQN",
+          "definition": "Separa selección y evaluación de la acción del objetivo para reducir determinados efectos de sobreestimación.",
+          "aliases": []
+        },
+        {
+          "id": "C596",
+          "title": "Reproducción de experiencias",
+          "english": "Experience replay",
+          "definition": "Reutiliza transiciones almacenadas para formar lotes, modificando dependencia temporal y eficiencia de uso de datos.",
+          "aliases": []
+        },
+        {
+          "id": "C597",
+          "title": "Reproducción priorizada",
+          "english": "Prioritized experience replay",
+          "definition": "Muestrea experiencias con prioridades y puede usar correcciones de importancia para compensar el cambio de distribución.",
+          "aliases": []
+        },
+        {
+          "id": "C598",
+          "title": "Gradiente de política",
+          "english": "Policy gradient",
+          "definition": "Optimiza parámetros de una política usando estimaciones del gradiente del retorno esperado.",
+          "aliases": []
+        },
+        {
+          "id": "C599",
+          "title": "REINFORCE",
+          "english": "REINFORCE",
+          "definition": "Estimador Monte Carlo del gradiente de política basado en log-probabilidades de acciones y retornos.",
+          "aliases": ["Monte Carlo policy gradient"]
+        },
+        {
+          "id": "C600",
+          "title": "Actor-crítico",
+          "english": "Actor-critic",
+          "definition": "Combina una política parametrizada con una función de valor que ayuda a estimar su señal de mejora.",
+          "aliases": ["actor-critic"]
+        },
+        {
+          "id": "C601",
+          "title": "Optimización proximal de políticas",
+          "english": "Proximal policy optimization",
+          "definition": "Familia de objetivos que limita o penaliza cambios de política; el recorte no impone una región de confianza estricta.",
+          "aliases": ["PPO"]
+        },
+        {
+          "id": "C602",
+          "title": "Dilema exploración-explotación",
+          "english": "Exploration-exploitation trade-off",
+          "definition": "Equilibra obtener información mediante acciones inciertas y aprovechar las acciones que actualmente parecen mejores.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "evaluation-advanced",
+      "title": "Evaluación avanzada y causalidad",
+      "entries": [
+        {
+          "id": "C603",
+          "title": "Coeficiente de Matthews",
+          "english": "Matthews correlation coefficient",
+          "definition": "Resume asociación entre etiquetas y predicciones, considerando las cuatro celdas binarias y una convención para denominadores nulos.",
+          "aliases": ["MCC"]
+        },
+        {
+          "id": "C604",
+          "title": "Exactitud equilibrada",
+          "english": "Balanced accuracy",
+          "definition": "Promedia sensibilidades por clase para evitar que una clase mayoritaria determine por sí sola la exactitud.",
+          "aliases": []
+        },
+        {
+          "id": "C605",
+          "title": "Kappa de Cohen",
+          "english": "Cohen kappa",
+          "definition": "Compara acuerdo observado con el esperado bajo un modelo basado en las distribuciones marginales.",
+          "aliases": []
+        },
+        {
+          "id": "C606",
+          "title": "Exactitud de subconjunto multietiqueta",
+          "english": "Multilabel subset accuracy",
+          "definition": "Exige que el conjunto completo de etiquetas predichas coincida con el real para contar un acierto; puede ser estricta con muchas etiquetas.",
+          "aliases": []
+        },
+        {
+          "id": "C607",
+          "title": "Pérdida de Hamming",
+          "english": "Hamming loss",
+          "definition": "Proporción de componentes de etiqueta incorrectos en una representación multietiqueta definida.",
+          "aliases": []
+        },
+        {
+          "id": "C608",
+          "title": "Exactitud top-k",
+          "english": "Top-k accuracy",
+          "definition": "Cuenta acierto cuando la clase real aparece entre las k puntuaciones más altas, con una regla de empates.",
+          "aliases": []
+        },
+        {
+          "id": "C609",
+          "title": "Ganancia acumulada descontada normalizada",
+          "english": "Normalized discounted cumulative gain",
+          "definition": "Evalúa un ranking comparando su ganancia descontada con la de una ordenación ideal.",
+          "aliases": ["NDCG"]
+        },
+        {
+          "id": "C610",
+          "title": "Ganancia acumulada descontada",
+          "english": "Discounted cumulative gain",
+          "definition": "Acumula relevancia de resultados reduciendo la contribución de posiciones tardías según una función de descuento.",
+          "aliases": ["DCG"]
+        },
+        {
+          "id": "C611",
+          "title": "Rango recíproco medio",
+          "english": "Mean reciprocal rank",
+          "definition": "Promedia el inverso de la posición del primer resultado relevante de cada consulta.",
+          "aliases": ["MRR"]
+        },
+        {
+          "id": "C612",
+          "title": "Sensibilidad en los primeros k",
+          "english": "Recall at k",
+          "definition": "Fracción de elementos relevantes recuperados dentro de los primeros k resultados.",
+          "aliases": []
+        },
+        {
+          "id": "C613",
+          "title": "Precisión en los primeros k",
+          "english": "Precision at k",
+          "definition": "Fracción de resultados relevantes entre las primeras k posiciones consideradas.",
+          "aliases": []
+        },
+        {
+          "id": "C614",
+          "title": "Cobertura del catálogo en k",
+          "english": "Catalog coverage at k",
+          "definition": "Proporción del catálogo que aparece en las recomendaciones top-k agregadas sobre una población o conjunto de consultas.",
+          "aliases": []
+        },
+        {
+          "id": "C615",
+          "title": "Predicción conforme",
+          "english": "Conformal prediction",
+          "definition": "Construye conjuntos o intervalos predictivos con garantías de cobertura marginal bajo condiciones como intercambiabilidad.",
+          "aliases": []
+        },
+        {
+          "id": "C616",
+          "title": "Intercambiabilidad",
+          "english": "Exchangeability",
+          "definition": "La distribución conjunta permanece igual al permutar el orden de observaciones; no implica independencia.",
+          "aliases": []
+        },
+        {
+          "id": "C617",
+          "title": "Intervalo de predicción",
+          "english": "Prediction interval",
+          "definition": "Rango destinado a cubrir una observación futura según un procedimiento, distinto de un intervalo para un parámetro.",
+          "aliases": []
+        },
+        {
+          "id": "C618",
+          "title": "Cobertura predictiva",
+          "english": "Prediction coverage",
+          "definition": "Proporción o probabilidad de objetivos contenidos en sus conjuntos predictivos; debe indicarse si es marginal o condicionada.",
+          "aliases": []
+        },
+        {
+          "id": "C619",
+          "title": "Error esperado de calibración",
+          "english": "Expected calibration error",
+          "definition": "Agrega discrepancias entre confianza y frecuencia observada por grupos; depende de cómo se construyen esos grupos.",
+          "aliases": ["ECE"]
+        },
+        {
+          "id": "C620",
+          "title": "Error máximo de calibración",
+          "english": "Maximum calibration error",
+          "definition": "Mayor discrepancia observada entre confianza y frecuencia dentro de los grupos de calibración considerados.",
+          "aliases": ["MCE"]
+        },
+        {
+          "id": "C621",
+          "title": "Conformal Mondrian",
+          "english": "Mondrian conformal prediction",
+          "definition": "Aplica una partición de categorías o contextos al procedimiento conforme para obtener garantías por grupos bajo sus condiciones.",
+          "aliases": []
+        },
+        {
+          "id": "C622",
+          "title": "Grafo causal dirigido acíclico",
+          "english": "Causal directed acyclic graph",
+          "definition": "Representa supuestas relaciones causales mediante flechas sin ciclos; los datos por sí solos no justifican cualquier orientación.",
+          "aliases": []
+        },
+        {
+          "id": "C623",
+          "title": "Criterio de puerta trasera",
+          "english": "Backdoor criterion",
+          "definition": "Condición gráfica para identificar un efecto causal mediante ajuste cuando se satisfacen los supuestos del grafo.",
+          "aliases": []
+        },
+        {
+          "id": "C624",
+          "title": "Criterio de puerta delantera",
+          "english": "Frontdoor criterion",
+          "definition": "Condición de identificación causal que utiliza mediadores y restricciones gráficas específicas.",
+          "aliases": []
+        },
+        {
+          "id": "C625",
+          "title": "Variable instrumental",
+          "english": "Instrumental variable",
+          "definition": "Variable usada para identificar efectos bajo restricciones de relación, exclusión e independencia que requieren justificación.",
+          "aliases": []
+        },
+        {
+          "id": "C626",
+          "title": "Efecto medio del tratamiento",
+          "english": "Average treatment effect",
+          "definition": "Diferencia esperada entre resultados potenciales bajo tratamiento y control para una población definida.",
+          "aliases": ["ATE"]
+        },
+        {
+          "id": "C627",
+          "title": "Razonamiento contrafactual",
+          "english": "Counterfactual reasoning",
+          "definition": "Pregunta qué habría ocurrido bajo una intervención distinta para una unidad o situación, según un modelo causal.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "production",
+      "title": "MLOps, privacidad y responsabilidad",
+      "entries": [
+        {
+          "id": "C628",
+          "title": "MLOps",
+          "english": "Machine learning operations",
+          "definition": "Prácticas para versionar, validar, desplegar y supervisar sistemas de aprendizaje automático a lo largo de su ciclo de vida.",
+          "aliases": []
+        },
+        {
+          "id": "C629",
+          "title": "Almacén de características",
+          "english": "Feature store",
+          "definition": "Sistema que gestiona definiciones y disponibilidad de características para usos de entrenamiento e inferencia.",
+          "aliases": []
+        },
+        {
+          "id": "C630",
+          "title": "Registro de modelos",
+          "english": "Model registry",
+          "definition": "Catálogo de artefactos y metadatos que permite controlar versiones, estados y referencias de modelos.",
+          "aliases": []
+        },
+        {
+          "id": "C631",
+          "title": "Ficha de modelo",
+          "english": "Model card",
+          "definition": "Documento que describe uso previsto, evaluaciones, límites y otros aspectos de un modelo.",
+          "aliases": []
+        },
+        {
+          "id": "C632",
+          "title": "Ficha de dataset",
+          "english": "Dataset datasheet",
+          "definition": "Documentación sobre creación, composición, usos, restricciones y mantenimiento de un conjunto de datos.",
+          "aliases": []
+        },
+        {
+          "id": "C633",
+          "title": "Versionado de modelos",
+          "english": "Model versioning",
+          "definition": "Identifica cambios de artefactos y configuración para relacionar una predicción con la versión que la produjo.",
+          "aliases": []
+        },
+        {
+          "id": "C634",
+          "title": "Linaje de datos",
+          "english": "Data lineage",
+          "definition": "Registra procedencia y transformaciones de datos para comprender dependencias, auditoría e impacto de cambios.",
+          "aliases": []
+        },
+        {
+          "id": "C635",
+          "title": "Contrato de datos",
+          "english": "Data contract",
+          "definition": "Acuerdo verificable sobre esquema, significado y condiciones de calidad o disponibilidad de una fuente.",
+          "aliases": []
+        },
+        {
+          "id": "C636",
+          "title": "Contenerización",
+          "english": "Containerization",
+          "definition": "Empaqueta software y dependencias de ejecución para facilitar entornos reproducibles, sin garantizar identidad completa del hardware.",
+          "aliases": []
+        },
+        {
+          "id": "C637",
+          "title": "Despliegue canario",
+          "english": "Canary deployment",
+          "definition": "Expone una versión nueva a una parte controlada del tráfico antes de ampliar su uso.",
+          "aliases": []
+        },
+        {
+          "id": "C638",
+          "title": "Ejecución en sombra",
+          "english": "Shadow deployment",
+          "definition": "Ejecuta un modelo candidato con tráfico real sin utilizar su respuesta para decidir en el flujo principal.",
+          "aliases": []
+        },
+        {
+          "id": "C639",
+          "title": "Experimento A/B",
+          "english": "A/B experiment",
+          "definition": "Compara alternativas mediante asignación controlada, idealmente aleatoria, y métricas y unidad experimental previamente definidas.",
+          "aliases": []
+        },
+        {
+          "id": "C640",
+          "title": "Monitorización del rendimiento",
+          "english": "Model performance monitoring",
+          "definition": "Observa resultados y métricas en operación considerando retrasos de etiquetas, segmentos y cambios de contexto.",
+          "aliases": []
+        },
+        {
+          "id": "C641",
+          "title": "Índice de estabilidad poblacional",
+          "english": "Population stability index",
+          "definition": "Compara frecuencias por intervalos entre poblaciones; depende de discretización y tratamiento de ceros, sin umbrales universales.",
+          "aliases": ["PSI"]
+        },
+        {
+          "id": "C642",
+          "title": "Privacidad diferencial",
+          "english": "Differential privacy",
+          "definition": "Limita cuánto puede cambiar una distribución de respuestas al modificar los datos de una persona bajo una relación de vecindad.",
+          "aliases": []
+        },
+        {
+          "id": "C643",
+          "title": "Presupuesto de privacidad",
+          "english": "Privacy budget",
+          "definition": "Parámetros y contabilidad que describen garantías de mecanismos privados y su composición; épsilon no es un porcentaje de anonimato.",
+          "aliases": []
+        },
+        {
+          "id": "C644",
+          "title": "Aprendizaje federado",
+          "english": "Federated learning",
+          "definition": "Coordina entrenamiento entre participantes sin centralizar necesariamente sus datos brutos; no garantiza privacidad por sí solo.",
+          "aliases": []
+        },
+        {
+          "id": "C645",
+          "title": "Agregación segura",
+          "english": "Secure aggregation",
+          "definition": "Protocolo que permite obtener agregados de contribuciones sin revelar individualmente cada contribución al agregador bajo sus supuestos.",
+          "aliases": []
+        },
+        {
+          "id": "C646",
+          "title": "Ataque de pertenencia",
+          "english": "Membership inference attack",
+          "definition": "Intenta determinar si una observación formó parte de los datos usados para ajustar un modelo.",
+          "aliases": []
+        },
+        {
+          "id": "C647",
+          "title": "Inversión de modelos",
+          "english": "Model inversion",
+          "definition": "Busca reconstruir o inferir información sensible a partir de acceso a un modelo y sus respuestas.",
+          "aliases": []
+        },
+        {
+          "id": "C648",
+          "title": "Envenenamiento de datos",
+          "english": "Data poisoning",
+          "definition": "Manipula datos de entrenamiento para degradar o dirigir el comportamiento del sistema aprendido.",
+          "aliases": []
+        },
+        {
+          "id": "C649",
+          "title": "Ataque de puerta trasera",
+          "english": "Backdoor attack",
+          "definition": "Introduce un comportamiento activado por un patrón o condición mientras el modelo puede mantener funcionamiento aparente en otros casos.",
+          "aliases": []
+        },
+        {
+          "id": "C650",
+          "title": "Ejemplo adversarial",
+          "english": "Adversarial example",
+          "definition": "Entrada modificada para inducir un comportamiento no deseado del modelo dentro de restricciones definidas.",
+          "aliases": []
+        },
+        {
+          "id": "C651",
+          "title": "Igualdad de odds",
+          "english": "Equalized odds",
+          "definition": "Criterio de equidad que exige iguales tasas de verdaderos y falsos positivos entre grupos, condicionando en la etiqueta real.",
+          "aliases": []
+        },
+        {
+          "id": "C652",
+          "title": "Paridad demográfica",
+          "english": "Demographic parity",
+          "definition": "Exige igual tasa de decisiones positivas entre grupos; puede entrar en tensión con otros criterios y objetivos contextuales.",
+          "aliases": []
+        }
+      ]
+    }
+  ]
+}

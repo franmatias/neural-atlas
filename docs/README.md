@@ -6,9 +6,9 @@ La publicación continua de la versión estable se describe en [GitHub Pages](24
 
 ## Resumen revisable
 
-Alcance de diseño: 12 laboratorios, 12 talleres previstos, **152 conceptos**, **88 RF**, 24 RNF y **65 historias**. El catálogo contiene **28 diagramas Mermaid**: 26 de diseño y dos de implementación D3. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js por fases. Biblioteca/checkpoints en IndexedDB y progreso docente siguen pendientes; las preferencias ya usan LocalStorage. Repositorio: [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
+Alcance de diseño: 12 laboratorios, 12 talleres previstos, **152 conceptos iniciales más 500 nuevos de consulta (652 en total)**, **88 RF**, 24 RNF y **65 historias**. El catálogo contiene **28 diagramas Mermaid**: 26 de diseño y dos de implementación D3. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js por fases. Biblioteca/checkpoints en IndexedDB y progreso docente siguen pendientes; las preferencias ya usan LocalStorage. Repositorio: [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
 
-La lista original se conserva y amplía con 52 conceptos; siguiente ID disponible C153, sin máximo fijo. Cada concepto lleva estado y entrega. MVP D1–D5 prioriza POE, diagnóstico y mapas junto al núcleo y T01–T05; v1.1 completa el alcance original; seis extensiones v1.2 quedan propuestas, no prometidas para el MVP.
+La lista original se conserva y amplía con 52 conceptos; la ampliación [C153–C652](27-ampliacion-conceptos.md) incorpora otras 500 fichas de consulta; siguiente ID disponible C653, sin máximo fijo. Cada concepto lleva estado y entrega. MVP D1–D5 prioriza POE, diagnóstico y mapas junto al núcleo y T01–T05; v1.1 completa el alcance original; seis extensiones v1.2 quedan propuestas, no prometidas para el MVP.
 
 Empieza por [la respuesta a las revisiones](20-revision-y-respuestas.md), que registra correcciones y decisiones; después revisa [la experiencia educativa transversal](22-experiencias-educativas.md). Los errores de fixtures, límites, almacenamiento y contratos Worker de 0.1 quedan sustituidos por esta revisión.
 
@@ -58,6 +58,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [24 · GitHub Pages](24-despliegue-pages.md) | CI, publicación y comprobación pública |
 | [25 · Implementación D2](25-implementacion-d2.md) | Datos, formatos, split, pipeline y evidencia |
 | [26 · Implementación D3](26-implementacion-d3.md) | MLP/perceptrón, activaciones, gradientes y lotes |
+| [27 · Ampliación del catálogo](27-ampliacion-conceptos.md) | 500 conceptos C153–C652, agrupación y mantenimiento |
 
 ## Qué revisar antes de D1
 

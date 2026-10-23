@@ -62,8 +62,8 @@ describe('navegación y contenido disponible', () => {
   });
   it('busca por inglés, muestra los tres niveles y un estado vacío honesto', async () => {
     const { wrapper } = await render('/glosario');
-    expect(wrapper.findAll('.concept-card')).toHaveLength(69);
-    await wrapper.get('input[type=search]').setValue('bias');
+    expect(wrapper.findAll('.concept-card')).toHaveLength(24);
+    await wrapper.get('input[type=search]').setValue('C028');
     expect(wrapper.findAll('.concept-card')).toHaveLength(1);
     expect(wrapper.get('.concept-card h2').text()).toBe('Sesgo');
     usePreferencesStore().update({ level: 'steps' });
@@ -74,7 +74,7 @@ describe('navegación y contenido disponible', () => {
     expect(wrapper.find('code').exists()).toBe(true);
     await wrapper.get('input[type=search]').setValue('clasificación inexistente');
     expect(wrapper.find('.empty-state').exists()).toBe(true);
-    expect(wrapper.get('.catalog-note').text()).toContain('152');
+    expect(wrapper.get('.catalog-note').text()).toContain('652');
   });
 });
 describe('ajustes compartidos y persistencia', () => {

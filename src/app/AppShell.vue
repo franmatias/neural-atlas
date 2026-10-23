@@ -48,7 +48,7 @@ watch(
   <aside class="sidebar">
     <RouterLink to="/" class="brand" aria-label="Neural Atlas"
       ><img :src="`${base}atlas.svg`" alt="" width="36" height="36" /><span
-        >neural<span class="brand-light">atlas</span></span
+        >neural<span class="brand-light"> atlas</span></span
       ></RouterLink
     >
     <nav :aria-label="t('nav.label')">
