@@ -5,6 +5,8 @@ import {
   type Experiment,
 } from '@/application/training/experiment';
 import { hashValue, utf8Length } from '@/domain/data/integrity';
+import { LibraryError, storageError, openNeuralDatabase } from './database';
+export { LibraryError } from './database';
 
 export interface LibraryEntry {
   id: string;
@@ -43,52 +45,11 @@ export function experimentStorageBytes(snapshot: Experiment, jsonBytes: number) 
       vectors.reduce((sum, vector) => sum + vector.byteLength, 0),
   );
 }
-export class LibraryError extends Error {
-  constructor(
-    public readonly code:
-      'UNAVAILABLE' | 'BLOCKED' | 'CONFLICT' | 'LIMIT' | 'QUOTA' | 'CORRUPT' | 'MISSING',
-  ) {
-    super(code);
-  }
-}
-function storageError(error: unknown) {
-  return error instanceof LibraryError
-    ? error
-    : new LibraryError(
-        error instanceof DOMException && error.name === 'QuotaExceededError'
-          ? 'QUOTA'
-          : 'UNAVAILABLE',
-      );
-}
 /** One transaction owns both the manifest revision and its native Float64 checkpoint. */
 export class ExperimentLibrary {
   constructor(private readonly factory: () => IDBFactory = () => indexedDB) {}
   private open(): Promise<IDBDatabase> {
-    return new Promise((resolve, reject) => {
-      let blocked = false;
-      try {
-        const request = this.factory().open('neural-atlas', 1);
-        request.onupgradeneeded = () => {
-          request.result.createObjectStore('experiments', { keyPath: 'id' });
-          request.result
-            .createObjectStore('libraryIndex', { keyPath: 'id' })
-            .createIndex('updatedAt', 'updatedAt');
-        };
-        request.onerror = () => reject(storageError(request.error));
-        request.onblocked = () => {
-          blocked = true;
-          reject(new LibraryError('BLOCKED'));
-        };
-        request.onsuccess = () => {
-          const db = request.result;
-          db.onversionchange = () => db.close();
-          if (blocked) db.close();
-          else resolve(db);
-        };
-      } catch (error) {
-        reject(storageError(error));
-      }
-    });
+    return openNeuralDatabase(this.factory);
   }
   private async transaction<T>(
     mode: IDBTransactionMode,

@@ -1,20 +1,14 @@
 import { computed, ref, shallowRef, watch } from 'vue';
 import { defineStore } from 'pinia';
-import { cloneNetwork, createNetwork, defaultSpec } from '@/domain/network/model';
+import { cloneNetwork } from '@/domain/network/model';
+import { propagationPreset } from '@/domain/network/presets';
+export { propagationPreset } from '@/domain/network/presets';
 import {
   applyGradient,
   backward,
   checkGradient,
   type GradientCheck,
 } from '@/domain/network/backprop';
-export function propagationPreset() {
-  const model = createNetwork({ ...defaultSpec, hidden: [2] }, 42, 'zero');
-  model.layers[0]!.weights.set([0.5, -0.3, -0.2, 0.4]);
-  model.layers[0]!.biases.set([0.1, -0.1]);
-  model.layers[1]!.weights.set([0.7, -0.5]);
-  model.layers[1]!.biases[0] = 0.2;
-  return model;
-}
 export const usePropagationStore = defineStore('propagation', () => {
   const model = shallowRef(propagationPreset());
   const input = ref([0.8, 0.2]),

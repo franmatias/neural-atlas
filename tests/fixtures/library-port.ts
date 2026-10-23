@@ -6,6 +6,7 @@ export function libraryPort() {
   let nextWriteError: DOMException | undefined;
   let created = false;
   const db = {
+    objectStoreNames: { contains: (name: string) => Object.hasOwn(tables, name) },
     close,
     onversionchange: null as (() => void) | null,
     createObjectStore(name: string) {
