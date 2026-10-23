@@ -1,3 +1,4 @@
+import { appVersion } from '@/shared/version';
 export type Theme = 'system' | 'light' | 'dark';
 export type ExplanationLevel = 'intuition' | 'steps' | 'formal';
 export interface Preferences {
@@ -62,7 +63,7 @@ export function writePreferences(
       preferencesKey,
       JSON.stringify({
         schemaVersion: 1,
-        appVersion: '0.6.0',
+        appVersion,
         payload: validatePreferences(preferences),
       }),
     );

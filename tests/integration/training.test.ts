@@ -88,6 +88,38 @@ async function render(recipe: 'moons' | 'flowers' | 'sine' = 'moons') {
   return { wrapper, router, session, data };
 }
 describe('D4: interfaz, datos y motor real con transporte controlado', () => {
+  it('D5: captura y restaura una sesión nueva sin ejecutar automáticamente y preserva test congelado', async () => {
+    const { session } = await render();
+    expect(() => session.capture()).toThrow('EXPERIMENT_BUSY');
+    session.initialize();
+    await flushPromises();
+    session.command('STEP_BATCH');
+    await flushPromises();
+    const saved = session.capture();
+    expect(saved.checkpoint.updates).toBe(1);
+    session.command('STEP_BATCH');
+    await flushPromises();
+    const expected = session.capture();
+    await session.restore(saved);
+    await flushPromises();
+    expect(session.state?.updates).toBe(1);
+    expect(session.running).toBe(false);
+    session.command('STEP_BATCH');
+    await flushPromises();
+    expect(session.state).toEqual(expected.checkpoint);
+    session.freezeAndTest();
+    await flushPromises();
+    const frozen = session.capture();
+    await session.restore(frozen);
+    await flushPromises();
+    expect(session.state?.frozen).toBe(true);
+    expect(session.consulted).toBe(true);
+    expect(session.status).toBe('frozen');
+    await session.restore(saved);
+    await flushPromises();
+    expect(session.state?.frozen).toBe(false);
+    expect(session.consulted).toBe(true); // An older file cannot erase a known consultation.
+  });
   it('reconoce presupuestos amplios y pausa al ocultar o abandonar el laboratorio', async () => {
     const { session, router } = await render();
     session.config.spec.hidden = [64, 64, 64, 64, 64, 64];

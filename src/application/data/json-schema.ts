@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/shared/validation';
 import { recipeIds } from '@/domain/data/types';
 import { safeId } from '@/domain/data/validation';
 const text = z.string().max(4096);
