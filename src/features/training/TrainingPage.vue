@@ -44,6 +44,9 @@ const alerts: Record<string, string> = {
   <div class="page training-page">
     <p class="eyebrow">L06 / APRENDIZAJE</p>
     <h1>Entrenar con criterio.</h1>
+    <RouterLink class="button secondary" to="/biblioteca"
+      >Guardar o recuperar experimento</RouterLink
+    >
     <p class="page-intro">
       Observa cómo cada lote cambia los pesos. Compara entrenamiento y validación, controla el ritmo
       y reserva test para una evaluación final.
