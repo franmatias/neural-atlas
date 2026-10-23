@@ -18,6 +18,21 @@ export const routes = [
     component: () => import('@/features/neuron/NeuronPage.vue'),
   },
   {
+    path: '/lab/arquitectura',
+    name: 'architecture',
+    component: () => import('@/features/network/ArchitecturePage.vue'),
+  },
+  {
+    path: '/lab/activaciones',
+    name: 'activations',
+    component: () => import('@/features/network/ActivationsPage.vue'),
+  },
+  {
+    path: '/lab/propagacion',
+    name: 'propagation',
+    component: () => import('@/features/network/PropagationPage.vue'),
+  },
+  {
     path: '/lab/:slug',
     name: 'planned-lab',
     component: () => import('@/features/planned/PlannedPage.vue'),
