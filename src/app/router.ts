@@ -70,6 +70,11 @@ export const routes = [
     component: () => import('@/features/planned/PlannedPage.vue'),
   },
   {
+    path: '/modelos',
+    name: 'models',
+    component: () => import('@/features/models/ModelsPage.vue'),
+  },
+  {
     path: '/biblioteca',
     name: 'library',
     component: () => import('@/features/library/LibraryPage.vue'),

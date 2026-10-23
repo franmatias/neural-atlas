@@ -119,6 +119,7 @@ onMounted(() => perform(refresh));
   <div class="page training-page">
     <p class="eyebrow">BIBLIOTECA / EXPERIMENTOS</p>
     <h1>Guarda lo que descubres.</h1>
+    <RouterLink class="button secondary" to="/modelos">Modelos para predecir sin dataset</RouterLink>
     <p class="page-intro">
       Conserva los datos, el escalado aprendido solo con train, los pesos, los momentos del
       optimizador y el historial. Recupera tu trabajo desde la última actualización guardada.

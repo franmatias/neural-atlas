@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
 const url = process.env.PAGES_URL ?? 'https://franmatias.github.io/neural-atlas/';
 const parsed = new URL(url);
@@ -93,9 +94,25 @@ try {
       await page.getByText('Experimento abierto en una sesión nueva.', { exact: false }).waitFor();
       await page.getByRole('link', { name: 'Ir al entrenamiento', exact: true }).click();
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
+      await page.goto(new URL('#/modelos', url).href);
+      await page.getByRole('button', { name: 'Copiar modelo de la sesión' }).click();
+      await page.getByRole('button', { name: 'Predecir con este modelo' }).click();
+      await page.locator('.prediction-result').waitFor();
+      const expectedPrediction = await page.locator('.prediction-result > p').allTextContents();
+      const downloadedModel = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar modelo sin dataset' }).click();
+      const modelText = await readFile(await (await downloadedModel).path(), 'utf8');
+      const modelFile = JSON.parse(modelText);
+      assert.equal(modelFile.format, 'neural-atlas.model');
+      assert(!Object.hasOwn(modelFile, 'dataset'));
+      await page.reload();
+      await page.getByLabel('Importar modelo JSON', { exact: false }).setInputFiles({ name: 'model.json', mimeType: 'application/json', buffer: Buffer.from(modelText) });
+      await page.getByRole('button', { name: 'Predecir con este modelo' }).click();
+      await page.locator('.prediction-result').waitFor();
+      assert.deepEqual(await page.locator('.prediction-result > p').allTextContents(), expectedPrediction);
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation and persistent experiment reload at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload and independent model roundtrip at ${url}`,
       );
       failure = undefined;
       break;
