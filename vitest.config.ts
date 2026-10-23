@@ -17,6 +17,7 @@ export default defineConfig({
         'src/app/main.ts',
         'src/app/router.ts',
         'src/infrastructure/workers/data.worker.ts', // Declarative bootstrap; handler/client and real Worker are tested separately.
+        'src/infrastructure/workers/training.worker.ts', // Declarative port wiring; runtime/client and the native Worker have separate tests.
         'src/content/**',
         'src/app/i18n/messages/**',
         '**/*.d.ts',
