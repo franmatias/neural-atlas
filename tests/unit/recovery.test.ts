@@ -103,5 +103,7 @@ describe('recuperación transaccional', () => {
     expect(recovered?.fallback).toBe(true);
     expect(recovered?.snapshot.checkpoint.frozen).toBe(true);
     expect(recovered?.snapshot.testConsulted).toBe(true);
+    await repo.save(input, 'a', 2, false);
+    expect((await repo.read())?.summary.slots).toHaveLength(2);
   });
 });

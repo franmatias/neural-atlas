@@ -175,7 +175,8 @@ export class TrainingRecovery {
             (prior && prior.owner !== owner && !replace)
           )
             throw new LibraryError('CONFLICT');
-          const slots = [slot, ...(prior?.slots.slice(0, 1) ?? [])];
+          const previous = prior?.slots.find(valid);
+          const slots = [slot, ...(previous ? [previous] : [])];
           const locks = [...new Set(slots.map((item) => item.key))].map((key) => ({
             key,
             frozen:
