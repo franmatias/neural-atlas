@@ -1,4 +1,7 @@
 import { generateDataset } from '@/domain/data/generate';
+import { inspectNetwork } from '@/domain/network/inspection';
+import { trainPerceptron, solveXor } from '@/domain/network/learning';
+import type { Network } from '@/domain/network/model';
 import { splitDataset } from '@/domain/data/split';
 import {
   fitPipeline,
@@ -23,6 +26,15 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  inspectNetwork: {
+    model: Network;
+    input: number[];
+    target: number;
+    layer: number;
+    neuron: number;
+  };
+  perceptron: { inputs: number[][]; targets: number[]; seed: number; rate: number; epochs: number };
+  solveXor: { seed: number; epochs: number };
   generate: GeneratorOptions;
   split: { dataset: Dataset; options: SplitOptions };
   fit: { dataset: Dataset; split: DataSplit; options: PipelineOptions };
@@ -38,6 +50,9 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  inspectNetwork: ReturnType<typeof inspectNetwork>;
+  perceptron: ReturnType<typeof trainPerceptron>;
+  solveXor: ReturnType<typeof solveXor>;
   generate: Dataset;
   split: DataSplit;
   fit: { pipeline: PipelineState; matrix: number[][] };
@@ -54,6 +69,16 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'inspectNetwork': {
+      const p = job.payload;
+      return inspectNetwork(p.model, p.input, p.target, p.layer, p.neuron);
+    }
+    case 'perceptron': {
+      const p = job.payload;
+      return trainPerceptron(p.inputs, p.targets, p.seed, p.rate, p.epochs);
+    }
+    case 'solveXor':
+      return solveXor(job.payload.seed, job.payload.epochs);
     case 'generate':
       return generateDataset(job.payload);
     case 'split':
