@@ -110,9 +110,30 @@ try {
       await page.getByRole('button', { name: 'Predecir con este modelo' }).click();
       await page.locator('.prediction-result').waitFor();
       assert.deepEqual(await page.locator('.prediction-result > p').allTextContents(), expectedPrediction);
+      await page.goto(new URL('#/taller', url).href);
+      await page.getByRole('button', { name: /^T02 ·/ }).click();
+      await page.locator('textarea').fill('Predigo que el sesgo desplaza la frontera conservando los pesos y su orientación.');
+      await page.getByRole('button', { name: 'Validar paso y continuar', exact: true }).click();
+      await page.locator('textarea').fill('Conservo los pesos y comparo el sesgo inicial cero con el nuevo sesgo.');
+      await page.getByRole('button', { name: 'Validar paso y continuar', exact: true }).click();
+      await page.getByRole('button', { name: 'Ejecutar caso con el motor' }).click();
+      await page.getByRole('heading', { name: 'Evidencia del motor', exact: true }).waitFor();
+      await page.getByText('Progreso y evidencias guardados en este navegador', { exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Validar paso y continuar', exact: true }).click();
+      await page.locator('textarea').fill('Observo dos rectas paralelas; el desplazamiento corresponde al cociente entre el cambio de sesgo y la norma de los pesos.');
+      await page.getByRole('button', { name: 'Validar paso y continuar', exact: true }).click();
+      await page.locator('textarea').fill('Los pesos determinan la orientación; cambiar solo el sesgo conserva esa orientación y traslada la frontera.');
+      await page.getByRole('combobox', { name: 'Autoevaluación orientativa', exact: true }).selectOption('2');
+      await page.getByRole('button', { name: 'Registrar reflexión y completar recorrido' }).click();
+      await page.getByRole('heading', { name: 'Recorrido registrado', exact: true }).waitFor();
+      await page.getByText('Progreso y evidencias guardados en este navegador', { exact: true }).waitFor();
+      await page.reload();
+      await page.getByRole('button', { name: /^T02 ·/ }).click();
+      await page.getByRole('heading', { name: 'Recorrido registrado', exact: true }).waitFor();
+      await page.getByRole('heading', { name: 'Evidencia del motor', exact: true }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload and independent model roundtrip at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip and POE workshop recovery at ${url}`,
       );
       failure = undefined;
       break;

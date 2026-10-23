@@ -38,7 +38,7 @@ describe('navegación y contenido disponible', () => {
     expect(wrapper.findAll('.lab-card.live')).toHaveLength(8);
     for (const [path, text] of [
       ['/lab/datos', 'Todo empieza en los datos.'],
-      ['/taller', 'Taller de investigación'],
+      ['/taller', 'Investiga antes de concluir.'],
       ['/biblioteca', 'Guarda lo que descubres.'],
       ['/lab/desconocido', 'Este lugar'],
       ['/inexistente', 'Este lugar'],

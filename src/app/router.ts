@@ -67,7 +67,7 @@ export const routes = [
   {
     path: '/taller',
     name: 'workshops',
-    component: () => import('@/features/planned/PlannedPage.vue'),
+    component: () => import('@/features/workshops/WorkshopsPage.vue'),
   },
   {
     path: '/modelos',

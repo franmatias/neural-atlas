@@ -63,6 +63,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [29 · Implementación D4](29-implementacion-d4.md) | Entrenamiento CPU, recuperación, evaluación y predicción |
 | [30 · Biblioteca D5](30-biblioteca-d5.md) | Guardado transaccional, reanudación e intercambio de experimentos |
 | [31 · Modelos D5](31-modelos-inferencia-d5.md) | Modelos sin filas, preparación aprendida y predicción independiente |
+| [32 · Taller POE D5](32-taller-poe-d5.md) | Cinco talleres, evidencias reales, rúbrica manual y cuadernos persistentes |
 
 ## Qué revisar antes de D1
 
