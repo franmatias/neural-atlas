@@ -9,6 +9,7 @@ import { parameterCount } from '@/domain/network/model';
 import type { RecipeId } from '@/domain/data/types';
 import { formatData } from '@/shared/utils/data-format';
 import TrainingControls from './TrainingControls.vue';
+import RecoveryPanel from './RecoveryPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -16,6 +17,11 @@ const session = useTrainingStore(),
   data = useDatasetsStore(),
   prefs = usePreferencesStore();
 const recipe = ref<RecipeId>('moons');
+const recoverySection = ref<HTMLElement>();
+function showRecovery() {
+  recoverySection.value?.scrollIntoView({ behavior: 'instant', block: 'start' });
+  recoverySection.value?.focus();
+}
 onBeforeRouteLeave(() => {
   if (session.status === 'running') {
     session.command('PAUSE');
@@ -47,6 +53,7 @@ const alerts: Record<string, string> = {
     <RouterLink class="button secondary" to="/biblioteca"
       >Guardar o recuperar experimento</RouterLink
     >
+    <button class="button secondary" @click="showRecovery">Ver recuperación automática</button>
     <p class="page-intro">
       Observa cómo cada lote cambia los pesos. Compara entrenamiento y validación, controla el ritmo
       y reserva test para una evaluación final.
@@ -292,10 +299,10 @@ const alerts: Record<string, string> = {
         >
       </div>
       <p class="small muted">
-        La sesión y dos puntos de recuperación se conservan en memoria mientras la aplicación está
-        abierta. Recargar la página los borra. La recuperación automática deja el modelo detenido
-        para que decidas continuar.
+        La sesión activa vive en memoria. Los puntos de recuperación confirmados en disco permiten
+        abrir una copia tras recargar; se recupera detenida para que decidas continuar.
       </p></template
     >
+    <div ref="recoverySection" tabindex="-1"><RecoveryPanel /></div>
   </div>
 </template>

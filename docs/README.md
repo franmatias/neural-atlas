@@ -64,6 +64,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [30 · Biblioteca D5](30-biblioteca-d5.md) | Guardado transaccional, reanudación e intercambio de experimentos |
 | [31 · Modelos D5](31-modelos-inferencia-d5.md) | Modelos sin filas, preparación aprendida y predicción independiente |
 | [32 · Taller POE D5](32-taller-poe-d5.md) | Cinco talleres, evidencias reales, rúbrica manual y cuadernos persistentes |
+| [33 · Recuperación en disco D5](33-recuperacion-disco-d5.md) | Dos checkpoints automáticos, reanudación y conflictos entre pestañas |
 
 ## Qué revisar antes de D1
 
