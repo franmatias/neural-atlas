@@ -62,7 +62,7 @@ export function writePreferences(
       preferencesKey,
       JSON.stringify({
         schemaVersion: 1,
-        appVersion: '0.5.0',
+        appVersion: '0.5.1',
         payload: validatePreferences(preferences),
       }),
     );

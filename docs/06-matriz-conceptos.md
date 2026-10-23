@@ -157,6 +157,8 @@ Se conservan los números de la solicitud. La lista original omitía el 20: aqu�
 | C151 | Sesgo de selección de hiperparámetros | L12 | Comparar intentos de grid y conservar test fuera de selección | P-L12 |
 | C152 | Diagnóstico por evidencia | L06,L08 | Contrastar alerta determinista con métricas/ventana y una intervención | P-L06 |
 
+La [ampliación de consulta C153–C652](27-ampliacion-conceptos.md) añade 500 conceptos sin cambiar estas 152 filas. El catálogo alcanza 652 IDs; siguiente disponible C653. Estas fichas introductorias no satisfacen todavía el contrato completo de actividad interactiva descrito a continuación.
+
 ## Contrato para ampliar la lista
 
 El catálogo se representa como registros declarativos, no como un enum TS ni un array de longitud fija. Identificador estable `C` seguido de al menos tres dígitos; el siguiente disponible inicialmente es C153. Nunca renumerar al reordenar o traducir. Un concepto retirado se marca deprecated y conserva redirect al sustituto.

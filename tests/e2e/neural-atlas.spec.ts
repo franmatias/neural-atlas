@@ -21,7 +21,7 @@ test('cálculos, coma decimal, controles y sesión entre rutas', async ({ page }
   await expect(page.getByRole('table')).toBeVisible();
   await expect(page.getByText('Derivada en z')).toBeVisible();
   await page.getByRole('link', { name: 'Conectar con el glosario' }).click();
-  await page.getByRole('searchbox').fill('bias');
+  await page.getByRole('searchbox').fill('C028');
   await expect(page.locator('.concept-card')).toHaveCount(1);
   await page.getByRole('link', { name: 'Probar en el laboratorio' }).click();
   await expect(page.getByLabel('Entrada x₁', { exact: true })).toHaveValue('1,2');

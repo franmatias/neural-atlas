@@ -1,6 +1,21 @@
 import { dataEs } from './data-es';
 import { networkEs } from './network-es';
 export const es = {
+  'glossary.topic': 'Tema',
+  'glossary.allTopics': 'Todos los temas',
+  'glossary.kind': 'Tipo de ficha',
+  'glossary.allKinds': 'Todas las fichas',
+  'glossary.interactive': 'Con laboratorio',
+  'glossary.reference': 'Ficha de consulta',
+  'glossary.labTopics': 'Fundamentos de los laboratorios',
+  'glossary.page': 'Página {page} de {total}',
+  'glossary.results': 'Resultados del glosario',
+  'glossary.pagination': 'Paginación del glosario',
+  'glossary.previous': 'Página anterior',
+  'glossary.next': 'Página siguiente',
+  'glossary.permalink': 'Enlace al concepto {id}',
+  'glossary.referenceDetail':
+    'Ficha de consulta: define el término y su contexto. Aún no incluye ejercicio numérico ni simulación propios.',
   ...dataEs,
   ...networkEs,
   'brand.tagline': 'APRENDE. EXPERIMENTA. COMPRENDE.',
@@ -96,14 +111,14 @@ export const es = {
   'glossary.eyebrow': 'CONECTA LAS IDEAS',
   'glossary.title': 'Las palabras del aprendizaje.',
   'glossary.description':
-    'Conceptos para explorar datos, neuronas y gradientes. Busca en español o en inglés y llévalos al laboratorio.',
+    'Explora los fundamentos y las técnicas del aprendizaje automático. Busca en español, inglés, por siglas o por identificador y conecta cada idea con su tema.',
   'glossary.search': 'Buscar un concepto',
   'glossary.placeholder': 'Prueba con «bias», «peso» o «sigmoid»…',
   'glossary.count': '{count} conceptos disponibles',
   'glossary.empty': 'No encontramos ese concepto en esta entrega.',
   'glossary.try': 'Probar en el laboratorio',
   'glossary.catalogNote':
-    'El catálogo abierto prevé 152 conceptos. Aquí se muestra el contenido publicado para los laboratorios de datos y neurona.',
+    'Catálogo abierto: {count} conceptos previstos; {published} fichas disponibles. Las fichas de consulta no implican un simulador de cada técnica.',
   'neuron.eyebrow': 'L02 / FUNDAMENTOS',
   'neuron.title': 'La neurona, por dentro.',
   'neuron.question': '¿Cómo cambia una predicción cuando cambias un peso o el sesgo?',

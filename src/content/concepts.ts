@@ -1,5 +1,6 @@
 import { dataConcepts } from './data-concepts';
 import { networkConcepts } from './network-concepts';
+import { referenceConcepts } from './reference-concepts';
 export interface Concept {
   lab?: string;
   id: string;
@@ -7,9 +8,11 @@ export interface Concept {
   english: string;
   aliases: string[];
   definition: string;
-  formula: string;
-  question: string;
-  answer: string;
+  formula?: string;
+  question?: string;
+  answer?: string;
+  reference?: boolean;
+  topic?: string;
 }
 export const concepts: readonly Concept[] = [
   ...dataConcepts,
@@ -182,6 +185,7 @@ export const concepts: readonly Concept[] = [
     question: '¿Cambiar b gira la frontera?',
     answer: 'Si los pesos no cambian y no son ambos cero, cambia su posición, no su orientación.',
   },
+  ...referenceConcepts,
 ];
 export function searchConcepts(query: string): readonly Concept[] {
   const normalize = (text: string) =>
@@ -191,7 +195,30 @@ export function searchConcepts(query: string): readonly Concept[] {
       .toLowerCase()
       .trim();
   const needle = normalize(query);
-  return concepts.filter((c) =>
-    normalize([c.id, c.title, c.english, ...c.aliases, c.definition].join(' ')).includes(needle),
-  );
+  if (!needle) return concepts;
+  return concepts
+    .map((concept) => {
+      const id = normalize(concept.id),
+        title = normalize(concept.title),
+        english = normalize(concept.english),
+        aliases = concept.aliases.map(normalize);
+      const score =
+        id === needle
+          ? 0
+          : title === needle || english === needle
+            ? 1
+            : aliases.includes(needle)
+              ? 2
+              : title.includes(needle) || english.includes(needle)
+                ? 3
+                : aliases.some((a) => a.includes(needle))
+                  ? 4
+                  : normalize(concept.definition).includes(needle)
+                    ? 5
+                    : -1;
+      return { concept, score };
+    })
+    .filter((result) => result.score >= 0)
+    .sort((a, b) => a.score - b.score)
+    .map((result) => result.concept);
 }

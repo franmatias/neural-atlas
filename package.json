@@ -1,6 +1,6 @@
 {
   "name": "neural-atlas",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "description": "Laboratorio didáctico visual de aprendizaje automático con Vue y TypeScript",
   "type": "module",
@@ -11,7 +11,7 @@
     "docs:diagrams": "node scripts/render-diagram-catalog.mjs",
     "docs:wireframes": "node scripts/render-wireframes.mjs",
     "docs:trace": "node scripts/render-rf-traceability.mjs",
-    "docs:check": "node scripts/check-docs.mjs && node scripts/render-diagram-catalog.mjs --check && node scripts/render-rf-traceability.mjs --check && node scripts/check-review-fixtures.mjs",
+    "docs:check": "node scripts/check-docs.mjs && node scripts/render-diagram-catalog.mjs --check && node scripts/render-rf-traceability.mjs --check && node scripts/check-review-fixtures.mjs && node scripts/render-reference-catalog.mjs --check",
     "preview": "vite preview",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
@@ -23,7 +23,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "lint": "eslint src tests *.config.ts public",
     "typecheck": "vue-tsc --noEmit",
-    "build:check": "node scripts/check-build.mjs"
+    "build:check": "node scripts/check-build.mjs",
+    "docs:catalog": "node scripts/render-reference-catalog.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
