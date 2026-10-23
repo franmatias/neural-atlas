@@ -2,9 +2,9 @@
 
 Laboratorio visual de aprendizaje automático para FP de especialización y universidad. Vue 3 Composition API, TypeScript, Tailwind, Pinia, Vue Router y D3.
 
-**Versión 0.4 · laboratorios D1 y D2.** Experimenta con una neurona y con datos: ocho generadores reproducibles, fallos controlados, edición, particiones por grupos/tiempo, preparación ajustada solo con train e importación/exportación CSV y JSON. Incluye temas claro/oscuro, modo presentación, ajustes locales, animaciones y glosario en tres niveles.
+**Versión 0.5 · cinco laboratorios D1–D3.** Experimenta con datos, una neurona, arquitectura/XOR, activaciones y propagación. Constructor MLP, perceptrón en Worker, mapas reales, softmax/Jacobiano y una actualización de pesos comprobable numéricamente. Conserva generadores, fallos, split/pipeline sin fuga e intercambio CSV/JSON. Temas claro/oscuro, responsive, ajustes y animaciones regulables.
 
-![Laboratorio de datos](docs/implementation/d2-light.png)
+![Arquitectura y XOR](docs/implementation/d3-architecture.png)
 
 ## Arrancar
 
@@ -27,11 +27,11 @@ npm run test:e2e
 
 Tipos, lint, unidades/integración, cobertura con umbrales, build, presupuesto y documentación. Playwright comprueba recorridos, accesibilidad automática, teclado, persistencia, temas, responsive y CSP sobre producción. Informes: `coverage/` y `playwright-report/`.
 
-La [entrega D2](docs/25-implementacion-d2.md) documenta uso, arquitectura, contratos y límites: 135 pruebas de unidad/integración y 99,21% de cobertura de líneas. Playwright incluye 14 recorridos por motor; CI exige Chromium, Firefox y WebKit en Linux. La [entrega D1](docs/23-implementacion-d1.md) conserva su evidencia histórica y la incidencia local de arranque de Firefox en Windows.
+La [entrega D3](docs/26-implementacion-d3.md) documenta uso, arquitectura, contratos y límites: 184 pruebas unitarias/integración y 98,74% de cobertura de líneas. Playwright incluye 18 recorridos por motor; CI exige Chromium, Firefox y WebKit en Linux. [D1](docs/23-implementacion-d1.md) y [D2](docs/25-implementacion-d2.md) conservan su evidencia histórica, incluida la incidencia local de Firefox en Windows.
 
 ## Alcance y continuidad
 
-La neurona permite modificar parámetros manualmente y el laboratorio de datos prepara conjuntos en un Web Worker. Ambas sesiones se conservan entre rutas; LocalStorage guarda preferencias y los datasets permanecen en memoria hasta exportarlos. Entrenamiento, taller, biblioteca y 3D mantienen sus fases. El [diseño completo](docs/README.md) conserva **88 requisitos funcionales, 24 no funcionales, 65 historias, 12 laboratorios, 12 talleres, 152 conceptos ampliables y 26 diagramas Mermaid**. Treinta y cinco conceptos tienen contenido publicado.
+Los datos, modelos y trazas son locales y viven en memoria; LocalStorage guarda preferencias. El aprendizaje XOR es una demostración acotada; entrenamiento general sobre datasets, taller, biblioteca y 3D mantienen sus fases. El [diseño completo](docs/README.md) conserva **88 requisitos funcionales, 24 no funcionales, 65 historias, 12 laboratorios, 12 talleres y 152 conceptos ampliables**. Hay **69 conceptos desarrollados y 28 diagramas Mermaid**, incluidos dos sobre la implementación de D3.
 
 El proyecto original permanece en la carpeta hermana `simulador-redes-neuronales`. Repositorio independiente, commits por incremento y fusiones explícitas. [Código en GitHub](https://github.com/franmatias/neural-atlas) · [Aplicación en GitHub Pages](https://franmatias.github.io/neural-atlas/).
 

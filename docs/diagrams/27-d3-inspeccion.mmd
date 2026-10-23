@@ -1,0 +1,23 @@
+sequenceDiagram
+  actor Estudiante
+  participant Vista as ArchitecturePage
+  participant Store as ArchitectureStore
+  participant Cliente as DataClient
+  participant Worker as data.worker
+  participant Motor as Dominio MLP
+  Estudiante->>Vista: Elegir capa, neurona y muestra
+  Vista->>Store: Invalidar mapa anterior
+  Estudiante->>Vista: Calcular mapa
+  Vista->>Store: inspect()
+  Store->>Cliente: Snapshot clonable e ID
+  Cliente->>Worker: inspectNetwork
+  Worker->>Motor: backward y forward en rejilla 20 por 20
+  Motor-->>Worker: Activaciones, histogramas y normas
+  Worker-->>Cliente: Resultado con ID
+  alt Respuesta de trabajo vigente
+    Cliente-->>Store: Resultado
+    Store-->>Vista: Render SVG y tabla equivalentes
+  else Cancelado o sustituido
+    Cliente->>Worker: terminate()
+    Note over Store,Vista: Conservar modelo, descartar respuesta tardia
+  end

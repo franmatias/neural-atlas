@@ -788,3 +788,56 @@ flowchart TB
   Gate2 -.-> X[Extensiones v1.2 propuestas]
 ```
 
+## 27 · Inspección implementada en D3
+
+UML de secuencia de la implementación real: Worker de datos, snapshot, mapa, normas y cancelación.
+
+[Fuente Mermaid](diagrams/27-d3-inspeccion.mmd) · [SVG exportado](diagrams/rendered/27-d3-inspeccion.svg)
+
+```mermaid
+sequenceDiagram
+  actor Estudiante
+  participant Vista as ArchitecturePage
+  participant Store as ArchitectureStore
+  participant Cliente as DataClient
+  participant Worker as data.worker
+  participant Motor as Dominio MLP
+  Estudiante->>Vista: Elegir capa, neurona y muestra
+  Vista->>Store: Invalidar mapa anterior
+  Estudiante->>Vista: Calcular mapa
+  Vista->>Store: inspect()
+  Store->>Cliente: Snapshot clonable e ID
+  Cliente->>Worker: inspectNetwork
+  Worker->>Motor: backward y forward en rejilla 20 por 20
+  Motor-->>Worker: Activaciones, histogramas y normas
+  Worker-->>Cliente: Resultado con ID
+  alt Respuesta de trabajo vigente
+    Cliente-->>Store: Resultado
+    Store-->>Vista: Render SVG y tabla equivalentes
+  else Cancelado o sustituido
+    Cliente->>Worker: terminate()
+    Note over Store,Vista: Conservar modelo, descartar respuesta tardia
+  end
+```
+
+## 28 · Actualización única en D3
+
+UML de estados de la implementación real: inspección sin mutación y aplicación protegida de un gradiente.
+
+[Fuente Mermaid](diagrams/28-d3-actualizacion.mmd) · [SVG exportado](diagrams/rendered/28-d3-actualizacion.svg)
+
+```mermaid
+stateDiagram-v2
+  [*] --> Snapshot: Ejemplo 2 a 2 a 1
+  Snapshot --> Inspeccion: Forward y backward sin mutacion
+  Inspeccion --> Inspeccion: Anterior, siguiente, reproducir o chequeo numerico
+  Inspeccion --> Preparado: Elegir fase aplicar
+  Preparado --> Aplicado: Confirmar paso finito con pesos anteriores
+  Aplicado --> Aplicado: Recorrer traza no aplica otro paso
+  Aplicado --> Snapshot: Calcular otra pasada con modelo actualizado
+  Inspeccion --> Snapshot: Editar entrada, objetivo o peso
+  Preparado --> Snapshot: Editar entrada, objetivo o peso
+  Aplicado --> Snapshot: Editar entrada, objetivo o peso
+  Aplicado --> [*]: Desmontar conserva store y detiene animacion
+```
+

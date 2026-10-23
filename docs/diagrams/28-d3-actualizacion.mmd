@@ -1,0 +1,12 @@
+stateDiagram-v2
+  [*] --> Snapshot: Ejemplo 2 a 2 a 1
+  Snapshot --> Inspeccion: Forward y backward sin mutacion
+  Inspeccion --> Inspeccion: Anterior, siguiente, reproducir o chequeo numerico
+  Inspeccion --> Preparado: Elegir fase aplicar
+  Preparado --> Aplicado: Confirmar paso finito con pesos anteriores
+  Aplicado --> Aplicado: Recorrer traza no aplica otro paso
+  Aplicado --> Snapshot: Calcular otra pasada con modelo actualizado
+  Inspeccion --> Snapshot: Editar entrada, objetivo o peso
+  Preparado --> Snapshot: Editar entrada, objetivo o peso
+  Aplicado --> Snapshot: Editar entrada, objetivo o peso
+  Aplicado --> [*]: Desmontar conserva store y detiene animacion

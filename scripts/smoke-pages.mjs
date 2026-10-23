@@ -5,7 +5,10 @@ const parsed = new URL(url);
 assert.equal(parsed.protocol, 'https:');
 assert.equal(parsed.hostname, 'franmatias.github.io');
 assert.equal(parsed.pathname, '/neural-atlas/');
-const browser = await chromium.launch({ headless: true, ...(process.env.PAGES_BROWSER_CHANNEL ? { channel: process.env.PAGES_BROWSER_CHANNEL } : {}) });
+const browser = await chromium.launch({
+  headless: true,
+  ...(process.env.PAGES_BROWSER_CHANNEL ? { channel: process.env.PAGES_BROWSER_CHANNEL } : {}),
+});
 try {
   let failure;
   for (let attempt = 0; attempt < 10; attempt++) {
@@ -32,7 +35,10 @@ try {
       await page.locator('.concept-card').filter({ hasText: 'Sesgo' }).waitFor();
       assert.equal(await page.locator('.concept-card').count(), 1);
       await page.goto(new URL('#/lab/datos', url).href);
-      await page.getByRole('heading', { level: 1 }).filter({ hasText: 'Todo empieza en los datos.' }).waitFor();
+      await page
+        .getByRole('heading', { level: 1 })
+        .filter({ hasText: 'Todo empieza en los datos.' })
+        .waitFor();
       await page.getByLabel('Ejemplo práctico', { exact: true }).selectOption('copies');
       await page.getByRole('button', { name: 'Generar y sustituir datos' }).click();
       await page.getByText('Dataset generado.', { exact: false }).waitFor();
@@ -41,10 +47,28 @@ try {
       await page.getByRole('heading', { name: /Proporciones logradas/ }).waitFor();
       await page.getByRole('button', { name: 'Preparar', exact: true }).click();
       await page.getByRole('button', { name: 'Ajustar con train y transformar' }).click();
-      await page.getByRole('heading', { name: 'Estado aprendido exclusivamente con train' }).waitFor();
+      await page
+        .getByRole('heading', { name: 'Estado aprendido exclusivamente con train' })
+        .waitFor();
+      await page.goto(new URL('#/lab/arquitectura', url).href);
+      await page.getByRole('button', { name: '2 · Combinar regiones', exact: true }).click();
+      await page.getByRole('button', { name: 'Aprender XOR con MLP' }).click();
+      await page.getByTestId('xor-score').waitFor();
+      assert.equal(await page.getByTestId('xor-score').textContent(), '4 / 4');
+      await page.goto(new URL('#/lab/activaciones', url).href);
+      await page.getByTestId('softmax-sum').waitFor();
+      assert.equal(await page.getByTestId('softmax-sum').textContent(), 'Σp = 1');
+      await page.goto(new URL('#/lab/propagacion', url).href);
+      await page.getByRole('button', { name: 'Comprobar todos los gradientes' }).click();
+      await page.locator('.gradient-check').waitFor();
+      assert.equal(await page.locator('.gradient-check tbody tr').count(), 9);
+      assert.equal(
+        await page.locator('.gradient-check tbody tr').filter({ hasText: 'Correcto' }).count(),
+        9,
+      );
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron fixture, theme, glossary and data Worker/split/pipeline at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, data pipeline, learned XOR, softmax and nine gradients at ${url}`,
       );
       failure = undefined;
       break;

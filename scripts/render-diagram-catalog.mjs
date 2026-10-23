@@ -1,6 +1,8 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const descriptions = {
+  '27': ['Inspección implementada en D3', 'UML de secuencia de la implementación real: Worker de datos, snapshot, mapa, normas y cancelación.'],
+  '28': ['Actualización única en D3', 'UML de estados de la implementación real: inspección sin mutación y aplicación protegida de un gradiente.'],
   '01': ['Contexto del sistema', 'Contexto, en flowchart: personas, aplicación y almacenamiento. No representa un backend.'],
   '02': ['Componentes y ejecución', 'Vista de componentes expresada mediante flowchart; explicita la frontera entre hilo principal y Worker.'],
   '03': ['Clases de dominio', 'UML de clases: composición del experimento, dataset, partición, pipeline, red y checkpoints.'],
