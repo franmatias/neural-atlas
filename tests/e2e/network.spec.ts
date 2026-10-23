@@ -68,12 +68,14 @@ test('nueve gradientes coinciden y recorrer la traza no aplica dos veces la actu
   await page.locator('.chain-stages').first().getByRole('button').last().click();
   await apply.click();
   await expect(apply).toBeDisabled();
+  await expect(page.locator('#prop-rate')).toBeDisabled();
   const loss = await page.getByTestId('loss-change').textContent();
   await page.locator('.chain-stages').first().getByRole('button').first().click();
   await page.locator('.chain-stages').first().getByRole('button').last().click();
   await expect(page.getByTestId('loss-change')).toHaveText(loss!);
   await expect(apply).toBeDisabled();
   await page.getByRole('button', { name: 'Calcular otra pasada' }).click();
+  await expect(page.locator('#prop-rate')).toBeEnabled();
   await expect(apply).toBeDisabled();
   await page.locator('.chain-stages').first().getByRole('button').last().click();
   await expect(apply).toBeEnabled();

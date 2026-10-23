@@ -84,6 +84,7 @@ function apply() {
           >{{ t('net.rate') }} · {{ formatData(state.rate)
           }}<input
             id="prop-rate"
+            :disabled="state.applied"
             type="range"
             min="-4"
             max="0"
