@@ -104,7 +104,7 @@ test('migración nativa v1→v3 conserva experimentos y sus tensores', async ({ 
   const result = await page.evaluate(
     async () =>
       new Promise<{ version: number; weights: number[] }>((resolve, reject) => {
-        const request = indexedDB.open('neural-atlas', 2);
+        const request = indexedDB.open('neural-atlas', 3);
         request.onerror = () => reject(request.error);
         request.onsuccess = () => {
           const db = request.result;
