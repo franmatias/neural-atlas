@@ -1,0 +1,42 @@
+sequenceDiagram
+    actor Alumno
+    participant Vista as Vue y Pinia
+    participant Cliente as TrainingClient
+    participant Worker as TrainingRuntime
+    participant Motor as Generadores matemáticos
+    Alumno->>Vista: Inicializar con train y validación
+    Vista->>Cliente: start(input sin test)
+    Cliente->>Worker: INIT (identidad y revisión)
+    Worker->>Motor: Inicializar y evaluar por fragmentos
+    Motor-->>Worker: Estado inicial confirmado
+    Worker-->>Cliente: RECOVERY_CHECKPOINT (update 0)
+    Cliente->>Cliente: Validar y conservar dos copias RAM
+    Cliente->>Worker: RECOVERY_ACK (update 0)
+    Worker-->>Cliente: READY
+    Cliente-->>Vista: Modelo preparado
+    Alumno->>Vista: Entrenar o dar un paso
+    Vista->>Cliente: Acción solicitada
+    Cliente->>Worker: RUN / STEP_BATCH / STEP_EPOCH
+    loop Cada lote
+        Worker->>Motor: Candidato por fragmentos de cálculo
+        Motor-->>Worker: Modelo y momentos finitos
+        Worker->>Worker: Confirmar pesos, momentos y cursor juntos
+        opt Época completa o 2 s y sin copia pendiente
+            Worker-->>Cliente: RECOVERY_CHECKPOINT
+            Cliente->>Worker: RECOVERY_ACK del update recibido
+        end
+    end
+    Alumno->>Vista: Pausar o cancelar
+    Vista->>Cliente: Acción solicitada
+    Cliente->>Worker: PAUSE o CANCEL
+    Worker->>Worker: Descartar candidato incompleto
+    Worker-->>Cliente: Estado confirmado y checkpoint
+    Cliente-->>Vista: Presentar último estado estable
+    opt Worker sin respuesta durante más de 2 s
+        Cliente->>Cliente: Terminar Worker y elevar revisión
+        Cliente->>Worker: INIT con último checkpoint validado
+        Worker-->>Cliente: Checkpoint restaurado
+        Cliente->>Worker: RECOVERY_ACK
+        Worker-->>Cliente: READY detenido
+        Cliente-->>Vista: Estado restaurado con bloqueo frozen conservado
+    end

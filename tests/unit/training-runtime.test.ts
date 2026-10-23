@@ -21,6 +21,7 @@ function harness(input = trainingFixture().input) {
     request = 0;
   const events: TrainingEvent[] = [],
     tasks: (() => void)[] = [];
+  const times: { type: TrainingEvent['type']; at: number }[] = [];
   const identity = { protocolVersion: 1 as const, sessionId: 'session', runId: 'run', revision: 1 };
   const runtime = new TrainingRuntime({
     now: () => {
@@ -32,7 +33,10 @@ function harness(input = trainingFixture().input) {
         time += delay;
         callback();
       }),
-    send: (event) => events.push(structuredClone(event)),
+    send: (event) => {
+      events.push(structuredClone(event));
+      times.push({ type: event.type, at: time });
+    },
   });
   function send(action: Record<string, unknown>) {
     runtime.receive({ ...identity, requestId: ++request, ...action });
@@ -47,9 +51,27 @@ function harness(input = trainingFixture().input) {
   send({ type: 'INIT', payload: { input } });
   drain();
   const checkpoint = events.find((e) => e.type === 'RECOVERY_CHECKPOINT')?.state;
-  return { runtime, events, tasks, send, drain, identity, checkpoint, input };
+  return { runtime, events, tasks, send, drain, identity, checkpoint, input, times };
 }
 describe('protocolo y ejecución cooperativa', () => {
+  it('limita snapshots a 10 Hz y conserva el historial completo al terminar', () => {
+    const { input } = trainingFixture();
+    input.config.spec.hidden = [];
+    input.config.batchSize = input.train.ids.length;
+    input.config.epochs = 100;
+    const h = harness(input);
+    h.send({ type: 'RECOVERY_ACK', payload: { update: 0 } });
+    h.send({ type: 'RUN', payload: { pace: 0 } });
+    h.drain();
+    const snapshots = h.times.filter((event) => event.type === 'SNAPSHOT');
+    expect(snapshots.length).toBeGreaterThan(1);
+    expect(snapshots.length).toBeLessThan(100);
+    for (let index = 1; index < snapshots.length; index++)
+      expect(snapshots[index]!.at - snapshots[index - 1]!.at).toBeGreaterThanOrEqual(99.99);
+    const final = h.events.find((event) => event.type === 'COMPLETED')!.state!;
+    expect(final.history).toHaveLength(101);
+    expect(final.updates).toBe(100);
+  });
   it('requiere checkpoint cero confirmado, rechaza identidades y controla pasos', () => {
     const h = harness();
     expect(h.events.at(-1)?.type).toBe('RECOVERY_CHECKPOINT');

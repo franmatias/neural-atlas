@@ -841,3 +841,85 @@ stateDiagram-v2
   Aplicado --> [*]: Desmontar conserva store y detiene animacion
 ```
 
+## 29 · Recuperación implementada en D4
+
+UML de secuencia de la implementación: checkpoint cero, confirmación atómica, pausa y recuperación sin reanudación automática.
+
+[Fuente Mermaid](diagrams/29-d4-recovery-sequence.mmd) · [SVG exportado](diagrams/rendered/29-d4-recovery-sequence.svg)
+
+```mermaid
+sequenceDiagram
+    actor Alumno
+    participant Vista as Vue y Pinia
+    participant Cliente as TrainingClient
+    participant Worker as TrainingRuntime
+    participant Motor as Generadores matemáticos
+    Alumno->>Vista: Inicializar con train y validación
+    Vista->>Cliente: start(input sin test)
+    Cliente->>Worker: INIT (identidad y revisión)
+    Worker->>Motor: Inicializar y evaluar por fragmentos
+    Motor-->>Worker: Estado inicial confirmado
+    Worker-->>Cliente: RECOVERY_CHECKPOINT (update 0)
+    Cliente->>Cliente: Validar y conservar dos copias RAM
+    Cliente->>Worker: RECOVERY_ACK (update 0)
+    Worker-->>Cliente: READY
+    Cliente-->>Vista: Modelo preparado
+    Alumno->>Vista: Entrenar o dar un paso
+    Vista->>Cliente: Acción solicitada
+    Cliente->>Worker: RUN / STEP_BATCH / STEP_EPOCH
+    loop Cada lote
+        Worker->>Motor: Candidato por fragmentos de cálculo
+        Motor-->>Worker: Modelo y momentos finitos
+        Worker->>Worker: Confirmar pesos, momentos y cursor juntos
+        opt Época completa o 2 s y sin copia pendiente
+            Worker-->>Cliente: RECOVERY_CHECKPOINT
+            Cliente->>Worker: RECOVERY_ACK del update recibido
+        end
+    end
+    Alumno->>Vista: Pausar o cancelar
+    Vista->>Cliente: Acción solicitada
+    Cliente->>Worker: PAUSE o CANCEL
+    Worker->>Worker: Descartar candidato incompleto
+    Worker-->>Cliente: Estado confirmado y checkpoint
+    Cliente-->>Vista: Presentar último estado estable
+    opt Worker sin respuesta durante más de 2 s
+        Cliente->>Cliente: Terminar Worker y elevar revisión
+        Cliente->>Worker: INIT con último checkpoint validado
+        Worker-->>Cliente: Checkpoint restaurado
+        Cliente->>Worker: RECOVERY_ACK
+        Worker-->>Cliente: READY detenido
+        Cliente-->>Vista: Estado restaurado con bloqueo frozen conservado
+    end
+```
+
+## 30 · Estados implementados en D4
+
+UML de estados de entrenamiento y congelación: consultar test nunca habilita más aprendizaje en la misma sesión.
+
+[Fuente Mermaid](diagrams/30-d4-training-state.mmd) · [SVG exportado](diagrams/rendered/30-d4-training-state.svg)
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    state "Inicialización" as init
+    state "Detenido (ready, paused,
+cancelled o completed)" as stable
+    state "Entrenamiento" as running
+    state "Congelado" as frozen
+    state "Recuperación" as recovering
+    state "Restaurado y detenido
+ready o frozen" as restored
+    [*] --> init
+    init --> stable: Checkpoint cero confirmado
+    stable --> running: RUN o paso si quedan épocas
+    running --> stable: Pausa, cancelación o fin
+    stable --> frozen: Congelar antes de test
+    running --> recovering: Worker sin respuesta
+    frozen --> recovering: Worker sin respuesta
+    recovering --> restored: Último checkpoint validado
+    frozen --> [*]: Nueva sesión
+    restored --> [*]: Esperar decisión del alumno
+    note right of frozen: Permite inferencia y test, nunca aprendizaje
+    note right of restored: Conserva congelación y consulta de test
+```
+

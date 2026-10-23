@@ -41,6 +41,7 @@ export class TrainingRuntime {
   private checkpointUpdate = -1;
   private checkpointAt = 0;
   private progressAt = -Infinity;
+  private snapshotAt = -Infinity;
   private maxSliceMs = 0;
   private scheduled = false;
   private disposed = false;
@@ -264,7 +265,10 @@ export class TrainingRuntime {
     this.begin(advanceBatch(this.state, this.input), (result) => {
       this.state = result as TrainingState;
       const ended = this.state.epoch !== previousEpoch;
-      if (ended) this.emit('SNAPSHOT', { state: cloneState(this.state) });
+      if (ended && this.port.now() - this.snapshotAt >= 100) {
+        this.snapshotAt = this.port.now();
+        this.emit('SNAPSHOT', { state: cloneState(this.state) });
+      }
       if (!this.awaitingAck && (ended || this.port.now() - this.checkpointAt >= 2000))
         this.checkpoint();
       if (this.state.epoch >= this.input!.config.epochs) {

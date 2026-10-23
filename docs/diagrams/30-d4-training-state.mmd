@@ -1,0 +1,22 @@
+stateDiagram-v2
+    direction LR
+    state "Inicialización" as init
+    state "Detenido (ready, paused,
+cancelled o completed)" as stable
+    state "Entrenamiento" as running
+    state "Congelado" as frozen
+    state "Recuperación" as recovering
+    state "Restaurado y detenido
+ready o frozen" as restored
+    [*] --> init
+    init --> stable: Checkpoint cero confirmado
+    stable --> running: RUN o paso si quedan épocas
+    running --> stable: Pausa, cancelación o fin
+    stable --> frozen: Congelar antes de test
+    running --> recovering: Worker sin respuesta
+    frozen --> recovering: Worker sin respuesta
+    recovering --> restored: Último checkpoint validado
+    frozen --> [*]: Nueva sesión
+    restored --> [*]: Esperar decisión del alumno
+    note right of frozen: Permite inferencia y test, nunca aprendizaje
+    note right of restored: Conserva congelación y consulta de test

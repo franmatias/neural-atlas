@@ -55,7 +55,7 @@ try{
     },{source,index});
     if(result.error||result.width<=0||result.height<=0)throw new Error(`Diagrama no renderizable: ${file}`);
     await writeFile(path.join(root,'docs','diagrams','rendered',file.replace(/\.mmd$/,'.svg')),result.svg);
-    if(['21','22','26','27','28'].includes(file.slice(0,2)))await page.screenshot({path:path.join(root,'docs','diagrams','previews',file.replace(/\.mmd$/,'.png')),fullPage:true});
+    if(['21','22','26','27','28','29','30'].includes(file.slice(0,2)))await page.screenshot({path:path.join(root,'docs','diagrams','previews',file.replace(/\.mmd$/,'.png')),fullPage:true});
   }
   console.log(`${files.length} diagramas renderizados en Chrome${selectedPrefixes?'':'; 3 PNG de wireframes capturados'}.`);
   if(!selectedPrefixes)await writeFile(path.join(root,'docs','design','previews','README.md'),'# Previsualizaciones\n\nPNG de los SVG de referencia, capturados en Chrome a escala 1. Son wireframes estáticos de especificación, no una aplicación implementada. Se regeneran con el script opcional `visual-review.mjs` en un entorno con Playwright y Chrome instalados.\n');
