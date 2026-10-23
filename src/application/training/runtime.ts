@@ -315,7 +315,7 @@ export class TrainingRuntime {
       if (!done && this.task) this.schedule();
     } catch (error) {
       this.task = undefined;
-      this.status = 'paused';
+      this.status = this.state ? 'paused' : 'error';
       this.emit('ERROR', {
         code:
           error instanceof Error && error.message === 'NON_FINITE'

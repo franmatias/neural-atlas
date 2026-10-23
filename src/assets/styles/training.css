@@ -1,0 +1,175 @@
+.training-page {
+  max-width: 1400px;
+}
+.training-panel,
+.training-controls,
+.loss-chart {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 24px;
+  margin: 24px 0;
+  min-width: 0;
+}
+.training-controls legend {
+  font-weight: 700;
+  padding: 0 8px;
+}
+.training-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin: 12px 0;
+}
+.training-fields label {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+}
+.training-fields input,
+.training-fields select,
+.training-toolbar select,
+.training-pace select,
+.training-controls select {
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  min-width: 0;
+  color: var(--ink);
+}
+.training-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 20px 0;
+}
+.training-toolbar select {
+  width: auto;
+  max-width: 100%;
+}
+.training-check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 18px 0;
+}
+.training-check input {
+  min-width: 20px;
+  min-height: 20px;
+  margin-top: 3px;
+}
+.training-pace {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.training-pace select {
+  width: auto;
+}
+.training-status {
+  padding: 18px;
+  border-radius: 10px;
+  background: var(--wash);
+  font-weight: 650;
+}
+.training-alert {
+  padding: 14px;
+  border-left: 4px solid var(--orange);
+  background: var(--subtle);
+  overflow-wrap: anywhere;
+}
+.training-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.training-metrics article {
+  background: var(--subtle);
+  border-radius: 10px;
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+.training-metrics span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.training-metrics strong {
+  font-size: 1.5rem;
+}
+.loss-chart svg {
+  width: 100%;
+  max-height: 360px;
+  margin: 20px 0;
+  overflow: visible;
+}
+.loss-chart svg path {
+  fill: none;
+  stroke-width: 2;
+}
+.loss-chart text {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.loss-chart .chart-axis {
+  stroke: var(--line);
+}
+.loss-chart .loss-train {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.loss-chart .loss-validation {
+  stroke: var(--orange);
+  stroke-dasharray: 6 4;
+  stroke-width: 3;
+}
+.training-table-wrap {
+  overflow: auto;
+  max-width: 100%;
+  margin: 18px 0;
+}
+.training-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.training-table-wrap caption {
+  text-align: left;
+  padding: 12px 0;
+  color: var(--muted);
+}
+.training-table-wrap th,
+.training-table-wrap td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.training-table-wrap button[aria-pressed='true'] {
+  outline: 3px solid var(--accent);
+}
+.prediction-result {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 12px;
+}
+@media (max-width: 600px) {
+  .training-panel,
+  .training-controls,
+  .loss-chart {
+    padding: 16px;
+  }
+  .training-fields {
+    grid-template-columns: 1fr;
+  }
+  .training-toolbar .button {
+    flex: 1 1 auto;
+  }
+  .training-page .network-diagram {
+    overflow: auto;
+  }
+}

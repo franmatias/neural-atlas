@@ -60,7 +60,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué cambia al ajustar la tasa o el lote?',
     group: 'learning',
     phase: 'D4',
-    available: false,
+    available: true,
   },
   {
     id: 'L07',
@@ -87,7 +87,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué esconden los aciertos de un clasificador?',
     group: 'practice',
     phase: 'D4',
-    available: false,
+    available: true,
   },
   {
     id: 'L10',
@@ -96,7 +96,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Cómo se mide una predicción numérica?',
     group: 'practice',
     phase: 'D4',
-    available: false,
+    available: true,
   },
   {
     id: 'L11',

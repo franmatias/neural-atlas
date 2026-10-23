@@ -35,7 +35,7 @@ describe('navegación y contenido disponible', () => {
     await router.push('/laboratorios');
     await flushPromises();
     expect(wrapper.findAll('.lab-card')).toHaveLength(12);
-    expect(wrapper.findAll('.lab-card.live')).toHaveLength(5);
+    expect(wrapper.findAll('.lab-card.live')).toHaveLength(8);
     for (const [path, text] of [
       ['/lab/datos', 'Todo empieza en los datos.'],
       ['/taller', 'Taller de investigación'],

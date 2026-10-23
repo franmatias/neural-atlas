@@ -5,6 +5,7 @@
 @import './styles/responsive.css';
 @import './styles/datasets.css';
 @import './styles/network.css';
+@import './styles/training.css';
 @theme {
   --font-sans: 'Segoe UI', system-ui, sans-serif;
 }
