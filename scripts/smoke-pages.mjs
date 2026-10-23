@@ -132,8 +132,13 @@ try {
       await page.getByRole('heading', { name: 'Recorrido registrado', exact: true }).waitFor();
       await page.getByRole('heading', { name: 'Evidencia del motor', exact: true }).waitFor();
       assert.deepEqual(errors, []);
+      await page.goto(new URL('#/lab/entrenamiento', url).href);
+      await page.getByRole('button', { name: 'Recuperar sesión guardada', exact: true }).click();
+      await page.getByRole('button', { name: 'Confirmar recuperación', exact: true }).click();
+      await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
+      assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip and POE workshop recovery at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery and automatic disk recovery at ${url}`,
       );
       failure = undefined;
       break;
