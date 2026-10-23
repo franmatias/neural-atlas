@@ -136,9 +136,25 @@ try {
       await page.getByRole('button', { name: 'Recuperar sesión guardada', exact: true }).click();
       await page.getByRole('button', { name: 'Confirmar recuperación', exact: true }).click();
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
+      await page.goto(new URL('#/lab/generalizacion', url).href);
+      await page.getByLabel('Épocas por ensayo', { exact: true }).fill('5');
+      await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
+      const comparisonTable = page.getByRole('table', { name: 'Comparación de generalización', exact: true });
+      await comparisonTable.waitFor();
+      assert.equal(await comparisonTable.locator('tbody tr').count(), 2);
+      const downloadedStudy = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar ensayo JSON', exact: true }).click();
+      const study = JSON.parse(await readFile(await (await downloadedStudy).path(), 'utf8'));
+      assert.equal(study.schemaVersion, 2);
+      assert.equal(study.engineVersion, 2);
+      assert.equal(study.config.regularization.l2, 0.01);
+      const finalPoint = study.checkpoint.history.at(-1);
+      assert(Math.abs(finalPoint.trainObjective - finalPoint.trainLoss - finalPoint.regularizationPenalty) < 1e-10);
+      await page.goto(new URL('#/lab/entrenamiento', url).href);
+      await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery and automatic disk recovery at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery and matched L2 experiment v2 at ${url}`,
       );
       failure = undefined;
       break;

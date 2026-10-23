@@ -65,6 +65,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [31 · Modelos D5](31-modelos-inferencia-d5.md) | Modelos sin filas, preparación aprendida y predicción independiente |
 | [32 · Taller POE D5](32-taller-poe-d5.md) | Cinco talleres, evidencias reales, rúbrica manual y cuadernos persistentes |
 | [33 · Recuperación en disco D5](33-recuperacion-disco-d5.md) | Dos checkpoints automáticos, reanudación y conflictos entre pestañas |
+| [34 · Generalización D6](34-generalizacion-d6.md) | L1/L2, recorte global y ensayos emparejados con checkpoints v2 |
 
 ## Qué revisar antes de D1
 
