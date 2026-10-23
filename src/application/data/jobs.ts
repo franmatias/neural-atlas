@@ -2,6 +2,8 @@ import { generateDataset } from '@/domain/data/generate';
 import { inspectNetwork } from '@/domain/network/inspection';
 import { trainPerceptron, solveXor } from '@/domain/network/learning';
 import type { Network } from '@/domain/network/model';
+import { runWorkshop } from '@/application/workshops/experiments';
+import type { WorkshopEvidence, WorkshopOptions } from '@/application/workshops/contracts';
 import {
   importInferenceModel,
   exportInferenceModel,
@@ -33,6 +35,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  workshop: { caseId: WorkshopEvidence['caseId']; options: WorkshopOptions };
   importModel: { text: string };
   exportModel: { model: InferenceModel };
   predictModel: { model: InferenceModel; values: Record<string, Cell> };
@@ -60,6 +63,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  workshop: WorkshopEvidence;
   importModel: InferenceModel;
   exportModel: string;
   predictModel: ReturnType<typeof predictWithModel>;
@@ -82,6 +86,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'workshop':
+      return runWorkshop(job.payload.caseId, job.payload.options);
     case 'importModel':
       return importInferenceModel(job.payload.text);
     case 'exportModel':
