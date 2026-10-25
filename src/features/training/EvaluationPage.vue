@@ -18,7 +18,9 @@ const compatible = computed(
 const selected = computed(() =>
   session.analysis?.split === 'test'
     ? session.test
-    : session.input?.[session.analysis?.split ?? 'validation'],
+    : session.analysis?.split === 'train'
+      ? (session.input?.trainEvaluation ?? session.input?.train)
+      : session.input?.validation,
 );
 const rows = computed(
   () =>
@@ -40,7 +42,8 @@ const filtered = computed(() =>
 const majority = computed(() => {
   if (!session.input) return 0;
   const counts = session.input.classOrder.map(
-    (_, i) => session.input!.train.y.filter((y) => y === i).length,
+    (_, i) =>
+      (session.input!.trainEvaluation ?? session.input!.train).y.filter((y) => y === i).length,
   );
   return counts.indexOf(Math.max(...counts));
 });

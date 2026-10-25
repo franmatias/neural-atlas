@@ -188,11 +188,26 @@ try {
       assert.equal(bn.checkpoint.model.layers[0].normalization.initialized, true);
       assert.equal(bn.checkpoint.model.layers.at(-1).normalization, undefined);
       assert.equal(bn.testConsulted, false);
+      await page.getByRole('combobox', { name: 'Intervención', exact: true }).selectOption('augmentation');
+      await page.getByRole('combobox', { name: 'Receta para aumento', exact: true }).selectOption('circles');
+      await page.getByLabel('Ruido de las muestras', { exact: true }).fill('0');
+      await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
+      await page.locator('.augmentation-panel').waitFor();
+      const downloadedAugmentation = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar ensayo JSON', exact: true }).click();
+      const augmented = JSON.parse(await readFile(await (await downloadedAugmentation).path(), 'utf8'));
+      assert.equal(augmented.schemaVersion, 6);
+      assert.equal(augmented.engineVersion, 6);
+      assert.equal(augmented.config.augmentation.policy, 'circles');
+      assert.equal(augmented.checkpoint.order.length, 144);
+      assert.equal(augmented.checkpoint.updates, 60);
+      assert.equal(augmented.dataset.dataset.rowIds.length, 120);
+      assert.equal(augmented.testConsulted, false);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4 and batch normalization experiment v5 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5 and train-only augmentation experiment v6 at ${url}`,
       );
       failure = undefined;
       break;
