@@ -69,6 +69,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [35 · Parada temprana D6](35-parada-temprana-d6.md) | Validación, restauración completa, continuación explícita y checkpoints v3 |
 | [36 · Dropout D6](36-dropout-d6.md) | Máscaras reales, RNG reproducible, inferencia sin máscara y checkpoints v4 |
 | [37 · Normalización por lotes D6](37-normalizacion-lotes-d6.md) | Gradientes del lote completo, medias móviles, gamma/beta y modelos de inferencia v2 |
+| [38 · Aumento de datos D6](38-aumento-datos-d6.md) | Copias fijas solo de train, oráculos, trazabilidad y experimentos v6 |
 
 ## Qué revisar antes de D1
 
