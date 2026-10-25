@@ -32,6 +32,15 @@ function snapshotHash(state: TrainingSnapshot) {
         ...layer,
         weights: Array.from(layer.weights),
         biases: Array.from(layer.biases),
+        ...(layer.normalization
+          ? {
+              normalization: {
+                ...layer.normalization,
+                gamma: Array.from(layer.normalization.gamma),
+                beta: Array.from(layer.normalization.beta),
+              },
+            }
+          : {}),
       })),
     },
     optimizer: {
@@ -59,6 +68,15 @@ export function cloneSnapshot(state: TrainingSnapshot): TrainingSnapshot {
   return {
     ...base,
     model: cloneNetwork(state.model),
+    ...(state.batchStatistics
+      ? {
+          batchStatistics: {
+            size: state.batchStatistics.size,
+            means: state.batchStatistics.means.map((r) => [...r]),
+            variances: state.batchStatistics.variances.map((r) => [...r]),
+          },
+        }
+      : {}),
     ...(state.dropout ? { dropout: cloneDropout(state.dropout) } : {}),
     optimizer: {
       step: state.optimizer.step,

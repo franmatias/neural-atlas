@@ -1,4 +1,5 @@
 import { stableNorm, type Network } from '@/domain/network/model';
+import { parameterVectors } from './optimizer';
 export interface Regularization {
   l1: number;
   l2: number;
@@ -14,6 +15,8 @@ export interface GradientControl {
   rawBiases: number[];
   appliedWeights: number[];
   appliedBiases: number[];
+  rawAffine?: number;
+  appliedAffine?: number;
 }
 export function validateRegularization(value: Regularization) {
   if (
@@ -40,7 +43,9 @@ export function* controlGradient(
 ) {
   validateRegularization(config);
   const applied = gradient.map((v) => v.slice());
-  if (applied.length !== model.layers.length * 2) throw new RangeError('SHAPE');
+  const vectors = parameterVectors(model);
+  if (applied.length !== vectors.length || applied.some((v, i) => v.length !== vectors[i]!.length))
+    throw new RangeError('SHAPE');
   for (let layer = 0; layer < model.layers.length; layer++) {
     const weights = model.layers[layer]!.weights,
       g = applied[layer * 2]!;
@@ -68,7 +73,8 @@ export function* controlGradient(
     }
   }
   const norms = applied.map(stableNorm);
-  const select = (values: number[], parity: number) => values.filter((_, i) => i % 2 === parity);
+  const select = (values: number[], parity: number) =>
+    values.slice(0, model.layers.length * 2).filter((_, i) => i % 2 === parity);
   const telemetry: GradientControl = {
     rawNorm,
     appliedNorm: stableNorm(norms),
@@ -78,6 +84,12 @@ export function* controlGradient(
     rawBiases: select(raw, 1),
     appliedWeights: select(norms, 0),
     appliedBiases: select(norms, 1),
+    ...(model.spec.batchNormalization
+      ? {
+          rawAffine: stableNorm(raw.slice(model.layers.length * 2)),
+          appliedAffine: stableNorm(norms.slice(model.layers.length * 2)),
+        }
+      : {}),
   };
   return { gradient: applied, telemetry };
 }
@@ -86,8 +98,19 @@ export function validateGradientControl(
   layers: number,
   updates: number,
   config?: Regularization,
+  normalized = false,
 ) {
   if (
+    (normalized
+      ? value.rawAffine === undefined ||
+        value.appliedAffine === undefined ||
+        !Number.isFinite(value.rawAffine) ||
+        !Number.isFinite(value.appliedAffine) ||
+        value.rawAffine < 0 ||
+        value.appliedAffine < 0 ||
+        Math.abs(value.appliedAffine - value.rawAffine * value.scale) >
+          1e-10 * Math.max(1, value.rawAffine)
+      : value.rawAffine !== undefined || value.appliedAffine !== undefined) ||
     ![value.rawNorm, value.appliedNorm, value.scale].every((v) => Number.isFinite(v) && v >= 0) ||
     value.scale > 1 ||
     !Number.isInteger(value.clippedUpdates) ||
@@ -113,9 +136,21 @@ export function validateGradientControl(
         (config.clipNorm === 0 && value.clippedUpdates !== 0))) ||
     Math.abs(value.appliedNorm - value.rawNorm * value.scale) >
       1e-10 * Math.max(1, value.rawNorm) ||
-    Math.abs(stableNorm([...value.rawWeights, ...value.rawBiases]) - value.rawNorm) >
+    Math.abs(
+      stableNorm([
+        ...value.rawWeights,
+        ...value.rawBiases,
+        ...(normalized ? [value.rawAffine!] : []),
+      ]) - value.rawNorm,
+    ) >
       1e-10 * Math.max(1, value.rawNorm) ||
-    Math.abs(stableNorm([...value.appliedWeights, ...value.appliedBiases]) - value.appliedNorm) >
+    Math.abs(
+      stableNorm([
+        ...value.appliedWeights,
+        ...value.appliedBiases,
+        ...(normalized ? [value.appliedAffine!] : []),
+      ]) - value.appliedNorm,
+    ) >
       1e-10 * Math.max(1, value.appliedNorm)
   )
     throw new RangeError('CHECKPOINT');

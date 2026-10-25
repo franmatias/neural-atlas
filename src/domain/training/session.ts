@@ -28,6 +28,8 @@ import {
   type OptimizerState,
 } from './optimizer';
 import { forwardChunks, backwardChunks } from './kernel';
+import { normalizedBatch, commitStatistics, type BatchStatistics } from './normalized-batch';
+import { batchCount, batchEnd } from './batches';
 import {
   cloneSnapshot,
   cloneEarly,
@@ -100,6 +102,7 @@ export interface TrainingSnapshot {
   baseline: number;
   gradientControl?: GradientControl;
   dropout?: DropoutState;
+  batchStatistics?: BatchStatistics;
 }
 export interface TrainingState extends TrainingSnapshot {
   earlyStopping?: EarlyStoppingState;
@@ -111,13 +114,15 @@ export function configHash(input: TrainingInput) {
     splitHash: input.splitHash,
     pipelineHash: input.pipelineHash,
     classOrder: input.classOrder,
-    engineVersion: input.config.dropout
-      ? 4
-      : input.config.earlyStopping
-        ? 3
-        : input.config.regularization
-          ? 2
-          : 1,
+    engineVersion: input.config.spec.batchNormalization
+      ? 5
+      : input.config.dropout
+        ? 4
+        : input.config.earlyStopping
+          ? 3
+          : input.config.regularization
+            ? 2
+            : 1,
   });
 }
 export function validateSamples(samples: Samples, config: TrainingConfig) {
@@ -149,6 +154,8 @@ export function validateTraining(input: TrainingInput) {
   if (c.regularization) validateRegularization(c.regularization);
   if (c.earlyStopping) validateEarlyConfig(c.earlyStopping);
   if (c.dropout) validateDropout(c.dropout, c.spec.hidden);
+  if (c.spec.batchNormalization && (c.batchSize < 2 || input.train.ids.length < 2))
+    throw new RangeError('INVALID_CONFIG');
   if (
     !Number.isInteger(c.epochs) ||
     c.epochs < 1 ||
@@ -261,6 +268,7 @@ export function* initialSession(input: TrainingInput): Generator<void, TrainingS
             rawBiases: model.layers.map(() => 0),
             appliedWeights: model.layers.map(() => 0),
             appliedBiases: model.layers.map(() => 0),
+            ...(input.config.spec.batchNormalization ? { rawAffine: 0, appliedAffine: 0 } : {}),
           },
         }
       : {}),
@@ -273,7 +281,15 @@ export function* advanceBatch(
   if (state.frozen) throw new RangeError('FROZEN');
   if (state.earlyStopping?.reason) throw new RangeError('INVALID_STATE');
   if (state.epoch >= input.config.epochs) throw new RangeError('COMPLETED');
-  const indices = state.order.slice(state.cursor, state.cursor + input.config.batchSize);
+  const indices = state.order.slice(
+    state.cursor,
+    batchEnd(
+      state.cursor,
+      state.order.length,
+      input.config.batchSize,
+      !!input.config.spec.batchNormalization,
+    ),
+  );
   const dropout: DropoutContext | undefined = input.config.dropout
     ? {
         rate: input.config.dropout.rate,
@@ -281,30 +297,42 @@ export function* advanceBatch(
         masks: [],
       }
     : undefined;
-  const gradient = state.model.layers.flatMap((l) => [
+  let gradient: Float64Array[] = state.model.layers.flatMap((l) => [
     new Float64Array(l.weights.length),
     new Float64Array(l.biases.length),
   ]);
-  for (const index of indices) {
-    if (dropout) dropout.masks = [];
-    const sample = yield* backwardChunks(
+  let statistics: BatchStatistics | undefined;
+  if (input.config.spec.batchNormalization) {
+    const result = yield* normalizedBatch(
       state.model,
-      input.train.x[index]!,
-      input.train.y[index]!,
+      indices.map((i) => input.train.x[i]!),
+      indices.map((i) => input.train.y[i]!),
       input.config.loss,
       dropout,
     );
-    for (let l = 0; l < sample.gradient.length; l++) {
-      const g = sample.gradient[l]!;
-      for (let j = 0; j < g.weights.length; j++) {
-        gradient[l * 2]![j]! += g.weights[j]! / indices.length;
-        if (j % 256 === 255) yield;
+    gradient = result.gradient;
+    statistics = result.statistics;
+  } else
+    for (const index of indices) {
+      if (dropout) dropout.masks = [];
+      const sample = yield* backwardChunks(
+        state.model,
+        input.train.x[index]!,
+        input.train.y[index]!,
+        input.config.loss,
+        dropout,
+      );
+      for (let l = 0; l < sample.gradient.length; l++) {
+        const g = sample.gradient[l]!;
+        for (let j = 0; j < g.weights.length; j++) {
+          gradient[l * 2]![j]! += g.weights[j]! / indices.length;
+          if (j % 256 === 255) yield;
+        }
+        for (let j = 0; j < g.biases.length; j++)
+          gradient[l * 2 + 1]![j]! += g.biases[j]! / indices.length;
+        yield;
       }
-      for (let j = 0; j < g.biases.length; j++)
-        gradient[l * 2 + 1]![j]! += g.biases[j]! / indices.length;
-      yield;
     }
-  }
   const controlled = input.config.regularization
     ? yield* controlGradient(
         state.model,
@@ -320,6 +348,7 @@ export function* advanceBatch(
     input.config.optimizer,
     learningRate(input.config.optimizer, state.epoch, input.config.epochs),
   );
+  if (statistics) commitStatistics(candidate.model, statistics);
   const gradientNorms =
     controlled?.telemetry.rawWeights ??
     state.model.layers.map((_, l) => stableNorm(gradient[l * 2]!));
@@ -332,6 +361,7 @@ export function* advanceBatch(
     batchIndex: state.batchIndex + 1,
     lastBatchIds: indices.map((i) => input.train.ids[i]!),
     gradientNorms,
+    ...(statistics ? { batchStatistics: statistics } : {}),
     ...(dropout
       ? {
           dropout: {
@@ -390,7 +420,11 @@ export function validateCheckpoint(state: TrainingState, input: TrainingInput) {
     validateEarlyState(
       state,
       input.config.earlyStopping,
-      Math.ceil(input.train.ids.length / input.config.batchSize),
+      batchCount(
+        input.train.ids.length,
+        input.config.batchSize,
+        !!input.config.spec.batchNormalization,
+      ),
       input.config.epochs,
       (best) => validateBaseCheckpoint(best, input),
     );
@@ -408,6 +442,7 @@ function validateBaseCheckpoint(state: TrainingSnapshot, input: TrainingInput) {
       state.model.layers.length,
       state.updates,
       input.config.regularization,
+      !!input.config.spec.batchNormalization,
     );
     for (const point of state.history)
       if (
@@ -434,7 +469,38 @@ function validateBaseCheckpoint(state: TrainingSnapshot, input: TrainingInput) {
     )
   )
     throw new RangeError('CHECKPOINT');
-  const batches = Math.ceil(input.train.ids.length / input.config.batchSize);
+  const batches = batchCount(
+    input.train.ids.length,
+    input.config.batchSize,
+    !!input.config.spec.batchNormalization,
+  );
+  if (input.config.spec.batchNormalization) {
+    if (
+      state.model.layers.some(
+        (l) => l.normalization && l.normalization.initialized !== state.updates > 0,
+      )
+    )
+      throw new RangeError('CHECKPOINT');
+    const stats = state.batchStatistics;
+    if (
+      state.updates === 0
+        ? !!stats
+        : !stats ||
+          stats.size !== state.lastBatchIds.length ||
+          stats.means.length !== input.config.spec.hidden.length ||
+          stats.variances.length !== input.config.spec.hidden.length ||
+          stats.means.some(
+            (row, i) =>
+              row.length !== input.config.spec.hidden[i] || row.some((v) => !Number.isFinite(v)),
+          ) ||
+          stats.variances.some(
+            (row, i) =>
+              row.length !== input.config.spec.hidden[i] ||
+              row.some((v) => !Number.isFinite(v) || v < 0),
+          )
+    )
+      throw new RangeError('CHECKPOINT');
+  } else if (state.batchStatistics) throw new RangeError('CHECKPOINT');
   const expectedOrder = shuffle(
     input.train.ids.map((_, index) => index),
     input.config.seed,

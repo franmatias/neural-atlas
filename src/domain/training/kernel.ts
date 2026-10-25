@@ -1,5 +1,6 @@
 import { activate, activationDerivative } from '@/domain/network/neuron';
 import { dropoutMask, type DropoutContext } from './dropout';
+import { normalizeInference } from '@/domain/network/normalization';
 import {
   assertFinite,
   softmax,
@@ -19,6 +20,7 @@ export function* forwardChunks(
   input: number[],
   dropout?: DropoutContext,
 ): Generator<void, Forward> {
+  if (dropout && model.spec.batchNormalization) throw new RangeError('BATCH_REQUIRED');
   if (input.length !== model.spec.inputs) throw new RangeError('SHAPE');
   assertFinite(input);
   const cache: Forward = { activations: [Float64Array.from(input)], logits: [] };
@@ -32,11 +34,13 @@ export function* forwardChunks(
       z[i] = sum;
       yield;
     }
-    cache.logits.push(z);
+    const u = l.normalization ? normalizeInference(z, l.normalization) : z;
+    assertFinite(u);
+    cache.logits.push(u);
     cache.activations.push(
       l.activation === 'softmax'
-        ? softmax(z)
-        : z.map((v) =>
+        ? softmax(u)
+        : u.map((v) =>
             activate(v, l.activation as Exclude<typeof l.activation, 'softmax'>, model.spec.alpha),
           ),
     );
@@ -56,6 +60,7 @@ export function* backwardChunks(
   loss: RegressionLoss,
   dropout?: DropoutContext,
 ): Generator<void, Backward> {
+  if (model.spec.batchNormalization) throw new RangeError('BATCH_REQUIRED');
   const cache = yield* forwardChunks(model, input, dropout);
   const output = outputLoss(model, cache, target, loss);
   let delta = output.delta;

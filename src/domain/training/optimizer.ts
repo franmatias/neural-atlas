@@ -49,7 +49,12 @@ export function validateOptimizer(c: OptimizerConfig) {
     throw new RangeError('INVALID_CONFIG');
 }
 export function parameterVectors(model: Network) {
-  return model.layers.flatMap((l) => [l.weights, l.biases]);
+  return [
+    ...model.layers.flatMap((l) => [l.weights, l.biases]),
+    ...model.layers.flatMap((l) =>
+      l.normalization ? [l.normalization.gamma, l.normalization.beta] : [],
+    ),
+  ];
 }
 export function createOptimizer(model: Network): OptimizerState {
   return {

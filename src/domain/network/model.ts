@@ -1,5 +1,12 @@
 import { createRandom } from '@/domain/random/seeded';
 import { activate, activations, type Activation } from './neuron';
+import {
+  createNormalization,
+  cloneNormalization,
+  validateNormalization,
+  normalizeInference,
+  type BatchNormalization,
+} from './normalization';
 export type TrainActivation = Exclude<Activation, 'step'>;
 export type NetworkTask = 'binary' | 'multiclass' | 'regression';
 export type Initialization = 'zero' | 'xavier' | 'he';
@@ -10,6 +17,7 @@ export interface NetworkSpec {
   task: NetworkTask;
   classes: number;
   alpha: number;
+  batchNormalization?: true;
 }
 export interface DenseLayer {
   inputs: number;
@@ -17,6 +25,7 @@ export interface DenseLayer {
   weights: Float64Array;
   biases: Float64Array;
   activation: TrainActivation | 'softmax';
+  normalization?: BatchNormalization;
 }
 export interface Network {
   version: 1;
@@ -46,6 +55,8 @@ export function validateSpec(spec: NetworkSpec): void {
     spec.inputs > 32 ||
     spec.hidden.length > 6 ||
     spec.hidden.some((n) => !Number.isInteger(n) || n < 1 || n > 64) ||
+    (spec.batchNormalization !== undefined &&
+      (spec.batchNormalization !== true || !spec.hidden.length)) ||
     !activations.includes(spec.activation) ||
     (spec.activation as string) === 'step' ||
     !['binary', 'multiclass', 'regression'].includes(spec.task) ||
@@ -64,7 +75,10 @@ export function dimensions(spec: NetworkSpec): number[] {
 }
 export function parameterCount(spec: NetworkSpec): number {
   const d = dimensions(spec);
-  return d.slice(1).reduce((sum, n, i) => sum + n * (d[i]! + 1), 0);
+  return (
+    d.slice(1).reduce((sum, n, i) => sum + n * (d[i]! + 1), 0) +
+    (spec.batchNormalization ? 2 * spec.hidden.reduce((s, n) => s + n, 0) : 0)
+  );
 }
 export function createNetwork(
   spec: NetworkSpec,
@@ -91,6 +105,9 @@ export function createNetwork(
               : (random.uniform() * 2 - 1) * Math.sqrt(6 / (inputs + outputs)),
         ),
         biases: new Float64Array(outputs),
+        ...(spec.batchNormalization && !last
+          ? { normalization: createNormalization(outputs) }
+          : {}),
         activation: last
           ? spec.task === 'binary'
             ? 'sigmoid'
@@ -124,6 +141,9 @@ export function validateNetwork(model: Network): void {
       throw new RangeError('SHAPE');
     assertFinite(layer.weights);
     assertFinite(layer.biases);
+    if (!!layer.normalization !== (!!model.spec.batchNormalization && i < model.layers.length - 1))
+      throw new RangeError('NORMALIZATION');
+    if (layer.normalization) validateNormalization(layer.normalization, layer.outputs);
   });
 }
 export function softmax(logits: ArrayLike<number>): Float64Array {
@@ -146,12 +166,14 @@ export function forward(model: Network, input: ArrayLike<number>): Forward {
   const cache: Forward = { activations: [Float64Array.from(input)], logits: [] };
   for (const layer of model.layers) {
     const previous = cache.activations[cache.activations.length - 1]!;
-    const z = Float64Array.from(layer.biases, (b, i) => {
+    let z = Float64Array.from(layer.biases, (b, i) => {
       let value = b;
       for (let j = 0; j < layer.inputs; j++)
         value += layer.weights[i * layer.inputs + j]! * previous[j]!;
       return value;
     });
+    assertFinite(z);
+    if (layer.normalization) z = normalizeInference(z, layer.normalization);
     assertFinite(z);
     cache.logits.push(z);
     cache.activations.push(
@@ -170,6 +192,7 @@ export function cloneNetwork(model: Network): Network {
       ...l,
       weights: l.weights.slice(),
       biases: l.biases.slice(),
+      ...(l.normalization ? { normalization: cloneNormalization(l.normalization) } : {}),
     })),
   };
 }
