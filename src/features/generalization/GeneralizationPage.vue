@@ -10,7 +10,20 @@ import GradientControlPanel from '@/features/training/GradientControlPanel.vue';
 import EarlyStoppingPanel from '@/features/training/EarlyStoppingPanel.vue';
 import DropoutPanel from '@/features/training/DropoutPanel.vue';
 import BatchNormalizationPanel from '@/features/training/BatchNormalizationPanel.vue';
+import AugmentationPanel from '@/features/training/AugmentationPanel.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
+const questions = {
+  l1: 'Predice qué ocurrirá al aumentar λ de L1.',
+  l2: 'Predice qué ocurrirá al aumentar λ de L2.',
+  clip: 'Predice qué ocurrirá al reducir el umbral de recorte y contrasta las normas original y aplicada.',
+  early:
+    'Predice cómo la paciencia y la mejora mínima cambian la época observada y la seleccionada.',
+  dropout:
+    'Predice cómo cambiar p afecta al entrenamiento y explica por qué inferencia no usa máscara.',
+  bn: 'Contrasta las estadísticas del lote con las medias móviles y explica qué valores usa inferencia.',
+  augmentation:
+    'Predice cómo σ y el número de copias afectan a aceptaciones, rechazos y trabajo adicional.',
+};
 const session = useGeneralizationStore(),
   training = useTrainingStore(),
   prefs = usePreferencesStore(),
@@ -81,10 +94,17 @@ onBeforeRouteLeave(() => {
     <section class="training-panel">
       <h2>Dos ensayos, una diferencia</h2>
       <p>
-        120 medias lunas sintéticas; train 72, validación 24 y test 24 reservado. Misma semilla,
-        división, pipeline ajustado con train, red 2→8→8→1, Xavier, tanh, Adam (0,01) y lotes de 12.
-        Test no se evalúa. La comprobación de inicialización compara los pesos y sesgos densos; BN
-        añade gamma inicial 1, beta inicial 0 y estadísticas propias.
+        120 muestras sintéticas de
+        {{
+          session.options.intervention === 'augmentation'
+            ? session.options.augmentationPolicy === 'circles'
+              ? 'círculos'
+              : 'XOR'
+            : 'medias lunas'
+        }}; train original 72, validación 24 y test 24 reservado. Misma semilla, división, pipeline
+        ajustado con train, red 2→8→8→1, Xavier, tanh, Adam (0,01) y lotes de 12. Test no se evalúa.
+        La comprobación de inicialización compara los pesos y sesgos densos; BN añade gamma inicial
+        1, beta inicial 0 y estadísticas propias.
       </p>
       <fieldset :disabled="session.busy || opening">
         <legend>Configura la comparación</legend>
@@ -97,6 +117,7 @@ onBeforeRouteLeave(() => {
               <option value="early">Parada temprana con validación</option>
               <option value="dropout">Dropout invertido</option>
               <option value="bn">Normalización por lotes</option>
+              <option value="augmentation">Aumento conservador de train</option>
             </select></label
           >
           <label
@@ -140,6 +161,30 @@ onBeforeRouteLeave(() => {
               max="0.01"
               step="0.0001"
           /></label>
+          <template v-if="session.options.intervention === 'augmentation'">
+            <label
+              >Receta para aumento<select v-model="session.options.augmentationPolicy">
+                <option value="circles">Círculos</option>
+                <option value="xor">XOR</option>
+              </select></label
+            >
+            <label
+              >Desviación del aumento de la comparación<input
+                v-model.number="session.options.augmentationSigma"
+                type="number"
+                min="0"
+                max="0.01"
+                step="0.001"
+            /></label>
+            <label
+              >Copias por original de la comparación<input
+                v-model.number="session.options.augmentationCopies"
+                type="number"
+                min="1"
+                max="3"
+                step="1"
+            /></label>
+          </template>
           <label
             >Épocas por ensayo<input
               v-model.number="session.options.epochs"
@@ -193,16 +238,23 @@ onBeforeRouteLeave(() => {
           {{
             session.result.options.intervention === 'clip'
               ? 'c = ' + formatData(session.result.options.clipNorm)
-              : session.result.options.intervention === 'bn'
-                ? 'ε = 0,00001; memoria = 0,9'
-                : session.result.options.intervention === 'dropout'
-                  ? 'p = ' + formatData(session.result.options.dropoutRate)
-                  : session.result.options.intervention === 'early'
-                    ? 'paciencia = ' +
-                      session.result.options.patience +
-                      ', mejora mínima = ' +
-                      formatData(session.result.options.minDelta)
-                    : 'λ = ' + formatData(session.result.options.lambda)
+              : session.result.options.intervention === 'augmentation'
+                ? 'receta = ' +
+                  session.result.options.augmentationPolicy +
+                  ', σ = ' +
+                  formatData(session.result.options.augmentationSigma) +
+                  ', copias = ' +
+                  session.result.options.augmentationCopies
+                : session.result.options.intervention === 'bn'
+                  ? 'ε = 0,00001; memoria = 0,9'
+                  : session.result.options.intervention === 'dropout'
+                    ? 'p = ' + formatData(session.result.options.dropoutRate)
+                    : session.result.options.intervention === 'early'
+                      ? 'paciencia = ' +
+                        session.result.options.patience +
+                        ', mejora mínima = ' +
+                        formatData(session.result.options.minDelta)
+                      : 'λ = ' + formatData(session.result.options.lambda)
           }}.
         </p>
         <p>
@@ -212,6 +264,12 @@ onBeforeRouteLeave(() => {
               ? 'sí'
               : 'no'
           }}. Test reservado: {{ session.result.counts.test }} muestras.
+        </p>
+        <p v-if="session.result.options.intervention === 'augmentation'">
+          El aumento conserva el máximo de épocas y el tamaño de lote, pero añade filas y puede
+          aumentar las actualizaciones y el coste. La tabla declara ambos; no es una comparación con
+          presupuesto de actualizaciones igualado. Las pérdidas de train se miden en los mismos
+          originales.
         </p>
         <div
           class="data-table-scroll"
@@ -224,10 +282,17 @@ onBeforeRouteLeave(() => {
               <tr>
                 <th scope="col">Ensayo</th>
                 <th scope="col">Épocas observadas / estado seleccionado</th>
+                <th scope="col">Filas train / actualizaciones</th>
                 <th scope="col">Pérdida train</th>
                 <th scope="col">Pérdida validación</th>
                 <th scope="col">Penalización</th>
-                <th scope="col">Objetivo train</th>
+                <th scope="col">
+                  {{
+                    session.result.options.intervention === 'augmentation'
+                      ? 'Originales + penalización'
+                      : 'Objetivo train'
+                  }}
+                </th>
                 <th scope="col">‖W‖₂</th>
                 <th scope="col">|w| &lt; 0,01</th>
               </tr>
@@ -242,6 +307,7 @@ onBeforeRouteLeave(() => {
                   }}
                   / {{ run.experiment.checkpoint.epoch }}
                 </td>
+                <td>{{ run.trainingRows }} / {{ run.experiment.checkpoint.updates }}</td>
                 <td>{{ formatData(run.experiment.checkpoint.history.at(-1)!.trainLoss) }}</td>
                 <td>{{ formatData(run.experiment.checkpoint.history.at(-1)!.validationLoss) }}</td>
                 <td>
@@ -255,10 +321,11 @@ onBeforeRouteLeave(() => {
           </table>
         </div>
         <p>
-          Las pérdidas de datos son comparables entre ensayos. El objetivo suma la penalización y
-          cambia al cambiar λ. L1 aquí usa subgradiente (signo cero en w = 0), no un operador
-          proximal: no promete pesos exactamente nulos. L2 es acoplada al gradiente, también con
-          Adam.
+          Las pérdidas de datos son comparables entre ensayos. Con aumento, el objetivo mostrado
+          evalúa originales y penalización; el gradiente usa el lote efectivo con copias. El
+          objetivo suma la penalización y cambia al cambiar λ. L1 aquí usa subgradiente (signo cero
+          en w = 0), no un operador proximal: no promete pesos exactamente nulos. L2 es acoplada al
+          gradiente, también con Adam.
         </p>
       </section>
       <div class="comparison-curves">
@@ -341,6 +408,10 @@ onBeforeRouteLeave(() => {
         :statistics="session.result.runs[selected]!.experiment.checkpoint.batchStatistics"
         :configured-size="session.result.runs[selected]!.experiment.config.batchSize"
       />
+      <AugmentationPanel
+        v-if="session.result.runs[selected]!.augmentation"
+        :report="session.result.runs[selected]!.augmentation!"
+      />
       <DropoutPanel
         v-if="session.result.runs[selected]!.experiment.checkpoint.dropout"
         :state="session.result.runs[selected]!.experiment.checkpoint.dropout!"
@@ -350,18 +421,19 @@ onBeforeRouteLeave(() => {
     <section class="training-panel">
       <h2>Explica lo que observas</h2>
       <p>
-        Predice qué ocurrirá al aumentar λ. Compara la pérdida de validación, la magnitud de los
-        pesos y la brecha con train. Repite con otras semillas antes de sacar conclusiones; dos
-        curvas de una semilla no descomponen sesgo y varianza.
+        {{ questions[(session.result?.options ?? session.options).intervention] }} Compara la
+        pérdida de validación, la magnitud de los pesos y la brecha con train. Repite con otras
+        semillas antes de sacar conclusiones; dos curvas de una semilla no descomponen sesgo y
+        varianza.
       </p>
       <p>
         L1/L2 buscan modificar el objetivo de aprendizaje. El recorte controla la magnitud del
         gradiente; no es una prueba de menor sobreajuste ni limita directamente el paso de Adam.
       </p>
       <p class="small muted">
-        Aumento de datos y comparación estadística multisemilla permanecen en el plan D6. Con parada
-        temprana, las curvas superiores muestran el modelo seleccionado; el panel específico
-        conserva además las épocas observadas antes de restaurar.
+        La comparación estadística multisemilla permanece en el plan D6. Con parada temprana, las
+        curvas superiores muestran el modelo seleccionado; el panel específico conserva además las
+        épocas observadas antes de restaurar.
       </p>
     </section>
   </div>

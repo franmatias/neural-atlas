@@ -5,6 +5,7 @@ import RegularizationControls from './RegularizationControls.vue';
 import EarlyStoppingControls from './EarlyStoppingControls.vue';
 import DropoutControls from './DropoutControls.vue';
 import BatchNormalizationControls from './BatchNormalizationControls.vue';
+import AugmentationControls from './AugmentationControls.vue';
 const session = useTrainingStore();
 const hidden = computed({
   get: () => session.config.spec.hidden.join(', '),
@@ -116,6 +117,7 @@ const hidden = computed({
     <EarlyStoppingControls />
     <DropoutControls />
     <BatchNormalizationControls />
+    <AugmentationControls />
     <details>
       <summary>Parámetros del optimizador</summary>
       <div class="training-fields">

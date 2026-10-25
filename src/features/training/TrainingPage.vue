@@ -14,6 +14,7 @@ import GradientControlPanel from './GradientControlPanel.vue';
 import EarlyStoppingPanel from './EarlyStoppingPanel.vue';
 import DropoutPanel from './DropoutPanel.vue';
 import BatchNormalizationPanel from './BatchNormalizationPanel.vue';
+import AugmentationPanel from './AugmentationPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -71,6 +72,7 @@ const alerts: Record<string, string> = {
           <option value="moons">Dos lunas · no lineal</option>
           <option value="clouds">Dos nubes · clasificación</option>
           <option value="xor">XOR · interacciones</option>
+          <option value="circles">Círculos · frontera radial</option>
           <option value="flowers">Flores sintéticas · tres clases</option>
           <option value="sine">Onda seno · regresión</option>
           <option value="energy">Energía sintética · regresión</option></select
@@ -103,6 +105,7 @@ const alerts: Record<string, string> = {
       >
     </section>
     <TrainingControls />
+    <AugmentationPanel v-if="session.source?.augmentation" :report="session.source.augmentation" />
     <section v-if="session.budget" class="training-panel">
       <h2>Presupuesto del experimento</h2>
       <p>
