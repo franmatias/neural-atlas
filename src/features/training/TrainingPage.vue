@@ -11,6 +11,7 @@ import { formatData } from '@/shared/utils/data-format';
 import TrainingControls from './TrainingControls.vue';
 import RecoveryPanel from './RecoveryPanel.vue';
 import GradientControlPanel from './GradientControlPanel.vue';
+import EarlyStoppingPanel from './EarlyStoppingPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -35,6 +36,7 @@ const canAdvance = computed(
     !session.running &&
     !session.evaluating &&
     !session.state.frozen &&
+    !session.state.earlyStopping?.reason &&
     session.state.epoch < (session.input?.config.epochs ?? 0),
 );
 const alerts: Record<string, string> = {
@@ -228,12 +230,21 @@ const alerts: Record<string, string> = {
         }}
       </p>
       <LossChart :history="session.state.history" /><NetworkDiagram
+        tabindex="0"
+        role="region"
+        aria-label="Esquema del modelo activo; desplazamiento horizontal con teclado"
         :model="session.state.model"
         :layer="0"
         :neuron="0"
         :phase="session.running ? 1 : 0"
         :playing="session.running && !prefs.reducedMotion"
         :speed="prefs.value.speed"
+      />
+      <EarlyStoppingPanel
+        v-if="session.state.earlyStopping"
+        :state="session.state"
+        :config="session.input.config.earlyStopping!"
+        :can-continue="true"
       />
       <GradientControlPanel
         v-if="session.state.gradientControl"

@@ -16,7 +16,9 @@ export const generalizationOptions = z.strictObject({
   seed: z.number().int().min(0).max(4294967295),
   noise: z.number().finite().min(0).max(0.4),
   epochs: z.number().int().min(5).max(120),
-  intervention: z.enum(['l1', 'l2', 'clip']),
+  intervention: z.enum(['l1', 'l2', 'clip', 'early']),
+  patience: z.number().int().min(5).max(100),
+  minDelta: z.number().finite().min(0).max(0.01),
   lambda: z.number().finite().min(0).max(0.1),
   clipNorm: z.number().finite().min(0.1).max(100),
 });
@@ -28,6 +30,8 @@ export const defaultGeneralization: GeneralizationOptions = {
   intervention: 'l2',
   lambda: 0.01,
   clipNorm: 0.1,
+  patience: 10,
+  minDelta: 0.001,
 };
 export interface GeneralizationRun {
   label: string;
@@ -69,7 +73,8 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
     const regularization = { ...defaultRegularization };
     if (intervention) {
       if (options.intervention === 'clip') regularization.clipNorm = options.clipNorm;
-      else regularization[options.intervention] = options.lambda;
+      else if (options.intervention !== 'early')
+        regularization[options.intervention] = options.lambda;
     }
     const config: TrainingConfig = {
       spec: { ...defaultSpec, hidden: [8, 8], activation: 'tanh' },
@@ -80,17 +85,23 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
       batchSize: 12,
       loss: 'mse',
       regularization,
+      ...(intervention && options.intervention === 'early'
+        ? { earlyStopping: { patience: options.patience, minDelta: options.minDelta } }
+        : {}),
     };
     const source = trainingSource(dataset, split, prepared, config);
     let state = exhaust(initialSession(source.input));
     const initialHash = hashValue(networkWire(state.model));
-    while (state.epoch < options.epochs) state = exhaust(advanceBatch(state, source.input));
+    while (state.epoch < options.epochs && !state.earlyStopping?.reason)
+      state = exhaust(advanceBatch(state, source.input));
     const weights = state.model.layers.flatMap((layer) => Array.from(layer.weights));
     runs.push({
       label: intervention
-        ? options.intervention === 'clip'
-          ? 'Recorte global'
-          : options.intervention.toUpperCase()
+        ? options.intervention === 'early'
+          ? 'Parada temprana'
+          : options.intervention === 'clip'
+            ? 'Recorte global'
+            : options.intervention.toUpperCase()
         : 'Referencia sin intervención',
       initialHash,
       experiment: captureExperiment(

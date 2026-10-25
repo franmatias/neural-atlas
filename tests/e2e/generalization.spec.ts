@@ -53,6 +53,20 @@ test('recorte incluye sesgos y su telemetría se conserva al exportar', async ({
   expect(baseline.config.regularization).toEqual({ l1: 0, l2: 0, clipNorm: 0 });
   expect(baseline.checkpoint.gradientControl.clippedUpdates).toBe(0);
 });
+test('parada temprana se compara con un presupuesto común y exporta la selección v3', async ({
+  page,
+}) => {
+  await page.goto('#/lab/generalizacion');
+  await page.getByRole('combobox', { name: 'Intervención', exact: true }).selectOption('early');
+  await page.getByLabel('Épocas por ensayo', { exact: true }).fill('5');
+  await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
+  await expect(page.locator('.early-result')).toContainText('Presupuesto de épocas agotado');
+  const file = await exportRun(page);
+  expect(file.schemaVersion).toBe(3);
+  expect(file.checkpoint.earlyStopping.stoppedAt).toBe(5);
+  expect(file.checkpoint.epoch).toBeLessThanOrEqual(5);
+  expect(file.testConsulted).toBe(false);
+});
 test('entrenamiento regularizado se recupera en disco y conserva inferencia independiente', async ({
   page,
 }) => {

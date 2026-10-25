@@ -6,6 +6,7 @@ export const trainingStatuses: Record<string, string> = {
   paused: 'En pausa',
   cancelled: 'Cancelado en un lote completo',
   completed: 'Épocas completadas',
+  stopped: 'Parada temprana · mejor estado restaurado',
   frozen: 'Modelo congelado',
   recovering: 'Recuperando la sesión',
   error: 'Revisa la configuración',

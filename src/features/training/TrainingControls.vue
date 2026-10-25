@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useTrainingStore } from '@/stores/training';
 import RegularizationControls from './RegularizationControls.vue';
+import EarlyStoppingControls from './EarlyStoppingControls.vue';
 const session = useTrainingStore();
 const hidden = computed({
   get: () => session.config.spec.hidden.join(', '),
@@ -110,6 +111,7 @@ const hidden = computed({
       >
     </div>
     <RegularizationControls />
+    <EarlyStoppingControls />
     <details>
       <summary>Parámetros del optimizador</summary>
       <div class="training-fields">
