@@ -26,6 +26,9 @@ export function experimentStorageBytes(snapshot: Experiment, jsonBytes: number) 
   const states = [state, ...(state.earlyStopping?.best ? [state.earlyStopping.best] : [])];
   const vectors = states.flatMap((s) => [
     ...s.model.layers.flatMap((layer) => [layer.weights, layer.biases]),
+    ...s.model.layers.flatMap((layer) =>
+      layer.normalization ? [layer.normalization.gamma, layer.normalization.beta] : [],
+    ),
     ...s.optimizer.first,
     ...s.optimizer.second,
   ]);
@@ -33,7 +36,14 @@ export function experimentStorageBytes(snapshot: Experiment, jsonBytes: number) 
     ...s,
     model: {
       ...s.model,
-      layers: s.model.layers.map((layer) => ({ ...layer, weights: [], biases: [] })),
+      layers: s.model.layers.map((layer) => ({
+        ...layer,
+        weights: [],
+        biases: [],
+        ...(layer.normalization
+          ? { normalization: { ...layer.normalization, gamma: [], beta: [] } }
+          : {}),
+      })),
     },
     optimizer: { ...s.optimizer, first: [], second: [] },
   });

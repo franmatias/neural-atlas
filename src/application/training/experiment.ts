@@ -56,8 +56,8 @@ const optionsSchema = z.strictObject({
 });
 const fileSchema = z.strictObject({
   format: z.literal('neural-atlas.experiment'),
-  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
-  engineVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]),
+  engineVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]),
   appVersion: z
     .string()
     .regex(/^\d+\.\d+\.\d+$/)
@@ -74,8 +74,8 @@ const fileSchema = z.strictObject({
 });
 export interface Experiment {
   format: 'neural-atlas.experiment';
-  schemaVersion: 1 | 2 | 3 | 4;
-  engineVersion: 1 | 2 | 3 | 4;
+  schemaVersion: 1 | 2 | 3 | 4 | 5;
+  engineVersion: 1 | 2 | 3 | 4 | 5;
   appVersion: string;
   savedAt: string;
   dataset: unknown;
@@ -93,13 +93,15 @@ export function experimentWire(value: Experiment) {
 }
 export function prepareExperiment(value: Experiment) {
   const wire = fileSchema.parse(experimentWire(value));
-  const version = wire.config.dropout
-    ? 4
-    : wire.config.earlyStopping
-      ? 3
-      : wire.config.regularization
-        ? 2
-        : 1;
+  const version = wire.config.spec.batchNormalization
+    ? 5
+    : wire.config.dropout
+      ? 4
+      : wire.config.earlyStopping
+        ? 3
+        : wire.config.regularization
+          ? 2
+          : 1;
   if (wire.schemaVersion !== version || wire.engineVersion !== version)
     throw new Error('EXPERIMENT_VERSION');
   const { dataset, split } = importDatasetJson(JSON.stringify(wire.dataset));
@@ -130,8 +132,24 @@ export function captureExperiment(
 ): Experiment {
   const result: Experiment = {
     format: 'neural-atlas.experiment',
-    schemaVersion: config.dropout ? 4 : config.earlyStopping ? 3 : config.regularization ? 2 : 1,
-    engineVersion: config.dropout ? 4 : config.earlyStopping ? 3 : config.regularization ? 2 : 1,
+    schemaVersion: config.spec.batchNormalization
+      ? 5
+      : config.dropout
+        ? 4
+        : config.earlyStopping
+          ? 3
+          : config.regularization
+            ? 2
+            : 1,
+    engineVersion: config.spec.batchNormalization
+      ? 5
+      : config.dropout
+        ? 4
+        : config.earlyStopping
+          ? 3
+          : config.regularization
+            ? 2
+            : 1,
     appVersion,
     savedAt: new Date().toISOString(),
     dataset: JSON.parse(exportDatasetJson(dataset, split)) as unknown,

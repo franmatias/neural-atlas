@@ -10,8 +10,8 @@ export const baseCheckpointSchema = z.strictObject({
   model: networkWireSchema,
   optimizer: z.strictObject({
     step: z.number(),
-    first: z.array(vector).max(14),
-    second: z.array(vector).max(14),
+    first: z.array(vector).max(26),
+    second: z.array(vector).max(26),
   }),
   epoch: z.number(),
   cursor: z.number(),
@@ -36,6 +36,13 @@ export const baseCheckpointSchema = z.strictObject({
     .max(10001),
   gradientNorms: z.array(finite).max(7),
   baseline: finite,
+  batchStatistics: z
+    .strictObject({
+      size: z.number().int().min(2).max(10000),
+      means: z.array(z.array(finite).max(64)).max(6),
+      variances: z.array(z.array(finite.min(0)).max(64)).max(6),
+    })
+    .optional(),
   dropout: z
     .strictObject({
       rng: z.strictObject({ state: z.number().int().min(0).max(4294967295), spare: z.null() }),
@@ -54,6 +61,8 @@ export const baseCheckpointSchema = z.strictObject({
       rawBiases: z.array(finite.min(0)).max(7),
       appliedWeights: z.array(finite.min(0)).max(7),
       appliedBiases: z.array(finite.min(0)).max(7),
+      rawAffine: finite.min(0).optional(),
+      appliedAffine: finite.min(0).optional(),
     })
     .optional(),
 });

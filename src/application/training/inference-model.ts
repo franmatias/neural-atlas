@@ -54,8 +54,8 @@ const pipelineSchema = z.strictObject({
 });
 const modelSchema = z.strictObject({
   format: z.literal('neural-atlas.model'),
-  schemaVersion: z.literal(1),
-  engineVersion: z.literal(1),
+  schemaVersion: z.union([z.literal(1), z.literal(2)]),
+  engineVersion: z.union([z.literal(1), z.literal(2)]),
   appVersion: z
     .string()
     .regex(/^\d+\.\d+\.\d+$/)
@@ -94,8 +94,8 @@ const modelSchema = z.strictObject({
 });
 export interface InferenceModel {
   format: 'neural-atlas.model';
-  schemaVersion: 1;
-  engineVersion: 1;
+  schemaVersion: 1 | 2;
+  engineVersion: 1 | 2;
   appVersion: string;
   savedAt: string;
   network: Network;
@@ -117,6 +117,9 @@ export function validateInferenceModel(model: InferenceModel): void {
   guardJson(wire);
   modelSchema.parse(wire);
   validateNetwork(model.network);
+  const version = model.network.spec.batchNormalization ? 2 : 1;
+  if (model.schemaVersion !== version || model.engineVersion !== version)
+    throw new Error('MODEL_VERSION');
   const p = model.pipeline;
   const featureIds = model.features.map((feature) => feature.id);
   if (
@@ -197,8 +200,8 @@ export function modelFromExperiment(experiment: Experiment): InferenceModel {
   const pipeline = structuredClone(prepared.pipeline);
   const model: InferenceModel = {
     format: 'neural-atlas.model',
-    schemaVersion: 1,
-    engineVersion: 1,
+    schemaVersion: network.spec.batchNormalization ? 2 : 1,
+    engineVersion: network.spec.batchNormalization ? 2 : 1,
     appVersion,
     savedAt: new Date().toISOString(),
     network,

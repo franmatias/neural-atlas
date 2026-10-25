@@ -9,14 +9,13 @@ import { initialSession, advanceBatch, type TrainingConfig } from '@/domain/trai
 import { defaultRegularization } from '@/domain/training/regularization';
 import { exhaust } from '@/domain/training/kernel';
 import { hashValue } from '@/domain/data/integrity';
-import { networkWire } from './network-schema';
 import { trainingSource } from './source';
 import { captureExperiment, type Experiment } from './experiment';
 export const generalizationOptions = z.strictObject({
   seed: z.number().int().min(0).max(4294967295),
   noise: z.number().finite().min(0).max(0.4),
   epochs: z.number().int().min(5).max(120),
-  intervention: z.enum(['l1', 'l2', 'clip', 'early', 'dropout']),
+  intervention: z.enum(['l1', 'l2', 'clip', 'early', 'dropout', 'bn']),
   dropoutRate: z.number().finite().min(0).max(0.8),
   patience: z.number().int().min(5).max(100),
   minDelta: z.number().finite().min(0).max(0.01),
@@ -79,7 +78,14 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
         regularization[options.intervention] = options.lambda;
     }
     const config: TrainingConfig = {
-      spec: { ...defaultSpec, hidden: [8, 8], activation: 'tanh' },
+      spec: {
+        ...defaultSpec,
+        hidden: [8, 8],
+        activation: 'tanh',
+        ...(intervention && options.intervention === 'bn'
+          ? { batchNormalization: true as const }
+          : {}),
+      },
       initialization: 'xavier',
       seed: options.seed,
       optimizer: { ...defaultOptimizer },
@@ -96,7 +102,12 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
     };
     const source = trainingSource(dataset, split, prepared, config);
     let state = exhaust(initialSession(source.input));
-    const initialHash = hashValue(networkWire(state.model));
+    const initialHash = hashValue(
+      state.model.layers.map((l) => ({
+        weights: Array.from(l.weights),
+        biases: Array.from(l.biases),
+      })),
+    );
     while (state.epoch < options.epochs && !state.earlyStopping?.reason)
       state = exhaust(advanceBatch(state, source.input));
     const weights = state.model.layers.flatMap((layer) => Array.from(layer.weights));

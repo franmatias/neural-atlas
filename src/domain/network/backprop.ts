@@ -56,6 +56,7 @@ export function backward(
   target: number,
   loss: RegressionLoss = 'mse',
 ): Backward {
+  if (model.spec.batchNormalization) throw new RangeError('BATCH_REQUIRED');
   const cache = forward(model, input);
   const output = outputLoss(model, cache, target, loss);
   let delta = output.delta;
