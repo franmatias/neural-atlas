@@ -23,20 +23,33 @@ export const libraryLimits = { count: 5, perExperiment: 40 * 1024 * 1024 };
 /** Charge native tensor bytes as well: JSON represents a zero using fewer than eight bytes. */
 export function experimentStorageBytes(snapshot: Experiment, jsonBytes: number) {
   const state = snapshot.checkpoint;
-  const vectors = [
-    ...state.model.layers.flatMap((layer) => [layer.weights, layer.biases]),
-    ...state.optimizer.first,
-    ...state.optimizer.second,
-  ];
+  const states = [state, ...(state.earlyStopping?.best ? [state.earlyStopping.best] : [])];
+  const vectors = states.flatMap((s) => [
+    ...s.model.layers.flatMap((layer) => [layer.weights, layer.biases]),
+    ...s.optimizer.first,
+    ...s.optimizer.second,
+  ]);
+  const strip = (s: typeof state) => ({
+    ...s,
+    model: {
+      ...s.model,
+      layers: s.model.layers.map((layer) => ({ ...layer, weights: [], biases: [] })),
+    },
+    optimizer: { ...s.optimizer, first: [], second: [] },
+  });
   const metadata = {
     ...snapshot,
     checkpoint: {
       ...state,
-      model: {
-        ...state.model,
-        layers: state.model.layers.map((layer) => ({ ...layer, weights: [], biases: [] })),
-      },
-      optimizer: { ...state.optimizer, first: [], second: [] },
+      ...strip(state),
+      ...(state.earlyStopping
+        ? {
+            earlyStopping: {
+              ...state.earlyStopping,
+              ...(state.earlyStopping.best ? { best: strip(state.earlyStopping.best) } : {}),
+            },
+          }
+        : {}),
     },
   };
   return Math.max(

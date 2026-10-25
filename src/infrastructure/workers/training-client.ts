@@ -116,7 +116,9 @@ export class TrainingClient {
     this.sequence = event.sequence;
     this.heartbeat = performance.now();
     if (Number.isSafeInteger(event.update) && event.update >= 0)
-      this.updates = Math.max(this.updates, event.update);
+      this.updates = event.state?.earlyStopping?.reason
+        ? event.update
+        : Math.max(this.updates, event.update);
     try {
       if (event.state) validateCheckpoint(event.state, this.input!);
       if (event.state?.frozen) this.frozen = true;
