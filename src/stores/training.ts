@@ -257,7 +257,12 @@ export const useTrainingStore = defineStore('training', () => {
     }
   }
   function analyze(split: 'train' | 'validation' | 'test') {
-    const samples = split === 'test' ? test.value : input.value?.[split];
+    const samples =
+      split === 'test'
+        ? test.value
+        : split === 'train'
+          ? (input.value?.trainEvaluation ?? input.value?.train)
+          : input.value?.validation;
     if (!samples || !state.value) return;
     if (split === 'test' && !state.value.frozen) {
       error.value = 'TEST_LOCKED';
@@ -345,7 +350,11 @@ export const useTrainingStore = defineStore('training', () => {
   const evaluation = computed(() => {
     if (!analysis.value || !state.value || !input.value) return undefined;
     const samples =
-      analysis.value.split === 'test' ? test.value! : input.value[analysis.value.split];
+      analysis.value.split === 'test'
+        ? test.value!
+        : analysis.value.split === 'train'
+          ? (input.value.trainEvaluation ?? input.value.train)
+          : input.value.validation;
     return input.value.config.spec.task === 'regression'
       ? {
           kind: 'regression' as const,

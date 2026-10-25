@@ -1,6 +1,6 @@
 {
   "name": "neural-atlas",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "private": true,
   "description": "Laboratorio didáctico visual de aprendizaje automático con Vue y TypeScript",
   "type": "module",

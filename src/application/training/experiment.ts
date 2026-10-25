@@ -37,6 +37,14 @@ const configSchema = z.strictObject({
   batchSize: z.number(),
   loss: z.enum(['mse', 'mae']),
   dropout: z.strictObject({ rate: finite.min(0).max(0.8) }).optional(),
+  augmentation: z
+    .strictObject({
+      policy: z.enum(['circles', 'xor']),
+      sigma: finite.min(0).max(0.01),
+      copies: z.number().int().min(1).max(3),
+      seed: z.number().int().min(0).max(4294967295),
+    })
+    .optional(),
   earlyStopping: z
     .strictObject({ patience: z.number().int().min(5).max(100), minDelta: finite.min(0).max(0.01) })
     .optional(),
@@ -56,8 +64,22 @@ const optionsSchema = z.strictObject({
 });
 const fileSchema = z.strictObject({
   format: z.literal('neural-atlas.experiment'),
-  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]),
-  engineVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]),
+  schemaVersion: z.union([
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+    z.literal(6),
+  ]),
+  engineVersion: z.union([
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+    z.literal(6),
+  ]),
   appVersion: z
     .string()
     .regex(/^\d+\.\d+\.\d+$/)
@@ -74,8 +96,8 @@ const fileSchema = z.strictObject({
 });
 export interface Experiment {
   format: 'neural-atlas.experiment';
-  schemaVersion: 1 | 2 | 3 | 4 | 5;
-  engineVersion: 1 | 2 | 3 | 4 | 5;
+  schemaVersion: 1 | 2 | 3 | 4 | 5 | 6;
+  engineVersion: 1 | 2 | 3 | 4 | 5 | 6;
   appVersion: string;
   savedAt: string;
   dataset: unknown;
@@ -93,15 +115,17 @@ export function experimentWire(value: Experiment) {
 }
 export function prepareExperiment(value: Experiment) {
   const wire = fileSchema.parse(experimentWire(value));
-  const version = wire.config.spec.batchNormalization
-    ? 5
-    : wire.config.dropout
-      ? 4
-      : wire.config.earlyStopping
-        ? 3
-        : wire.config.regularization
-          ? 2
-          : 1;
+  const version = wire.config.augmentation
+    ? 6
+    : wire.config.spec.batchNormalization
+      ? 5
+      : wire.config.dropout
+        ? 4
+        : wire.config.earlyStopping
+          ? 3
+          : wire.config.regularization
+            ? 2
+            : 1;
   if (wire.schemaVersion !== version || wire.engineVersion !== version)
     throw new Error('EXPERIMENT_VERSION');
   const { dataset, split } = importDatasetJson(JSON.stringify(wire.dataset));
@@ -132,24 +156,28 @@ export function captureExperiment(
 ): Experiment {
   const result: Experiment = {
     format: 'neural-atlas.experiment',
-    schemaVersion: config.spec.batchNormalization
-      ? 5
-      : config.dropout
-        ? 4
-        : config.earlyStopping
-          ? 3
-          : config.regularization
-            ? 2
-            : 1,
-    engineVersion: config.spec.batchNormalization
-      ? 5
-      : config.dropout
-        ? 4
-        : config.earlyStopping
-          ? 3
-          : config.regularization
-            ? 2
-            : 1,
+    schemaVersion: config.augmentation
+      ? 6
+      : config.spec.batchNormalization
+        ? 5
+        : config.dropout
+          ? 4
+          : config.earlyStopping
+            ? 3
+            : config.regularization
+              ? 2
+              : 1,
+    engineVersion: config.augmentation
+      ? 6
+      : config.spec.batchNormalization
+        ? 5
+        : config.dropout
+          ? 4
+          : config.earlyStopping
+            ? 3
+            : config.regularization
+              ? 2
+              : 1,
     appVersion,
     savedAt: new Date().toISOString(),
     dataset: JSON.parse(exportDatasetJson(dataset, split)) as unknown,
@@ -162,6 +190,7 @@ export function captureExperiment(
       ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
       ...(config.earlyStopping ? { earlyStopping: { ...config.earlyStopping } } : {}),
       ...(config.dropout ? { dropout: { ...config.dropout } } : {}),
+      ...(config.augmentation ? { augmentation: { ...config.augmentation } } : {}),
     },
     checkpoint: cloneState(checkpoint),
     threshold,

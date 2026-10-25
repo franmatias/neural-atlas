@@ -11,11 +11,15 @@ import { exhaust } from '@/domain/training/kernel';
 import { hashValue } from '@/domain/data/integrity';
 import { trainingSource } from './source';
 import { captureExperiment, type Experiment } from './experiment';
+import type { AugmentationReport } from '@/domain/data/augmentation';
 export const generalizationOptions = z.strictObject({
   seed: z.number().int().min(0).max(4294967295),
   noise: z.number().finite().min(0).max(0.4),
   epochs: z.number().int().min(5).max(120),
-  intervention: z.enum(['l1', 'l2', 'clip', 'early', 'dropout', 'bn']),
+  intervention: z.enum(['l1', 'l2', 'clip', 'early', 'dropout', 'bn', 'augmentation']),
+  augmentationPolicy: z.enum(['circles', 'xor']),
+  augmentationSigma: z.number().finite().min(0).max(0.01),
+  augmentationCopies: z.number().int().min(1).max(3),
   dropoutRate: z.number().finite().min(0).max(0.8),
   patience: z.number().int().min(5).max(100),
   minDelta: z.number().finite().min(0).max(0.01),
@@ -33,6 +37,9 @@ export const defaultGeneralization: GeneralizationOptions = {
   patience: 10,
   minDelta: 0.001,
   dropoutRate: 0.5,
+  augmentationPolicy: 'circles',
+  augmentationSigma: 0.01,
+  augmentationCopies: 1,
 };
 export interface GeneralizationRun {
   label: string;
@@ -41,6 +48,8 @@ export interface GeneralizationRun {
   weightNorm: number;
   smallWeights: number;
   weights: number;
+  trainingRows: number;
+  augmentation?: AugmentationReport;
 }
 export interface GeneralizationResult {
   options: GeneralizationOptions;
@@ -52,7 +61,7 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
   const options = generalizationOptions.parse(raw);
   const dataset = generateDataset({
     ...defaultGenerator,
-    recipe: 'moons',
+    recipe: options.intervention === 'augmentation' ? options.augmentationPolicy : 'moons',
     count: 120,
     noise: options.noise,
     seed: options.seed,
@@ -93,6 +102,16 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
       batchSize: 12,
       loss: 'mse',
       regularization,
+      ...(intervention && options.intervention === 'augmentation'
+        ? {
+            augmentation: {
+              policy: options.augmentationPolicy,
+              sigma: options.augmentationSigma,
+              copies: options.augmentationCopies,
+              seed: options.seed,
+            },
+          }
+        : {}),
       ...(intervention && options.intervention === 'dropout'
         ? { dropout: { rate: options.dropoutRate } }
         : {}),
@@ -113,13 +132,15 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
     const weights = state.model.layers.flatMap((layer) => Array.from(layer.weights));
     runs.push({
       label: intervention
-        ? options.intervention === 'dropout'
-          ? 'Dropout invertido'
-          : options.intervention === 'early'
-            ? 'Parada temprana'
-            : options.intervention === 'clip'
-              ? 'Recorte global'
-              : options.intervention.toUpperCase()
+        ? options.intervention === 'augmentation'
+          ? 'Aumento de datos'
+          : options.intervention === 'dropout'
+            ? 'Dropout invertido'
+            : options.intervention === 'early'
+              ? 'Parada temprana'
+              : options.intervention === 'clip'
+                ? 'Recorte global'
+                : options.intervention.toUpperCase()
         : 'Referencia sin intervención',
       initialHash,
       experiment: captureExperiment(
@@ -136,6 +157,8 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
       weightNorm: stableNorm(weights),
       smallWeights: weights.filter((w) => Math.abs(w) < 0.01).length,
       weights: weights.length,
+      trainingRows: source.input.train.ids.length,
+      ...(source.augmentation ? { augmentation: source.augmentation } : {}),
     });
   }
   return {

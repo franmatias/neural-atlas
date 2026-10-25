@@ -18,6 +18,7 @@ import {
   type DropoutContext,
 } from './dropout';
 import { hashValue } from '@/domain/data/integrity';
+import { validateAugmentation, type AugmentationConfig } from '@/domain/data/augmentation';
 import {
   createOptimizer,
   validateOptimizer,
@@ -64,9 +65,11 @@ export interface TrainingConfig {
   regularization?: Regularization;
   earlyStopping?: EarlyStoppingConfig;
   dropout?: DropoutConfig;
+  augmentation?: AugmentationConfig;
 }
 export interface TrainingInput {
   train: Samples;
+  trainEvaluation?: Samples;
   validation: Samples;
   config: TrainingConfig;
   dataHash: string;
@@ -114,15 +117,17 @@ export function configHash(input: TrainingInput) {
     splitHash: input.splitHash,
     pipelineHash: input.pipelineHash,
     classOrder: input.classOrder,
-    engineVersion: input.config.spec.batchNormalization
-      ? 5
-      : input.config.dropout
-        ? 4
-        : input.config.earlyStopping
-          ? 3
-          : input.config.regularization
-            ? 2
-            : 1,
+    engineVersion: input.config.augmentation
+      ? 6
+      : input.config.spec.batchNormalization
+        ? 5
+        : input.config.dropout
+          ? 4
+          : input.config.earlyStopping
+            ? 3
+            : input.config.regularization
+              ? 2
+              : 1,
   });
 }
 export function validateSamples(samples: Samples, config: TrainingConfig) {
@@ -172,6 +177,37 @@ export function validateTraining(input: TrainingInput) {
     throw new RangeError('INVALID_CONFIG');
   validateSamples(input.train, c);
   validateSamples(input.validation, c);
+  if (c.augmentation) {
+    validateAugmentation(c.augmentation);
+    if (c.spec.task !== 'binary' || input.classOrder.join(',') !== '0,1')
+      throw new RangeError('AUGMENTATION_CONFIG');
+    const original = input.trainEvaluation;
+    if (!original) throw new RangeError('AUGMENTATION_CONFIG');
+    validateSamples(original, c);
+    if (
+      input.train.ids.length < original.ids.length ||
+      input.train.ids.length > original.ids.length * (c.augmentation.copies + 1) ||
+      original.ids.some(
+        (id, i) =>
+          id !== input.train.ids[i] ||
+          original.y[i] !== input.train.y[i] ||
+          original.x[i]!.some((value, j) => value !== input.train.x[i]![j]),
+      )
+    )
+      throw new RangeError('AUGMENTATION_CONFIG');
+    for (let i = original.ids.length; i < input.train.ids.length; i++) {
+      const match = /^aug-(\d+)-(\d+)$/.exec(input.train.ids[i]!);
+      if (
+        !match ||
+        Number(match[1]) < 1 ||
+        Number(match[1]) > original.ids.length ||
+        Number(match[2]) < 1 ||
+        Number(match[2]) > c.augmentation.copies ||
+        input.train.y[i] !== original.y[Number(match[1]) - 1]
+      )
+        throw new RangeError('AUGMENTATION_CONFIG');
+    }
+  } else if (input.trainEvaluation) throw new RangeError('AUGMENTATION_CONFIG');
   const ids = new Set(input.train.ids);
   if (input.validation.ids.some((id) => ids.has(id))) throw new RangeError('LEAKAGE');
   if (c.spec.task !== 'regression') {
@@ -212,14 +248,19 @@ export function* initialSession(input: TrainingInput): Generator<void, TrainingS
   validateTraining(input);
   const model = createNetwork(input.config.spec, input.config.seed, input.config.initialization);
   const optimizer = createOptimizer(model);
-  const train = yield* evaluateChunks(model, input.train, input.config.loss),
+  const train = yield* evaluateChunks(
+      model,
+      input.trainEvaluation ?? input.train,
+      input.config.loss,
+    ),
     validation = yield* evaluateChunks(model, input.validation, input.config.loss);
-  const sorted = [...input.train.y].sort((a, b) => a - b);
+  const targets = (input.trainEvaluation ?? input.train).y;
+  const sorted = [...targets].sort((a, b) => a - b);
   const baseline =
     input.config.loss === 'mae'
       ? sorted[Math.floor((sorted.length - 1) / 2)]! / 2 +
         sorted[Math.floor(sorted.length / 2)]! / 2
-      : input.train.y.reduce((s, y) => s + y / input.train.y.length, 0);
+      : targets.reduce((s, y) => s + y / targets.length, 0);
   return {
     frozen: false,
     version: 1,
@@ -375,7 +416,11 @@ export function* advanceBatch(
     ...(controlled ? { gradientControl: controlled.telemetry } : {}),
   };
   if (next.cursor === state.order.length) {
-    const train = yield* evaluateChunks(next.model, input.train, input.config.loss),
+    const train = yield* evaluateChunks(
+        next.model,
+        input.trainEvaluation ?? input.train,
+        input.config.loss,
+      ),
       validation = yield* evaluateChunks(next.model, input.validation, input.config.loss);
     next.epoch++;
     next.cursor = 0;
