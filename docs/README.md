@@ -67,6 +67,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [33 · Recuperación en disco D5](33-recuperacion-disco-d5.md) | Dos checkpoints automáticos, reanudación y conflictos entre pestañas |
 | [34 · Generalización D6](34-generalizacion-d6.md) | L1/L2, recorte global y ensayos emparejados con checkpoints v2 |
 | [35 · Parada temprana D6](35-parada-temprana-d6.md) | Validación, restauración completa, continuación explícita y checkpoints v3 |
+| [36 · Dropout D6](36-dropout-d6.md) | Máscaras reales, RNG reproducible, inferencia sin máscara y checkpoints v4 |
 
 ## Qué revisar antes de D1
 
