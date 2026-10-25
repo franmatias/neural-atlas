@@ -1,4 +1,9 @@
 import { generateDataset } from '@/domain/data/generate';
+import {
+  compareMultiseed,
+  type MultiseedOptions,
+  type MultiseedResult,
+} from '@/application/training/multiseed';
 import { inspectNetwork } from '@/domain/network/inspection';
 import { trainPerceptron, solveXor } from '@/domain/network/learning';
 import type { Network } from '@/domain/network/model';
@@ -40,6 +45,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  multiseed: MultiseedOptions;
   generalization: GeneralizationOptions;
   workshop: { caseId: WorkshopEvidence['caseId']; options: WorkshopOptions };
   importModel: { text: string };
@@ -69,6 +75,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  multiseed: MultiseedResult;
   generalization: GeneralizationResult;
   workshop: WorkshopEvidence;
   importModel: InferenceModel;
@@ -93,6 +100,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'multiseed':
+      return compareMultiseed(job.payload);
     case 'generalization':
       return compareGeneralization(job.payload);
     case 'workshop':
