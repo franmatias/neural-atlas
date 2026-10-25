@@ -8,6 +8,7 @@ import { formatData } from '@/shared/utils/data-format';
 import LossChart from '@/features/training/LossChart.vue';
 import GradientControlPanel from '@/features/training/GradientControlPanel.vue';
 import EarlyStoppingPanel from '@/features/training/EarlyStoppingPanel.vue';
+import DropoutPanel from '@/features/training/DropoutPanel.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 const session = useGeneralizationStore(),
   training = useTrainingStore(),
@@ -92,6 +93,7 @@ onBeforeRouteLeave(() => {
               <option value="l2">L2 · magnitudes cuadráticas</option>
               <option value="clip">Recorte por norma global</option>
               <option value="early">Parada temprana con validación</option>
+              <option value="dropout">Dropout invertido</option>
             </select></label
           >
           <label
@@ -118,6 +120,14 @@ onBeforeRouteLeave(() => {
               min="5"
               max="100"
               step="1"
+          /></label>
+          <label v-if="session.options.intervention === 'dropout'"
+            >Probabilidad de abandono de la comparación<input
+              v-model.number="session.options.dropoutRate"
+              type="number"
+              min="0"
+              max="0.8"
+              step="0.05"
           /></label>
           <label v-if="session.options.intervention === 'early'"
             >Mejora mínima de la comparación<input
@@ -180,12 +190,14 @@ onBeforeRouteLeave(() => {
           {{
             session.result.options.intervention === 'clip'
               ? 'c = ' + formatData(session.result.options.clipNorm)
-              : session.result.options.intervention === 'early'
-                ? 'paciencia = ' +
-                  session.result.options.patience +
-                  ', mejora mínima = ' +
-                  formatData(session.result.options.minDelta)
-                : 'λ = ' + formatData(session.result.options.lambda)
+              : session.result.options.intervention === 'dropout'
+                ? 'p = ' + formatData(session.result.options.dropoutRate)
+                : session.result.options.intervention === 'early'
+                  ? 'paciencia = ' +
+                    session.result.options.patience +
+                    ', mejora mínima = ' +
+                    formatData(session.result.options.minDelta)
+                  : 'λ = ' + formatData(session.result.options.lambda)
           }}.
         </p>
         <p>
@@ -318,6 +330,11 @@ onBeforeRouteLeave(() => {
         :state="session.result.runs[selected]!.experiment.checkpoint"
         :config="session.result.runs[selected]!.experiment.config.earlyStopping!"
       />
+      <DropoutPanel
+        v-if="session.result.runs[selected]!.experiment.checkpoint.dropout"
+        :state="session.result.runs[selected]!.experiment.checkpoint.dropout!"
+        :config="session.result.runs[selected]!.experiment.config.dropout!"
+      />
     </template>
     <section class="training-panel">
       <h2>Explica lo que observas</h2>
@@ -331,9 +348,9 @@ onBeforeRouteLeave(() => {
         gradiente; no es una prueba de menor sobreajuste ni limita directamente el paso de Adam.
       </p>
       <p class="small muted">
-        Dropout, batch normalization, aumento de datos y comparación estadística multisemilla
-        permanecen en el plan D6. Con parada temprana, las curvas superiores muestran el modelo
-        seleccionado; el panel específico conserva además las épocas observadas antes de restaurar.
+        Batch normalization, aumento de datos y comparación estadística multisemilla permanecen en
+        el plan D6. Con parada temprana, las curvas superiores muestran el modelo seleccionado; el
+        panel específico conserva además las épocas observadas antes de restaurar.
       </p>
     </section>
   </div>

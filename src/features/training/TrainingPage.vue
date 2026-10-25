@@ -12,6 +12,7 @@ import TrainingControls from './TrainingControls.vue';
 import RecoveryPanel from './RecoveryPanel.vue';
 import GradientControlPanel from './GradientControlPanel.vue';
 import EarlyStoppingPanel from './EarlyStoppingPanel.vue';
+import DropoutPanel from './DropoutPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -239,6 +240,11 @@ const alerts: Record<string, string> = {
         :phase="session.running ? 1 : 0"
         :playing="session.running && !prefs.reducedMotion"
         :speed="prefs.value.speed"
+      />
+      <DropoutPanel
+        v-if="session.state.dropout"
+        :state="session.state.dropout"
+        :config="session.input.config.dropout!"
       />
       <EarlyStoppingPanel
         v-if="session.state.earlyStopping"
