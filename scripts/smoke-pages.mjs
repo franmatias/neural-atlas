@@ -150,7 +150,7 @@ try {
       assert.equal(study.config.regularization.l2, 0.01);
       const finalPoint = study.checkpoint.history.at(-1);
       assert(Math.abs(finalPoint.trainObjective - finalPoint.trainLoss - finalPoint.regularizationPenalty) < 1e-10);
-      await page.getByLabel('Intervención', { exact: true }).selectOption('early');
+      await page.getByRole('combobox', { name: 'Intervención', exact: true }).selectOption('early');
       await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
       await page.locator('.early-result').waitFor();
       const downloadedEarly = page.waitForEvent('download');
