@@ -18,6 +18,7 @@ import {
   type TrainingStatus,
 } from './protocol';
 import { forwardChunks } from '@/domain/training/kernel';
+import { continueBest } from '@/domain/training/early-stopping';
 import type { Network } from '@/domain/network/model';
 export interface RuntimePort {
   now: () => number;
@@ -145,7 +146,13 @@ export class TrainingRuntime {
       if (this.state && this.awaitingAck && command.payload.update === this.checkpointUpdate) {
         this.awaitingAck = false;
         if (this.status === 'initializing') {
-          this.status = this.state.frozen ? 'frozen' : 'ready';
+          this.status = this.state.frozen
+            ? 'frozen'
+            : this.state.earlyStopping?.reason
+              ? this.state.earlyStopping.reason === 'patience'
+                ? 'stopped'
+                : 'completed'
+              : 'ready';
           this.emit('READY', { state: cloneState(this.state) });
         }
       }
@@ -165,6 +172,21 @@ export class TrainingRuntime {
     }
     if (command.type === 'CHECKPOINT') {
       this.checkpoint('CHECKPOINT_READY');
+      return;
+    }
+    if (command.type === 'CONTINUE_BEST') {
+      if (this.task || this.status === 'running') {
+        this.emit('ERROR', { code: 'BUSY' });
+        return;
+      }
+      try {
+        this.state = continueBest(this.state, this.input.config.epochs);
+        this.status = 'paused';
+        this.emit('PAUSED', { state: cloneState(this.state) });
+        this.checkpoint();
+      } catch {
+        this.emit('ERROR', { code: 'INVALID_STATE' });
+      }
       return;
     }
     if (command.type === 'FREEZE') {
@@ -242,6 +264,7 @@ export class TrainingRuntime {
       this.status === 'running' ||
       this.task ||
       this.state.frozen ||
+      this.state.earlyStopping?.reason ||
       this.state.epoch >= this.input.config.epochs
     ) {
       this.emit('ERROR', { code: 'INVALID_STATE' });
@@ -271,8 +294,8 @@ export class TrainingRuntime {
       }
       if (!this.awaitingAck && (ended || this.port.now() - this.checkpointAt >= 2000))
         this.checkpoint();
-      if (this.state.epoch >= this.input!.config.epochs) {
-        this.status = 'completed';
+      if (this.state.earlyStopping?.reason || this.state.epoch >= this.input!.config.epochs) {
+        this.status = this.state.earlyStopping?.reason === 'patience' ? 'stopped' : 'completed';
         this.emit('COMPLETED', { state: cloneState(this.state) });
         this.checkpoint();
       } else if (

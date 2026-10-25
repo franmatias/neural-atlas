@@ -9,7 +9,11 @@ export function trainingBudget(input: TrainingInput) {
     validation = input.validation.ids.length;
   const lower = parameters * epochs * (3 * train + validation);
   const upper = parameters * epochs * (5 * train + validation);
-  const numericBytes = ((train + validation) * (input.config.spec.inputs + 1) + 4 * parameters) * 8;
+  const numericBytes =
+    ((train + validation) * (input.config.spec.inputs + 1) +
+      (input.config.earlyStopping ? 7 : 4) * parameters +
+      (input.config.earlyStopping ? 24 * (epochs + 1) : 0)) *
+    8;
   return {
     parameters,
     updates,

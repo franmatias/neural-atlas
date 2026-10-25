@@ -275,6 +275,12 @@ export const useTrainingStore = defineStore('training', () => {
     pendingTest = true;
     client.send({ type: 'FREEZE', payload: {} });
   }
+  function continueFromBest() {
+    error.value = '';
+    analysis.value = undefined;
+    prediction.value = undefined;
+    client.send({ type: 'CONTINUE_BEST', payload: {} });
+  }
   function predict(features: Record<string, Cell>) {
     if (!data.prepared || !state.value) return;
     try {
@@ -397,6 +403,7 @@ export const useTrainingStore = defineStore('training', () => {
     command,
     analyze,
     freezeAndTest,
+    continueFromBest,
     preset,
     capture,
     restore,

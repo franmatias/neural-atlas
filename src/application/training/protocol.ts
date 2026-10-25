@@ -9,7 +9,7 @@ export type TrainingCommand = Identity & { requestId: number } & (
     | { type: 'INIT'; payload: { input: TrainingInput; checkpoint?: TrainingState } }
     | { type: 'RUN' | 'STEP_BATCH' | 'STEP_EPOCH'; payload: { pace: number } }
     | {
-        type: 'PAUSE' | 'CANCEL' | 'CHECKPOINT' | 'FREEZE' | 'PING' | 'DISPOSE';
+        type: 'PAUSE' | 'CANCEL' | 'CHECKPOINT' | 'FREEZE' | 'PING' | 'DISPOSE' | 'CONTINUE_BEST';
         payload: Record<string, never>;
       }
     | { type: 'RECOVERY_ACK'; payload: { update: number } }
@@ -17,7 +17,15 @@ export type TrainingCommand = Identity & { requestId: number } & (
     | { type: 'PREDICT'; payload: { x: number[][]; purpose: 'sample' | 'surface' } }
   );
 export type TrainingStatus =
-  'initializing' | 'ready' | 'running' | 'paused' | 'cancelled' | 'completed' | 'frozen' | 'error';
+  | 'initializing'
+  | 'ready'
+  | 'running'
+  | 'paused'
+  | 'cancelled'
+  | 'completed'
+  | 'frozen'
+  | 'error'
+  | 'stopped';
 export interface AnalysisResult {
   split: 'train' | 'validation' | 'test';
   predictions: number[][];

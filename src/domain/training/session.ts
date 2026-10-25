@@ -1,6 +1,5 @@
 import {
   createNetwork,
-  cloneNetwork,
   validateNetwork,
   stableNorm,
   validateSpec,
@@ -21,6 +20,16 @@ import {
   type OptimizerState,
 } from './optimizer';
 import { forwardChunks, backwardChunks } from './kernel';
+import {
+  cloneSnapshot,
+  cloneEarly,
+  newEarlyState,
+  observeEarly,
+  validateEarlyConfig,
+  validateEarlyState,
+  type EarlyStoppingConfig,
+  type EarlyStoppingState,
+} from './early-stopping';
 import {
   controlGradient,
   penalty,
@@ -43,6 +52,7 @@ export interface TrainingConfig {
   batchSize: number;
   loss: RegressionLoss;
   regularization?: Regularization;
+  earlyStopping?: EarlyStoppingConfig;
 }
 export interface TrainingInput {
   train: Samples;
@@ -64,7 +74,7 @@ export interface EpochPoint {
   regularizationPenalty?: number;
   trainObjective?: number;
 }
-export interface TrainingState {
+export interface TrainingSnapshot {
   frozen: boolean;
   version: 1;
   configHash: string;
@@ -81,6 +91,9 @@ export interface TrainingState {
   baseline: number;
   gradientControl?: GradientControl;
 }
+export interface TrainingState extends TrainingSnapshot {
+  earlyStopping?: EarlyStoppingState;
+}
 export function configHash(input: TrainingInput) {
   return hashValue({
     config: input.config,
@@ -88,7 +101,7 @@ export function configHash(input: TrainingInput) {
     splitHash: input.splitHash,
     pipelineHash: input.pipelineHash,
     classOrder: input.classOrder,
-    engineVersion: input.config.regularization ? 2 : 1,
+    engineVersion: input.config.earlyStopping ? 3 : input.config.regularization ? 2 : 1,
   });
 }
 export function validateSamples(samples: Samples, config: TrainingConfig) {
@@ -118,6 +131,7 @@ export function validateTraining(input: TrainingInput) {
   validateOptimizer(c.optimizer);
   validateSeed(c.seed);
   if (c.regularization) validateRegularization(c.regularization);
+  if (c.earlyStopping) validateEarlyConfig(c.earlyStopping);
   if (
     !Number.isInteger(c.epochs) ||
     c.epochs < 1 ||
@@ -217,6 +231,7 @@ export function* initialSession(input: TrainingInput): Generator<void, TrainingS
     ],
     gradientNorms: model.layers.map(() => 0),
     baseline,
+    ...(input.config.earlyStopping ? { earlyStopping: newEarlyState(0) } : {}),
     ...(input.config.regularization
       ? {
           gradientControl: {
@@ -238,6 +253,7 @@ export function* advanceBatch(
   input: TrainingInput,
 ): Generator<void, TrainingState> {
   if (state.frozen) throw new RangeError('FROZEN');
+  if (state.earlyStopping?.reason) throw new RangeError('INVALID_STATE');
   if (state.epoch >= input.config.epochs) throw new RangeError('COMPLETED');
   const indices = state.order.slice(state.cursor, state.cursor + input.config.batchSize);
   const gradient = state.model.layers.flatMap((l) => [
@@ -321,35 +337,29 @@ export function* advanceBatch(
       },
     ];
   }
-  return next;
+  return input.config.earlyStopping && next.cursor === 0
+    ? observeEarly(next, input.config.earlyStopping, input.config.epochs)
+    : next;
 }
 export function cloneState(state: TrainingState): TrainingState {
   return {
-    ...state,
-    model: cloneNetwork(state.model),
-    optimizer: {
-      step: state.optimizer.step,
-      first: state.optimizer.first.map((v) => v.slice()),
-      second: state.optimizer.second.map((v) => v.slice()),
-    },
-    order: [...state.order],
-    lastBatchIds: [...state.lastBatchIds],
-    history: state.history.map((p) => ({ ...p })),
-    gradientNorms: [...state.gradientNorms],
-    ...(state.gradientControl
-      ? {
-          gradientControl: {
-            ...state.gradientControl,
-            rawWeights: [...state.gradientControl.rawWeights],
-            rawBiases: [...state.gradientControl.rawBiases],
-            appliedWeights: [...state.gradientControl.appliedWeights],
-            appliedBiases: [...state.gradientControl.appliedBiases],
-          },
-        }
-      : {}),
+    ...cloneSnapshot(state),
+    ...(state.earlyStopping ? { earlyStopping: cloneEarly(state.earlyStopping) } : {}),
   };
 }
 export function validateCheckpoint(state: TrainingState, input: TrainingInput) {
+  validateBaseCheckpoint(state, input);
+  if (input.config.earlyStopping)
+    validateEarlyState(
+      state,
+      input.config.earlyStopping,
+      Math.ceil(input.train.ids.length / input.config.batchSize),
+      input.config.epochs,
+      (best) => validateBaseCheckpoint(best, input),
+    );
+  else if (state.earlyStopping) throw new RangeError('CHECKPOINT');
+}
+function validateBaseCheckpoint(state: TrainingSnapshot, input: TrainingInput) {
   validateTraining(input);
   validateNetwork(state.model);
   validateOptimizerState(state.model, state.optimizer);

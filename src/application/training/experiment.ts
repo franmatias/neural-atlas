@@ -12,16 +12,11 @@ import {
 } from '@/domain/training/session';
 import { trainingSource } from './source';
 import { appVersion } from '@/shared/version';
-import {
-  networkSpecSchema as spec,
-  networkWireSchema,
-  networkWire,
-  networkFromWire,
-} from './network-schema';
+import { networkSpecSchema as spec } from './network-schema';
+import { checkpointSchema, checkpointWire, checkpointFromWire } from './checkpoint-codec';
 
 export const experimentLimit = 64 * 1024 * 1024;
 const finite = z.number().finite();
-const vector = z.array(finite).max(25000);
 const configSchema = z.strictObject({
   spec,
   seed: z.number(),
@@ -41,6 +36,9 @@ const configSchema = z.strictObject({
   epochs: z.number(),
   batchSize: z.number(),
   loss: z.enum(['mse', 'mae']),
+  earlyStopping: z
+    .strictObject({ patience: z.number().int().min(5).max(100), minDelta: finite.min(0).max(0.01) })
+    .optional(),
   regularization: z
     .strictObject({
       l1: finite.min(0).max(0.1),
@@ -55,56 +53,10 @@ const optionsSchema = z.strictObject({
   scaling: z.enum(['none', 'minmax', 'standard']),
   missingIndicators: z.boolean(),
 });
-const checkpointSchema = z.strictObject({
-  version: z.literal(1),
-  frozen: z.boolean(),
-  configHash: z.string(),
-  model: networkWireSchema,
-  optimizer: z.strictObject({
-    step: z.number(),
-    first: z.array(vector).max(14),
-    second: z.array(vector).max(14),
-  }),
-  epoch: z.number(),
-  cursor: z.number(),
-  batchIndex: z.number(),
-  updates: z.number(),
-  order: z.array(z.number()).max(10000),
-  lastBatchIds: z.array(z.string()).max(10000),
-  history: z
-    .array(
-      z.strictObject({
-        epoch: z.number(),
-        update: z.number(),
-        trainLoss: finite,
-        validationLoss: finite,
-        trainScore: finite,
-        validationScore: finite,
-        gradientNorm: finite,
-        regularizationPenalty: finite.min(0).optional(),
-        trainObjective: finite.min(0).optional(),
-      }),
-    )
-    .max(10001),
-  gradientNorms: z.array(finite).max(7),
-  baseline: finite,
-  gradientControl: z
-    .strictObject({
-      rawNorm: finite.min(0),
-      appliedNorm: finite.min(0),
-      scale: finite.min(0).max(1),
-      clippedUpdates: z.number().int().min(0),
-      rawWeights: z.array(finite.min(0)).max(7),
-      rawBiases: z.array(finite.min(0)).max(7),
-      appliedWeights: z.array(finite.min(0)).max(7),
-      appliedBiases: z.array(finite.min(0)).max(7),
-    })
-    .optional(),
-});
 const fileSchema = z.strictObject({
   format: z.literal('neural-atlas.experiment'),
-  schemaVersion: z.union([z.literal(1), z.literal(2)]),
-  engineVersion: z.union([z.literal(1), z.literal(2)]),
+  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+  engineVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   appVersion: z
     .string()
     .regex(/^\d+\.\d+\.\d+$/)
@@ -121,8 +73,8 @@ const fileSchema = z.strictObject({
 });
 export interface Experiment {
   format: 'neural-atlas.experiment';
-  schemaVersion: 1 | 2;
-  engineVersion: 1 | 2;
+  schemaVersion: 1 | 2 | 3;
+  engineVersion: 1 | 2 | 3;
   appVersion: string;
   savedAt: string;
   dataset: unknown;
@@ -136,22 +88,11 @@ export interface Experiment {
 }
 /** Explicit tensor conversion: JSON never relies on typed-array enumerable properties. */
 export function experimentWire(value: Experiment) {
-  return {
-    ...value,
-    checkpoint: {
-      ...value.checkpoint,
-      model: networkWire(value.checkpoint.model),
-      optimizer: {
-        step: value.checkpoint.optimizer.step,
-        first: value.checkpoint.optimizer.first.map((v) => Array.from(v)),
-        second: value.checkpoint.optimizer.second.map((v) => Array.from(v)),
-      },
-    },
-  };
+  return { ...value, checkpoint: checkpointWire(value.checkpoint) };
 }
 export function prepareExperiment(value: Experiment) {
   const wire = fileSchema.parse(experimentWire(value));
-  const version = wire.config.regularization ? 2 : 1;
+  const version = wire.config.earlyStopping ? 3 : wire.config.regularization ? 2 : 1;
   if (wire.schemaVersion !== version || wire.engineVersion !== version)
     throw new Error('EXPERIMENT_VERSION');
   const { dataset, split } = importDatasetJson(JSON.stringify(wire.dataset));
@@ -182,8 +123,8 @@ export function captureExperiment(
 ): Experiment {
   const result: Experiment = {
     format: 'neural-atlas.experiment',
-    schemaVersion: config.regularization ? 2 : 1,
-    engineVersion: config.regularization ? 2 : 1,
+    schemaVersion: config.earlyStopping ? 3 : config.regularization ? 2 : 1,
+    engineVersion: config.earlyStopping ? 3 : config.regularization ? 2 : 1,
     appVersion,
     savedAt: new Date().toISOString(),
     dataset: JSON.parse(exportDatasetJson(dataset, split)) as unknown,
@@ -194,6 +135,7 @@ export function captureExperiment(
       spec: { ...config.spec, hidden: [...config.spec.hidden] },
       optimizer: { ...config.optimizer },
       ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
+      ...(config.earlyStopping ? { earlyStopping: { ...config.earlyStopping } } : {}),
     },
     checkpoint: cloneState(checkpoint),
     threshold,
@@ -221,15 +163,7 @@ export function importExperiment(text: string): Experiment {
   const state = wire.checkpoint;
   const value: Experiment = {
     ...wire,
-    checkpoint: {
-      ...state,
-      model: networkFromWire(state.model),
-      optimizer: {
-        step: state.optimizer.step,
-        first: state.optimizer.first.map((v) => new Float64Array(v)),
-        second: state.optimizer.second.map((v) => new Float64Array(v)),
-      },
-    },
+    checkpoint: checkpointFromWire(state),
   };
   prepareExperiment(value);
   return value;
