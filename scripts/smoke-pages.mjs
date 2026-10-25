@@ -150,11 +150,23 @@ try {
       assert.equal(study.config.regularization.l2, 0.01);
       const finalPoint = study.checkpoint.history.at(-1);
       assert(Math.abs(finalPoint.trainObjective - finalPoint.trainLoss - finalPoint.regularizationPenalty) < 1e-10);
+      await page.getByLabel('Intervención', { exact: true }).selectOption('early');
+      await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
+      await page.locator('.early-result').waitFor();
+      const downloadedEarly = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar ensayo JSON', exact: true }).click();
+      const early = JSON.parse(await readFile(await (await downloadedEarly).path(), 'utf8'));
+      assert.equal(early.schemaVersion, 3);
+      assert.equal(early.engineVersion, 3);
+      assert.equal(early.checkpoint.earlyStopping.stoppedAt, 5);
+      assert.equal(early.checkpoint.earlyStopping.reason, 'horizon');
+      assert.equal(early.checkpoint.epoch, early.checkpoint.earlyStopping.best.epoch);
+      assert.equal(early.testConsulted, false);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery and matched L2 experiment v2 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2 and early stopping selection v3 at ${url}`,
       );
       failure = undefined;
       break;

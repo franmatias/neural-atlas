@@ -7,6 +7,7 @@ import { usePreferencesStore } from '@/stores/preferences';
 import { formatData } from '@/shared/utils/data-format';
 import LossChart from '@/features/training/LossChart.vue';
 import GradientControlPanel from '@/features/training/GradientControlPanel.vue';
+import EarlyStoppingPanel from '@/features/training/EarlyStoppingPanel.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 const session = useGeneralizationStore(),
   training = useTrainingStore(),
@@ -90,9 +91,11 @@ onBeforeRouteLeave(() => {
               <option value="l1">L1 · magnitudes absolutas</option>
               <option value="l2">L2 · magnitudes cuadráticas</option>
               <option value="clip">Recorte por norma global</option>
+              <option value="early">Parada temprana con validación</option>
             </select></label
           >
-          <label v-if="session.options.intervention !== 'clip'"
+          <label
+            v-if="session.options.intervention === 'l1' || session.options.intervention === 'l2'"
             >Intensidad λ<input
               v-model.number="session.options.lambda"
               type="number"
@@ -100,13 +103,29 @@ onBeforeRouteLeave(() => {
               max="0.1"
               step="0.001"
           /></label>
-          <label v-else
+          <label v-else-if="session.options.intervention === 'clip'"
             >Umbral de recorte<input
               v-model.number="session.options.clipNorm"
               type="number"
               min="0.1"
               max="100"
               step="0.1"
+          /></label>
+          <label v-if="session.options.intervention === 'early'"
+            >Paciencia de la comparación<input
+              v-model.number="session.options.patience"
+              type="number"
+              min="5"
+              max="100"
+              step="1"
+          /></label>
+          <label v-if="session.options.intervention === 'early'"
+            >Mejora mínima de la comparación<input
+              v-model.number="session.options.minDelta"
+              type="number"
+              min="0"
+              max="0.01"
+              step="0.0001"
           /></label>
           <label
             >Épocas por ensayo<input
@@ -161,7 +180,12 @@ onBeforeRouteLeave(() => {
           {{
             session.result.options.intervention === 'clip'
               ? 'c = ' + formatData(session.result.options.clipNorm)
-              : 'λ = ' + formatData(session.result.options.lambda)
+              : session.result.options.intervention === 'early'
+                ? 'paciencia = ' +
+                  session.result.options.patience +
+                  ', mejora mínima = ' +
+                  formatData(session.result.options.minDelta)
+                : 'λ = ' + formatData(session.result.options.lambda)
           }}.
         </p>
         <p>
@@ -182,6 +206,7 @@ onBeforeRouteLeave(() => {
             <thead>
               <tr>
                 <th scope="col">Ensayo</th>
+                <th scope="col">Épocas observadas / estado seleccionado</th>
                 <th scope="col">Pérdida train</th>
                 <th scope="col">Pérdida validación</th>
                 <th scope="col">Penalización</th>
@@ -193,6 +218,13 @@ onBeforeRouteLeave(() => {
             <tbody>
               <tr v-for="run in session.result.runs" :key="run.label">
                 <th scope="row">{{ run.label }}</th>
+                <td>
+                  {{
+                    run.experiment.checkpoint.earlyStopping?.stoppedAt ??
+                    run.experiment.checkpoint.epoch
+                  }}
+                  / {{ run.experiment.checkpoint.epoch }}
+                </td>
                 <td>{{ formatData(run.experiment.checkpoint.history.at(-1)!.trainLoss) }}</td>
                 <td>{{ formatData(run.experiment.checkpoint.history.at(-1)!.validationLoss) }}</td>
                 <td>
@@ -281,6 +313,11 @@ onBeforeRouteLeave(() => {
         :control="session.result.runs[selected]!.experiment.checkpoint.gradientControl!"
         :updates="session.result.runs[selected]!.experiment.checkpoint.updates"
       />
+      <EarlyStoppingPanel
+        v-if="session.result.runs[selected]!.experiment.checkpoint.earlyStopping"
+        :state="session.result.runs[selected]!.experiment.checkpoint"
+        :config="session.result.runs[selected]!.experiment.config.earlyStopping!"
+      />
     </template>
     <section class="training-panel">
       <h2>Explica lo que observas</h2>
@@ -294,8 +331,9 @@ onBeforeRouteLeave(() => {
         gradiente; no es una prueba de menor sobreajuste ni limita directamente el paso de Adam.
       </p>
       <p class="small muted">
-        Este primer incremento no incluye todavía dropout, batch normalization, aumento de datos,
-        parada temprana ni comparación estadística multisemilla. Permanecen en el plan D6.
+        Dropout, batch normalization, aumento de datos y comparación estadística multisemilla
+        permanecen en el plan D6. Con parada temprana, las curvas superiores muestran el modelo
+        seleccionado; el panel específico conserva además las épocas observadas antes de restaurar.
       </p>
     </section>
   </div>
