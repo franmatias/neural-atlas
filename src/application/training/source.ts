@@ -59,6 +59,7 @@ export function trainingSource(
       optimizer: { ...config.optimizer },
       ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
       ...(config.earlyStopping ? { earlyStopping: { ...config.earlyStopping } } : {}),
+      ...(config.dropout ? { dropout: { ...config.dropout } } : {}),
       spec: {
         ...config.spec,
         hidden: [...config.spec.hidden],

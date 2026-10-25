@@ -8,7 +8,15 @@ import {
   type Initialization,
 } from '@/domain/network/model';
 import { outputLoss, type RegressionLoss } from '@/domain/network/backprop';
-import { shuffle, validateSeed } from '@/domain/random/seeded';
+import { shuffle, validateSeed, createRandom } from '@/domain/random/seeded';
+import {
+  initialDropout,
+  validateDropout,
+  validateDropoutState,
+  type DropoutConfig,
+  type DropoutState,
+  type DropoutContext,
+} from './dropout';
 import { hashValue } from '@/domain/data/integrity';
 import {
   createOptimizer,
@@ -53,6 +61,7 @@ export interface TrainingConfig {
   loss: RegressionLoss;
   regularization?: Regularization;
   earlyStopping?: EarlyStoppingConfig;
+  dropout?: DropoutConfig;
 }
 export interface TrainingInput {
   train: Samples;
@@ -90,6 +99,7 @@ export interface TrainingSnapshot {
   gradientNorms: number[];
   baseline: number;
   gradientControl?: GradientControl;
+  dropout?: DropoutState;
 }
 export interface TrainingState extends TrainingSnapshot {
   earlyStopping?: EarlyStoppingState;
@@ -101,7 +111,13 @@ export function configHash(input: TrainingInput) {
     splitHash: input.splitHash,
     pipelineHash: input.pipelineHash,
     classOrder: input.classOrder,
-    engineVersion: input.config.earlyStopping ? 3 : input.config.regularization ? 2 : 1,
+    engineVersion: input.config.dropout
+      ? 4
+      : input.config.earlyStopping
+        ? 3
+        : input.config.regularization
+          ? 2
+          : 1,
   });
 }
 export function validateSamples(samples: Samples, config: TrainingConfig) {
@@ -132,6 +148,7 @@ export function validateTraining(input: TrainingInput) {
   validateSeed(c.seed);
   if (c.regularization) validateRegularization(c.regularization);
   if (c.earlyStopping) validateEarlyConfig(c.earlyStopping);
+  if (c.dropout) validateDropout(c.dropout, c.spec.hidden);
   if (
     !Number.isInteger(c.epochs) ||
     c.epochs < 1 ||
@@ -231,6 +248,7 @@ export function* initialSession(input: TrainingInput): Generator<void, TrainingS
     ],
     gradientNorms: model.layers.map(() => 0),
     baseline,
+    ...(input.config.dropout ? { dropout: initialDropout(input.config.seed) } : {}),
     ...(input.config.earlyStopping ? { earlyStopping: newEarlyState(0) } : {}),
     ...(input.config.regularization
       ? {
@@ -256,16 +274,25 @@ export function* advanceBatch(
   if (state.earlyStopping?.reason) throw new RangeError('INVALID_STATE');
   if (state.epoch >= input.config.epochs) throw new RangeError('COMPLETED');
   const indices = state.order.slice(state.cursor, state.cursor + input.config.batchSize);
+  const dropout: DropoutContext | undefined = input.config.dropout
+    ? {
+        rate: input.config.dropout.rate,
+        random: createRandom(input.config.seed, 'dropout', state.dropout!.rng),
+        masks: [],
+      }
+    : undefined;
   const gradient = state.model.layers.flatMap((l) => [
     new Float64Array(l.weights.length),
     new Float64Array(l.biases.length),
   ]);
   for (const index of indices) {
+    if (dropout) dropout.masks = [];
     const sample = yield* backwardChunks(
       state.model,
       input.train.x[index]!,
       input.train.y[index]!,
       input.config.loss,
+      dropout,
     );
     for (let l = 0; l < sample.gradient.length; l++) {
       const g = sample.gradient[l]!;
@@ -305,6 +332,16 @@ export function* advanceBatch(
     batchIndex: state.batchIndex + 1,
     lastBatchIds: indices.map((i) => input.train.ids[i]!),
     gradientNorms,
+    ...(dropout
+      ? {
+          dropout: {
+            rng: dropout.random.snapshot(),
+            seenSamples: state.dropout!.seenSamples + indices.length,
+            lastSampleId: input.train.ids[indices.at(-1)!]!,
+            masks: dropout.masks,
+          },
+        }
+      : {}),
     ...(controlled ? { gradientControl: controlled.telemetry } : {}),
   };
   if (next.cursor === state.order.length) {
@@ -363,6 +400,7 @@ function validateBaseCheckpoint(state: TrainingSnapshot, input: TrainingInput) {
   validateTraining(input);
   validateNetwork(state.model);
   validateOptimizerState(state.model, state.optimizer);
+  validateDropoutState(state, input.config, input.train.ids.length);
   if (input.config.regularization) {
     if (!state.gradientControl) throw new RangeError('CHECKPOINT');
     validateGradientControl(

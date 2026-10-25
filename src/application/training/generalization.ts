@@ -16,7 +16,8 @@ export const generalizationOptions = z.strictObject({
   seed: z.number().int().min(0).max(4294967295),
   noise: z.number().finite().min(0).max(0.4),
   epochs: z.number().int().min(5).max(120),
-  intervention: z.enum(['l1', 'l2', 'clip', 'early']),
+  intervention: z.enum(['l1', 'l2', 'clip', 'early', 'dropout']),
+  dropoutRate: z.number().finite().min(0).max(0.8),
   patience: z.number().int().min(5).max(100),
   minDelta: z.number().finite().min(0).max(0.01),
   lambda: z.number().finite().min(0).max(0.1),
@@ -32,6 +33,7 @@ export const defaultGeneralization: GeneralizationOptions = {
   clipNorm: 0.1,
   patience: 10,
   minDelta: 0.001,
+  dropoutRate: 0.5,
 };
 export interface GeneralizationRun {
   label: string;
@@ -73,7 +75,7 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
     const regularization = { ...defaultRegularization };
     if (intervention) {
       if (options.intervention === 'clip') regularization.clipNorm = options.clipNorm;
-      else if (options.intervention !== 'early')
+      else if (options.intervention === 'l1' || options.intervention === 'l2')
         regularization[options.intervention] = options.lambda;
     }
     const config: TrainingConfig = {
@@ -85,6 +87,9 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
       batchSize: 12,
       loss: 'mse',
       regularization,
+      ...(intervention && options.intervention === 'dropout'
+        ? { dropout: { rate: options.dropoutRate } }
+        : {}),
       ...(intervention && options.intervention === 'early'
         ? { earlyStopping: { patience: options.patience, minDelta: options.minDelta } }
         : {}),
@@ -97,11 +102,13 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
     const weights = state.model.layers.flatMap((layer) => Array.from(layer.weights));
     runs.push({
       label: intervention
-        ? options.intervention === 'early'
-          ? 'Parada temprana'
-          : options.intervention === 'clip'
-            ? 'Recorte global'
-            : options.intervention.toUpperCase()
+        ? options.intervention === 'dropout'
+          ? 'Dropout invertido'
+          : options.intervention === 'early'
+            ? 'Parada temprana'
+            : options.intervention === 'clip'
+              ? 'Recorte global'
+              : options.intervention.toUpperCase()
         : 'Referencia sin intervención',
       initialHash,
       experiment: captureExperiment(

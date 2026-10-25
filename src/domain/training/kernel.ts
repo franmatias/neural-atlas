@@ -1,4 +1,5 @@
 import { activate, activationDerivative } from '@/domain/network/neuron';
+import { dropoutMask, type DropoutContext } from './dropout';
 import {
   assertFinite,
   softmax,
@@ -13,7 +14,11 @@ import {
   type LayerGradient,
 } from '@/domain/network/backprop';
 /** A yield after each dense row and each gradient row bounds arithmetic per fragment. */
-export function* forwardChunks(model: Network, input: number[]): Generator<void, Forward> {
+export function* forwardChunks(
+  model: Network,
+  input: number[],
+  dropout?: DropoutContext,
+): Generator<void, Forward> {
   if (input.length !== model.spec.inputs) throw new RangeError('SHAPE');
   assertFinite(input);
   const cache: Forward = { activations: [Float64Array.from(input)], logits: [] };
@@ -35,6 +40,12 @@ export function* forwardChunks(model: Network, input: number[]): Generator<void,
             activate(v, l.activation as Exclude<typeof l.activation, 'softmax'>, model.spec.alpha),
           ),
     );
+    if (dropout && cache.logits.length < model.layers.length) {
+      const a = cache.activations.at(-1)!;
+      const mask = dropoutMask(a.length, dropout);
+      dropout.masks.push(mask);
+      for (let j = 0; j < a.length; j++) a[j] = (a[j]! * mask[j]!) / (1 - dropout.rate);
+    }
   }
   return cache;
 }
@@ -43,8 +54,9 @@ export function* backwardChunks(
   input: number[],
   target: number,
   loss: RegressionLoss,
+  dropout?: DropoutContext,
 ): Generator<void, Backward> {
-  const cache = yield* forwardChunks(model, input);
+  const cache = yield* forwardChunks(model, input, dropout);
   const output = outputLoss(model, cache, target, loss);
   let delta = output.delta;
   const gradient: LayerGradient[] = new Array(model.layers.length);
@@ -77,7 +89,8 @@ export function* backwardChunks(
             cache.logits[i - 1]![j]!,
             hidden.activation as Exclude<typeof hidden.activation, 'softmax'>,
             model.spec.alpha,
-          )!;
+          )! *
+          (dropout ? dropout.masks[i - 1]![j]! / (1 - dropout.rate) : 1);
         yield;
       }
       assertFinite(next);

@@ -12,7 +12,12 @@ export function trainingBudget(input: TrainingInput) {
   const numericBytes =
     ((train + validation) * (input.config.spec.inputs + 1) +
       (input.config.earlyStopping ? 7 : 4) * parameters +
-      (input.config.earlyStopping ? 24 * (epochs + 1) : 0)) *
+      (input.config.earlyStopping ? 24 * (epochs + 1) : 0) +
+      (input.config.dropout
+        ? (input.config.earlyStopping ? 4 : 3) *
+            input.config.spec.hidden.reduce((s, n) => s + n, 0) +
+          4
+        : 0)) *
     8;
   return {
     parameters,

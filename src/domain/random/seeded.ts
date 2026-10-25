@@ -10,9 +10,22 @@ export function deriveSeed(seed: number, purpose: string): number {
     state = Math.imul(state ^ char.charCodeAt(0), 16777619) >>> 0;
   return state;
 }
-export function createRandom(seed: number, purpose: string) {
-  let state = deriveSeed(seed, purpose);
-  let spare: number | null = null;
+export interface RandomSnapshot {
+  state: number;
+  spare: number | null;
+}
+export function createRandom(seed: number, purpose: string, resume?: RandomSnapshot) {
+  const initial = deriveSeed(seed, purpose);
+  if (
+    resume &&
+    (!Number.isInteger(resume.state) ||
+      resume.state < 0 ||
+      resume.state > 0xffffffff ||
+      (resume.spare !== null && !Number.isFinite(resume.spare)))
+  )
+    throw new RangeError('SEED');
+  let state = resume?.state ?? initial;
+  let spare: number | null = resume?.spare ?? null;
   function nextUint32() {
     state = (state + 0x6d2b79f5) >>> 0;
     let t = state;
