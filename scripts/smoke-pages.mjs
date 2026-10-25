@@ -162,11 +162,24 @@ try {
       assert.equal(early.checkpoint.earlyStopping.reason, 'horizon');
       assert.equal(early.checkpoint.epoch, early.checkpoint.earlyStopping.best.epoch);
       assert.equal(early.testConsulted, false);
+      await page.getByRole('combobox', { name: 'Intervención', exact: true }).selectOption('dropout');
+      await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
+      await page.locator('.dropout-panel').waitFor();
+      const downloadedDropout = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar ensayo JSON', exact: true }).click();
+      const dropout = JSON.parse(await readFile(await (await downloadedDropout).path(), 'utf8'));
+      assert.equal(dropout.schemaVersion, 4);
+      assert.equal(dropout.engineVersion, 4);
+      assert.equal(dropout.config.dropout.rate, 0.5);
+      assert.equal(dropout.checkpoint.dropout.seenSamples, 360);
+      assert.deepEqual(dropout.checkpoint.dropout.masks.map(m => m.length), [8, 8]);
+      assert(dropout.checkpoint.dropout.masks.flat().every(v => v === 0 || v === 1));
+      assert.equal(dropout.testConsulted, false);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2 and early stopping selection v3 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3 and reproducible dropout experiment v4 at ${url}`,
       );
       failure = undefined;
       break;
