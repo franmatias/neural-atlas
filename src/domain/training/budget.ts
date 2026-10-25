@@ -13,10 +13,12 @@ export function trainingBudget(input: TrainingInput) {
   const epochs = input.config.epochs,
     train = input.train.ids.length,
     validation = input.validation.ids.length;
-  const lower = parameters * epochs * (3 * train + validation);
-  const upper = parameters * epochs * (5 * train + validation);
+  const evaluationTrain = input.trainEvaluation?.ids.length ?? train;
+  const lower = parameters * epochs * (2 * train + evaluationTrain + validation);
+  const upper = parameters * epochs * (4 * train + evaluationTrain + validation);
   const numericBytes =
-    ((train + validation) * (input.config.spec.inputs + 1) +
+    ((train + validation + (input.trainEvaluation?.ids.length ?? 0)) *
+      (input.config.spec.inputs + 1) +
       (input.config.spec.batchNormalization
         ? (6 * Math.min(train, input.config.batchSize + 1) + 8) *
           input.config.spec.hidden.reduce((s, n) => s + n, 0)

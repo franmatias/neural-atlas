@@ -1,6 +1,8 @@
 import { datasetHash, hashValue } from '@/domain/data/integrity';
 import { validateSplit, splitWarnings } from '@/domain/data/split';
 import { validateDataset } from '@/domain/data/validation';
+import { augmentTraining } from '@/domain/data/augmentation';
+import { transformRow } from '@/domain/data/pipeline';
 import type { Dataset, DataSplit } from '@/domain/data/types';
 import type { PipelineState } from '@/domain/data/pipeline';
 import {
@@ -51,8 +53,23 @@ export function trainingSource(
       ),
     };
   }
+  const originalTrain = samples(split.train);
+  const augmentation = config.augmentation
+    ? augmentTraining(dataset, split.train, split.validation.length, config.augmentation)
+    : undefined;
+  const augmented = augmentation?.copies;
   const input: TrainingInput = {
-    train: samples(split.train),
+    train: augmented
+      ? {
+          ids: [...originalTrain.ids, ...augmented.map((r) => r.id)],
+          x: [
+            ...originalTrain.x.map((row) => [...row]),
+            ...augmented.map((r) => transformRow(r, pipeline)),
+          ],
+          y: [...originalTrain.y, ...augmented.map((r) => classOrder.indexOf(String(r.target)))],
+        }
+      : originalTrain,
+    ...(augmentation ? { trainEvaluation: originalTrain } : {}),
     validation: samples(split.validation),
     config: {
       ...config,
@@ -60,6 +77,7 @@ export function trainingSource(
       ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
       ...(config.earlyStopping ? { earlyStopping: { ...config.earlyStopping } } : {}),
       ...(config.dropout ? { dropout: { ...config.dropout } } : {}),
+      ...(config.augmentation ? { augmentation: { ...config.augmentation } } : {}),
       spec: {
         ...config.spec,
         hidden: [...config.spec.hidden],
@@ -79,5 +97,6 @@ export function trainingSource(
     test: samples(split.test),
     labels: [...pipeline.outputLabels],
     unstable: splitWarnings(split).unstable,
+    ...(augmentation ? { augmentation: augmentation.report } : {}),
   };
 }
