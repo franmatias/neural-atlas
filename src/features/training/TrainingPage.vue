@@ -13,6 +13,7 @@ import RecoveryPanel from './RecoveryPanel.vue';
 import GradientControlPanel from './GradientControlPanel.vue';
 import EarlyStoppingPanel from './EarlyStoppingPanel.vue';
 import DropoutPanel from './DropoutPanel.vue';
+import BatchNormalizationPanel from './BatchNormalizationPanel.vue';
 import LossChart from './LossChart.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 import { trainingStatuses, trainingError } from './messages';
@@ -240,6 +241,12 @@ const alerts: Record<string, string> = {
         :phase="session.running ? 1 : 0"
         :playing="session.running && !prefs.reducedMotion"
         :speed="prefs.value.speed"
+      />
+      <BatchNormalizationPanel
+        v-if="session.state.model.spec.batchNormalization"
+        :model="session.state.model"
+        :statistics="session.state.batchStatistics"
+        :configured-size="session.input.config.batchSize"
       />
       <DropoutPanel
         v-if="session.state.dropout"

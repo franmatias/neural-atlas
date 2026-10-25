@@ -9,6 +9,7 @@ import LossChart from '@/features/training/LossChart.vue';
 import GradientControlPanel from '@/features/training/GradientControlPanel.vue';
 import EarlyStoppingPanel from '@/features/training/EarlyStoppingPanel.vue';
 import DropoutPanel from '@/features/training/DropoutPanel.vue';
+import BatchNormalizationPanel from '@/features/training/BatchNormalizationPanel.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
 const session = useGeneralizationStore(),
   training = useTrainingStore(),
@@ -82,7 +83,8 @@ onBeforeRouteLeave(() => {
       <p>
         120 medias lunas sintéticas; train 72, validación 24 y test 24 reservado. Misma semilla,
         división, pipeline ajustado con train, red 2→8→8→1, Xavier, tanh, Adam (0,01) y lotes de 12.
-        Test no se evalúa.
+        Test no se evalúa. La comprobación de inicialización compara los pesos y sesgos densos; BN
+        añade gamma inicial 1, beta inicial 0 y estadísticas propias.
       </p>
       <fieldset :disabled="session.busy || opening">
         <legend>Configura la comparación</legend>
@@ -94,6 +96,7 @@ onBeforeRouteLeave(() => {
               <option value="clip">Recorte por norma global</option>
               <option value="early">Parada temprana con validación</option>
               <option value="dropout">Dropout invertido</option>
+              <option value="bn">Normalización por lotes</option>
             </select></label
           >
           <label
@@ -190,14 +193,16 @@ onBeforeRouteLeave(() => {
           {{
             session.result.options.intervention === 'clip'
               ? 'c = ' + formatData(session.result.options.clipNorm)
-              : session.result.options.intervention === 'dropout'
-                ? 'p = ' + formatData(session.result.options.dropoutRate)
-                : session.result.options.intervention === 'early'
-                  ? 'paciencia = ' +
-                    session.result.options.patience +
-                    ', mejora mínima = ' +
-                    formatData(session.result.options.minDelta)
-                  : 'λ = ' + formatData(session.result.options.lambda)
+              : session.result.options.intervention === 'bn'
+                ? 'ε = 0,00001; memoria = 0,9'
+                : session.result.options.intervention === 'dropout'
+                  ? 'p = ' + formatData(session.result.options.dropoutRate)
+                  : session.result.options.intervention === 'early'
+                    ? 'paciencia = ' +
+                      session.result.options.patience +
+                      ', mejora mínima = ' +
+                      formatData(session.result.options.minDelta)
+                    : 'λ = ' + formatData(session.result.options.lambda)
           }}.
         </p>
         <p>
@@ -330,6 +335,12 @@ onBeforeRouteLeave(() => {
         :state="session.result.runs[selected]!.experiment.checkpoint"
         :config="session.result.runs[selected]!.experiment.config.earlyStopping!"
       />
+      <BatchNormalizationPanel
+        v-if="session.result.runs[selected]!.experiment.config.spec.batchNormalization"
+        :model="session.result.runs[selected]!.experiment.checkpoint.model"
+        :statistics="session.result.runs[selected]!.experiment.checkpoint.batchStatistics"
+        :configured-size="session.result.runs[selected]!.experiment.config.batchSize"
+      />
       <DropoutPanel
         v-if="session.result.runs[selected]!.experiment.checkpoint.dropout"
         :state="session.result.runs[selected]!.experiment.checkpoint.dropout!"
@@ -348,9 +359,9 @@ onBeforeRouteLeave(() => {
         gradiente; no es una prueba de menor sobreajuste ni limita directamente el paso de Adam.
       </p>
       <p class="small muted">
-        Batch normalization, aumento de datos y comparación estadística multisemilla permanecen en
-        el plan D6. Con parada temprana, las curvas superiores muestran el modelo seleccionado; el
-        panel específico conserva además las épocas observadas antes de restaurar.
+        Aumento de datos y comparación estadística multisemilla permanecen en el plan D6. Con parada
+        temprana, las curvas superiores muestran el modelo seleccionado; el panel específico
+        conserva además las épocas observadas antes de restaurar.
       </p>
     </section>
   </div>
