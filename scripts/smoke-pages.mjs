@@ -203,11 +203,23 @@ try {
       assert.equal(augmented.checkpoint.updates, 60);
       assert.equal(augmented.dataset.dataset.rowIds.length, 120);
       assert.equal(augmented.testConsulted, false);
+      await page.getByRole('combobox', { name: 'Intervención', exact: true }).selectOption('l2');
+      await page.getByLabel('Intensidad λ', { exact: true }).fill('0');
+      await page.getByRole('button', { name: 'Comparar múltiples semillas', exact: true }).click();
+      await page.getByRole('table', { name: 'Resultados por semilla', exact: true }).waitFor();
+      const downloadedMultiseed = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar informe multisemilla', exact: true }).click();
+      const multiseed = JSON.parse(await readFile(await (await downloadedMultiseed).path(), 'utf8'));
+      assert.equal(multiseed.format, 'neural-atlas.multiseed-report');
+      assert.deepEqual(multiseed.measurements.map(m => m.seed), [42, 43, 44]);
+      assert.equal(multiseed.summary.equalLoss, 3);
+      assert.equal(multiseed.summary.lossDelta.mean, 0);
+      assert.equal(multiseed.testConsulted, false);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5 and train-only augmentation experiment v6 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 and paired multiseed report at ${url}`,
       );
       failure = undefined;
       break;
