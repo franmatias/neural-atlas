@@ -175,11 +175,24 @@ try {
       assert.deepEqual(dropout.checkpoint.dropout.masks.map(m => m.length), [8, 8]);
       assert(dropout.checkpoint.dropout.masks.flat().every(v => v === 0 || v === 1));
       assert.equal(dropout.testConsulted, false);
+      await page.getByRole('combobox', { name: 'Intervención', exact: true }).selectOption('bn');
+      await page.getByRole('button', { name: 'Comparar con referencia', exact: true }).click();
+      await page.locator('.normalization-panel').waitFor();
+      const downloadedBN = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar ensayo JSON', exact: true }).click();
+      const bn = JSON.parse(await readFile(await (await downloadedBN).path(), 'utf8'));
+      assert.equal(bn.schemaVersion, 5);
+      assert.equal(bn.engineVersion, 5);
+      assert.equal(bn.config.spec.batchNormalization, true);
+      assert.equal(bn.checkpoint.batchStatistics.size, 12);
+      assert.equal(bn.checkpoint.model.layers[0].normalization.initialized, true);
+      assert.equal(bn.checkpoint.model.layers.at(-1).normalization, undefined);
+      assert.equal(bn.testConsulted, false);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3 and reproducible dropout experiment v4 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4 and batch normalization experiment v5 at ${url}`,
       );
       failure = undefined;
       break;

@@ -10,6 +10,10 @@ defineProps<{ control: GradientControl; updates: number }>();
       Último lote confirmado. La norma global incluye todos los pesos y sesgos, después de añadir
       L1/L2 y antes de aplicar el optimizador.
     </p>
+    <p v-if="control.rawAffine !== undefined">
+      BN: la norma global incluye también gamma y beta, sin penalización L1/L2. Su norma conjunta
+      pasa de {{ formatData(control.rawAffine) }} a {{ formatData(control.appliedAffine!) }}.
+    </p>
     <dl class="training-metrics">
       <div>
         <dt>Norma original</dt>
