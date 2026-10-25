@@ -36,6 +36,14 @@ export const baseCheckpointSchema = z.strictObject({
     .max(10001),
   gradientNorms: z.array(finite).max(7),
   baseline: finite,
+  dropout: z
+    .strictObject({
+      rng: z.strictObject({ state: z.number().int().min(0).max(4294967295), spare: z.null() }),
+      seenSamples: z.number().int().min(0).max(100000000),
+      lastSampleId: z.string().max(256).optional(),
+      masks: z.array(z.array(z.union([z.literal(0), z.literal(1)])).max(64)).max(6),
+    })
+    .optional(),
   gradientControl: z
     .strictObject({
       rawNorm: finite.min(0),

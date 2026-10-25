@@ -1,5 +1,6 @@
 import { cloneNetwork } from '@/domain/network/model';
 import { hashValue } from '@/domain/data/integrity';
+import { cloneDropout } from './dropout';
 import type { EpochPoint, TrainingSnapshot, TrainingState } from './session';
 export interface EarlyStoppingConfig {
   patience: number;
@@ -58,6 +59,7 @@ export function cloneSnapshot(state: TrainingSnapshot): TrainingSnapshot {
   return {
     ...base,
     model: cloneNetwork(state.model),
+    ...(state.dropout ? { dropout: cloneDropout(state.dropout) } : {}),
     optimizer: {
       step: state.optimizer.step,
       first: state.optimizer.first.map((v) => v.slice()),
