@@ -12,6 +12,7 @@ import DropoutPanel from '@/features/training/DropoutPanel.vue';
 import BatchNormalizationPanel from '@/features/training/BatchNormalizationPanel.vue';
 import AugmentationPanel from '@/features/training/AugmentationPanel.vue';
 import NetworkDiagram from '@/features/network/NetworkDiagram.vue';
+import MultiseedPanel from './MultiseedPanel.vue';
 const questions = {
   l1: 'Predice qué ocurrirá al aumentar λ de L1.',
   l2: 'Predice qué ocurrirá al aumentar λ de L2.',
@@ -38,6 +39,12 @@ let previousFocus: HTMLElement | null = null;
 watch(selected, () => {
   confirm.value = false;
 });
+watch(
+  () => session.result,
+  () => {
+    confirm.value = false;
+  },
+);
 watch(confirm, async (value) => {
   if (value) {
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -64,15 +71,17 @@ async function open() {
     opening.value = false;
   }
 }
-function download() {
+function download(study = false) {
   fileError.value = '';
   try {
-    const text = session.exportRun(selected.value),
+    const text = study ? session.exportStudy() : session.exportRun(selected.value),
       blob = new globalThis.Blob([text], { type: 'application/json' }),
       url = globalThis.URL.createObjectURL(blob),
       link = document.createElement('a');
     link.href = url;
-    link.download = 'neural-atlas-generalization.experiment.json';
+    link.download = study
+      ? 'neural-atlas-multiseed.report.json'
+      : 'neural-atlas-generalization.experiment.json';
     link.click();
     setTimeout(() => globalThis.URL.revokeObjectURL(url), 1000);
   } catch {
@@ -209,31 +218,67 @@ onBeforeRouteLeave(() => {
               max="4294967295"
               step="1"
           /></label>
+          <label
+            >Repeticiones emparejadas<select v-model.number="session.repetitions">
+              <option :value="3">3 semillas · 6 ensayos</option>
+              <option :value="5">5 semillas · 10 ensayos</option>
+              <option :value="10">10 semillas · 20 ensayos</option>
+            </select></label
+          >
+          <label
+            >Primera semilla de entrenamiento<input
+              v-model.number="session.firstSeed"
+              type="number"
+              min="0"
+              max="4294967295"
+              step="1"
+          /></label>
         </div>
       </fieldset>
       <div class="training-toolbar">
         <button class="button primary" :disabled="session.busy || opening" @click="start">
           Comparar con referencia</button
+        ><button
+          class="button secondary"
+          :disabled="session.busy || opening"
+          @click="
+            confirm = false;
+            session.runStudy();
+          "
+        >
+          Comparar múltiples semillas</button
         ><button v-if="session.busy" class="button secondary" @click="session.cancel()">
           Cancelar comparación
         </button>
       </div>
       <p role="status">
-        {{ session.busy ? 'Calculando dos ensayos en un Web Worker…' : session.notice }}
+        {{ session.busy ? 'Calculando en un Web Worker; puedes cancelar…' : session.notice }}
       </p>
       <p v-if="session.error || fileError" role="alert">{{ session.error || fileError }}</p>
       <p class="small muted">
-        Presupuesto: dos ensayos secuenciales, hasta 120 épocas cada uno. Este espacio conserva el
-        laboratorio activo; solo se sustituye si confirmas abrir un ensayo.
+        Presupuesto: 2 ensayos para una pareja, o 6–20 para múltiples semillas; secuenciales, hasta
+        120 épocas cada uno. En multisemilla, «Semilla compartida» fija los datos y la división; la
+        primera semilla enumera entrenamientos consecutivos (tras 4294967295 vuelve a 0). Este
+        espacio conserva el laboratorio activo; solo se sustituye si confirmas abrir un ensayo.
       </p>
     </section>
+    <MultiseedPanel
+      v-if="session.study"
+      :study="session.study"
+      :selected="session.selectedPair"
+      :disabled="session.busy || opening"
+      @inspect="session.selectPair"
+      @download="download(true)"
+    />
     <template v-if="session.result">
       <section class="training-panel">
         <h2>Resultados de la comparación</h2>
         <p>
           Medidos con la configuración de la última ejecución:
-          {{ session.result.options.intervention.toUpperCase() }} · semilla
-          {{ session.result.options.seed }} · {{ session.result.options.epochs }} épocas · ruido
+          {{ session.result.options.intervention.toUpperCase() }} · semilla datos
+          {{ session.result.options.seed }} · entrenamiento
+          {{ session.result.runs[0]!.experiment.config.seed }} ·
+          {{ session.result.options.epochs }} épocas · ruido
           {{ formatData(session.result.options.noise) }} ·
           {{
             session.result.options.intervention === 'clip'
@@ -365,7 +410,11 @@ onBeforeRouteLeave(() => {
           :speed="prefs.value.speed"
         />
         <div class="training-toolbar">
-          <button class="button secondary" :disabled="opening || session.busy" @click="download">
+          <button
+            class="button secondary"
+            :disabled="opening || session.busy"
+            @click="download(false)"
+          >
             Exportar ensayo JSON</button
           ><button
             class="button primary"
@@ -431,9 +480,9 @@ onBeforeRouteLeave(() => {
         gradiente; no es una prueba de menor sobreajuste ni limita directamente el paso de Adam.
       </p>
       <p class="small muted">
-        La comparación estadística multisemilla permanece en el plan D6. Con parada temprana, las
-        curvas superiores muestran el modelo seleccionado; el panel específico conserva además las
-        épocas observadas antes de restaurar.
+        El estudio multisemilla describe variación del entrenamiento con datos fijos. Con parada
+        temprana, las curvas superiores muestran el modelo seleccionado; el panel específico
+        conserva además las épocas observadas antes de restaurar.
       </p>
     </section>
   </div>

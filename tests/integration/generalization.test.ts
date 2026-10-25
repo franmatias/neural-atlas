@@ -144,3 +144,65 @@ it('un fallo al abrir o exportar conserva los resultados y permite cancelar conf
   await button('Exportar ensayo JSON').trigger('click');
   expect(wrapper.get('[role=alert]').text()).toContain('No se ha exportado');
 });
+it('multisemilla se ejecuta en el Worker, inspecciona parejas y exporta sin tocar el laboratorio', async () => {
+  const { wrapper, session } = await render();
+  const training = useTrainingStore(),
+    before = training.state;
+  expect(() => session.exportStudy()).toThrow('NO_STUDY');
+  expect(() => session.selectPair(0)).toThrow('NO_PAIR');
+  const button = (name: string) => wrapper.findAll('button').find((b) => b.text() === name)!;
+  await button('Comparar múltiples semillas').trigger('click');
+  await flushPromises();
+  expect(session.study!.measurements.map((m) => m.seed)).toEqual([42, 43, 44]);
+  expect(
+    wrapper.get('table[aria-label="Resultados por semilla"]').findAll('tbody tr'),
+  ).toHaveLength(3);
+  expect(training.state).toBe(before);
+  await button('Abrir ensayo en entrenamiento').trigger('click');
+  const select = wrapper
+    .findAll('select')
+    .find((s) => s.element.parentElement?.textContent?.includes('Pareja para inspeccionar'))!;
+  await select.setValue('2');
+  await flushPromises();
+  expect(wrapper.find('[role=group]').exists()).toBe(false);
+  expect(session.result!.runs[1]!.experiment.config.seed).toBe(44);
+  expect(importExperiment(session.exportRun(1)).config.seed).toBe(44);
+  session.options.seed = 123;
+  expect(JSON.parse(session.exportStudy()).options.comparison.seed).toBe(42);
+  vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:study');
+  vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+  vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  vi.useFakeTimers();
+  await button('Exportar informe multisemilla').trigger('click');
+  await vi.advanceTimersByTimeAsync(1000);
+  expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:study');
+  vi.spyOn(session, 'exportStudy').mockImplementation(() => {
+    throw new Error('invalid');
+  });
+  await button('Exportar informe multisemilla').trigger('click');
+  expect(wrapper.get('[role=alert]').text()).toContain('No se ha exportado');
+});
+it('cancelar, fallar o abandonar un estudio conserva resultados completos y una pareja simple sustituye el estudio', async () => {
+  const { session, router } = await render();
+  await session.runStudy();
+  const previous = session.study;
+  const previousPair = session.result;
+  let pending = session.runStudy();
+  session.cancel();
+  await pending;
+  expect(session.study).toBe(previous);
+  expect(session.result).toBe(previousPair);
+  session.firstSeed = -1;
+  await session.runStudy();
+  expect(session.error).toContain('límites');
+  expect(session.study).toBe(previous);
+  session.firstSeed = 0;
+  pending = session.runStudy();
+  await router.push('/lab/entrenamiento');
+  await pending;
+  expect(session.busy).toBe(false);
+  expect(session.study).toBe(previous);
+  await session.run();
+  expect(session.study).toBeUndefined();
+  expect(session.result!.runs).toHaveLength(2);
+});
