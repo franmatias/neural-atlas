@@ -57,8 +57,17 @@ export interface GeneralizationResult {
   counts: { train: number; validation: number; test: number };
 }
 /** Matched synthetic runs: one intervention, no test scoring and no live laboratory mutation. */
-export function compareGeneralization(raw: GeneralizationOptions): GeneralizationResult {
+export function compareGeneralization(
+  raw: GeneralizationOptions,
+  trainingSeed?: number,
+): GeneralizationResult {
   const options = generalizationOptions.parse(raw);
+  const seed = z
+    .number()
+    .int()
+    .min(0)
+    .max(4294967295)
+    .parse(trainingSeed ?? options.seed);
   const dataset = generateDataset({
     ...defaultGenerator,
     recipe: options.intervention === 'augmentation' ? options.augmentationPolicy : 'moons',
@@ -96,7 +105,7 @@ export function compareGeneralization(raw: GeneralizationOptions): Generalizatio
           : {}),
       },
       initialization: 'xavier',
-      seed: options.seed,
+      seed,
       optimizer: { ...defaultOptimizer },
       epochs: options.epochs,
       batchSize: 12,
