@@ -15,6 +15,12 @@ export const pairedComparisonOptions = z.strictObject({
   pipelineB: optionsSchema,
   testPreviouslyConsulted: z.boolean(),
   hypothesis: z.string().max(2000),
+  budget: z
+    .discriminatedUnion('kind', [
+      z.strictObject({ kind: z.literal('updates'), limit: z.number().int().min(1).max(10000) }),
+      z.strictObject({ kind: z.literal('time'), limit: z.number().int().min(50).max(3000) }),
+    ])
+    .optional(),
 });
 export type PairedComparisonOptions = z.infer<typeof pairedComparisonOptions>;
 export interface ConfigurationDifference {
@@ -76,10 +82,11 @@ export function compareModels(raw: PairedComparisonOptions) {
       i ? 'B · Intervención' : 'A · Referencia',
       pipelines[i],
       options.testPreviouslyConsulted,
+      options.budget,
     ),
   );
-  const a = runs[0]!.experiment.checkpoint.history.at(-1)!;
-  const b = runs[1]!.experiment.checkpoint.history.at(-1)!;
+  const a = runs[0]!.stop?.point ?? runs[0]!.experiment.checkpoint.history.at(-1)!;
+  const b = runs[1]!.stop?.point ?? runs[1]!.experiment.checkpoint.history.at(-1)!;
   const comparableLoss = dataset.task !== 'regression' || configs[0]!.loss === configs[1]!.loss;
   const models = runs.map((run) => modelFromExperiment(run.experiment));
   const lookup = new Map(dataset.rows.map((row) => [row.id, row]));
@@ -135,7 +142,8 @@ export function exportPairedComparison(result: PairedComparisonResult) {
         config: run.experiment.config,
         initialHash: run.initialHash,
         pipelineHash: run.experiment.pipelineHash,
-        point: run.experiment.checkpoint.history.at(-1),
+        point: run.stop?.point ?? run.experiment.checkpoint.history.at(-1),
+        ...(run.stop ? { stop: run.stop } : {}),
         observedEpoch:
           run.experiment.checkpoint.earlyStopping?.stoppedAt ?? run.experiment.checkpoint.epoch,
         selectedEpoch: run.experiment.checkpoint.epoch,

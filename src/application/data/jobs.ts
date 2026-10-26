@@ -1,3 +1,13 @@
+import {
+  predictionDispersion,
+  type DispersionOptions,
+  type DispersionResult,
+} from '@/application/training/prediction-dispersion';
+import {
+  compareDistributionShift,
+  type ShiftOptions,
+  type ShiftResult,
+} from '@/application/training/distribution-shift';
 import { generateDataset } from '@/domain/data/generate';
 import {
   compareModels,
@@ -60,6 +70,8 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  dispersion: DispersionOptions;
+  shift: ShiftOptions;
   abComparison: PairedComparisonOptions;
   crossValidation: CrossValidationOptions;
   capacity: CapacityOptions;
@@ -93,6 +105,8 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  dispersion: DispersionResult;
+  shift: ShiftResult;
   abComparison: PairedComparisonResult;
   crossValidation: CrossValidationResult;
   capacity: CapacityResult;
@@ -121,6 +135,10 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'dispersion':
+      return predictionDispersion(job.payload);
+    case 'shift':
+      return compareDistributionShift(job.payload);
     case 'abComparison':
       return compareModels(job.payload);
     case 'crossValidation':

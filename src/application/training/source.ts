@@ -74,6 +74,9 @@ export function trainingSource(
     config: {
       ...config,
       optimizer: { ...config.optimizer },
+      ...(config.segments
+        ? { segments: config.segments.map((s) => ({ ...s, optimizer: { ...s.optimizer } })) }
+        : {}),
       ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
       ...(config.earlyStopping ? { earlyStopping: { ...config.earlyStopping } } : {}),
       ...(config.dropout ? { dropout: { ...config.dropout } } : {}),
