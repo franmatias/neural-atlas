@@ -4,6 +4,11 @@ import {
   type DispersionResult,
 } from '@/application/training/prediction-dispersion';
 import {
+  approximateFunction,
+  type FunctionOptions,
+  type FunctionResult,
+} from '@/application/training/function-approximation';
+import {
   compareDistributionShift,
   type ShiftOptions,
   type ShiftResult,
@@ -70,6 +75,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  functionApproximation: FunctionOptions;
   dispersion: DispersionOptions;
   shift: ShiftOptions;
   abComparison: PairedComparisonOptions;
@@ -105,6 +111,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  functionApproximation: FunctionResult;
   dispersion: DispersionResult;
   shift: ShiftResult;
   abComparison: PairedComparisonResult;
@@ -135,6 +142,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'functionApproximation':
+      return approximateFunction(job.payload);
     case 'dispersion':
       return predictionDispersion(job.payload);
     case 'shift':
