@@ -68,6 +68,11 @@ const metric = (value: number | null) => (value === null ? 'No definida' : forma
         >Abrir clasificador visual multiclase</RouterLink
       >
     </p>
+    <p v-else>
+      <RouterLink class="button primary" to="/lab/regresion/funciones"
+        >Construir una función con neuronas</RouterLink
+      >
+    </p>
     <p class="page-intro">
       {{
         mode === 'regression'

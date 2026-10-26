@@ -79,6 +79,11 @@ export const routes = [
     props: { mode: 'classification' },
   },
   {
+    path: '/lab/regresion/funciones',
+    name: 'function-approximation',
+    component: () => import('@/features/functions/FunctionsPage.vue'),
+  },
+  {
     path: '/lab/regresion',
     name: 'regression',
     component: () => import('@/features/training/EvaluationPage.vue'),
