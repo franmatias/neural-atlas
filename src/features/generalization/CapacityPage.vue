@@ -344,8 +344,12 @@ onBeforeRouteLeave(() => {
   display: grid;
   gap: 8px;
   max-width: 560px;
+  min-width: 0;
+  width: 100%;
 }
 .inspection-select select {
+  min-width: 0;
+  width: 100%;
   min-height: 44px;
   padding: 10px;
   border: 1px solid var(--line);

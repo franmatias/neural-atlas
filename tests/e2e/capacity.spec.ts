@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import AxeBuilder from '@axe-core/playwright';
-async function run(page: import('@playwright/test').Page) {
+async function run(page: import('@playwright/test').Page, seed = 42) {
   await page.goto('#/lab/generalizacion');
   await page
     .getByRole('link', { name: 'Explorar capacidad y tamaño de datos', exact: true })
     .click();
   await page.getByLabel('Épocas del estudio', { exact: true }).fill('5');
+  await page.getByLabel('Primera semilla de entrenamiento', { exact: true }).fill(String(seed));
   await page.getByRole('button', { name: 'Comparar capacidad y datos', exact: true }).click();
   await expect(
     page
@@ -60,7 +61,7 @@ test('capacidad real: informe, modelo, apertura y recuperación de un prefijo ex
   ).toBeVisible();
 });
 test('curvas de tamaño accesibles en móvil, temas y movimiento reducido', async ({ page }) => {
-  await run(page);
+  await run(page, 4294967295);
   await page
     .getByRole('combobox', { name: 'Arquitectura en la curva', exact: true })
     .selectOption('linear');
@@ -82,10 +83,26 @@ test('curvas de tamaño accesibles en móvil, temas y movimiento reducido', asyn
       (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
         .violations,
     ).toEqual([]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-      true,
-    );
+    for (const width of [360, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      expect(
+        await page
+          .getByRole('combobox', { name: 'Ensayo de capacidad', exact: true })
+          .evaluate(
+            (el) =>
+              el.getBoundingClientRect().width <= el.parentElement!.getBoundingClientRect().width,
+          ),
+      ).toBe(true);
+    }
   }
+  // Native select intrinsic widths depend on OS fonts. Exercise wide text metrics explicitly.
+  await page.addStyleTag({
+    content: '.capacity-page select { font-family: monospace; font-size: 18px; }',
+  });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 test('cancelación y navegación conservan el último estudio y la configuración ejecutada', async ({
   page,
