@@ -1,3 +1,5 @@
+import { pipelineSchema } from './pipeline-schema';
+import { derivedLabel, validateDerived } from '@/domain/data/derived';
 import { z } from '@/shared/validation';
 import { appVersion } from '@/shared/version';
 import { guardJson } from '@/application/data/json-files';
@@ -14,50 +16,9 @@ const text = z.string().max(4096),
   finite = z.number().finite();
 const id = z.string().refine(safeId),
   hash = z.string().regex(/^[a-f0-9]{64}$/);
-const pipelineSchema = z.strictObject({
-  version: z.union([z.literal(1), z.literal(2)]),
-  inputFeatureIds: z.array(id).min(1).max(32),
-  outputFeatureIds: z.array(text).min(1).max(32),
-  outputLabels: z.array(text).min(1).max(32),
-  fittedOn: z.strictObject({ split: z.literal('train'), idsHash: hash }),
-  dataHash: hash,
-  splitHash: hash,
-  options: z.strictObject({
-    featureIds: z.array(id).min(1).max(32),
-    imputation: z.enum(['mean', 'median', 'mode']),
-    scaling: z.enum(['none', 'minmax', 'standard', 'robust']),
-    missingIndicators: z.boolean(),
-  }),
-  columns: z
-    .array(
-      z.discriminatedUnion('kind', [
-        z.strictObject({
-          kind: z.literal('numeric'),
-          id,
-          fill: finite,
-          mean: finite,
-          std: finite.min(0),
-          min: finite,
-          max: finite,
-          constant: z.boolean(),
-          robust: z
-            .strictObject({ median: finite, q1: finite, q3: finite, iqr: finite.min(0) })
-            .optional(),
-        }),
-        z.strictObject({
-          kind: z.literal('categorical'),
-          id,
-          fill: text,
-          vocabulary: z.array(text).min(1).max(32),
-        }),
-      ]),
-    )
-    .min(1)
-    .max(32),
-});
 const modelSchema = z.strictObject({
   format: z.literal('neural-atlas.model'),
-  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
   engineVersion: z.union([z.literal(1), z.literal(2)]),
   appVersion: z
     .string()
@@ -97,7 +58,7 @@ const modelSchema = z.strictObject({
 });
 export interface InferenceModel {
   format: 'neural-atlas.model';
-  schemaVersion: 1 | 2 | 3;
+  schemaVersion: 1 | 2 | 3 | 4;
   engineVersion: 1 | 2;
   appVersion: string;
   savedAt: string;
@@ -122,12 +83,17 @@ export function validateInferenceModel(model: InferenceModel): void {
   validateNetwork(model.network);
   const version = model.network.spec.batchNormalization ? 2 : 1;
   if (
-    model.schemaVersion !== (model.pipeline.options.scaling === 'robust' ? 3 : version) ||
+    model.schemaVersion !==
+      (model.pipeline.options.derived
+        ? 4
+        : model.pipeline.options.scaling === 'robust'
+          ? 3
+          : version) ||
     model.engineVersion !== version
   )
     throw new Error('MODEL_VERSION');
   const p = model.pipeline;
-  if (p.version !== (p.options.scaling === 'robust' ? 2 : 1))
+  if (p.version !== (p.options.derived ? 3 : p.options.scaling === 'robust' ? 2 : 1))
     throw new Error('MODEL_PIPELINE_VERSION');
   const featureIds = model.features.map((feature) => feature.id);
   if (
@@ -143,28 +109,7 @@ export function validateInferenceModel(model: InferenceModel): void {
     const feature = model.features[index]!;
     if (column.kind !== feature.kind) throw new Error('MODEL_FEATURES');
     if (column.kind === 'numeric') {
-      if (
-        column.min > column.max ||
-        column.constant !== (column.min === column.max) ||
-        (column.constant && column.std !== 0) ||
-        column.mean < column.min ||
-        column.mean > column.max ||
-        column.fill < column.min ||
-        column.fill > column.max
-      )
-        throw new Error('MODEL_STATISTICS');
-      const r = column.robust;
-      if (
-        p.options.scaling === 'robust'
-          ? !r ||
-            r.q1 < column.min ||
-            r.q3 > column.max ||
-            r.q1 > r.median ||
-            r.median > r.q3 ||
-            r.iqr !== r.q3 - r.q1
-          : r !== undefined
-      )
-        throw new Error('MODEL_STATISTICS');
+      validateNumeric(column, p.options.scaling);
       outputs.push(`${column.id}:numeric`);
       labels.push(feature.name);
     } else {
@@ -184,6 +129,22 @@ export function validateInferenceModel(model: InferenceModel): void {
       labels.push(`isMissing(${feature.name})`);
     }
   });
+  if (p.options.derived) {
+    validateDerived(
+      p.options.derived,
+      p.columns.filter((c) => c.kind === 'numeric').map((c) => c.id),
+    );
+    if (!p.derived || p.derived.length !== p.options.derived.length)
+      throw new Error('MODEL_DIMENSIONS');
+    const names = new Map(model.features.map((f) => [f.id, f.name]));
+    p.options.derived.forEach((d, i) => {
+      const column = p.derived![i]!;
+      if (column.id !== d.id) throw new Error('MODEL_FEATURES');
+      validateNumeric(column, p.options.scaling);
+      outputs.push('derived:' + d.id + ':numeric');
+      labels.push(derivedLabel(d, names));
+    });
+  } else if (p.derived) throw new Error('MODEL_DIMENSIONS');
   if (
     hashValue(outputs) !== hashValue(p.outputFeatureIds) ||
     hashValue(labels) !== hashValue(p.outputLabels) ||
@@ -220,8 +181,13 @@ export function modelFromExperiment(experiment: Experiment): InferenceModel {
   const pipeline = structuredClone(prepared.pipeline);
   const model: InferenceModel = {
     format: 'neural-atlas.model',
-    schemaVersion:
-      pipeline.options.scaling === 'robust' ? 3 : network.spec.batchNormalization ? 2 : 1,
+    schemaVersion: pipeline.options.derived
+      ? 4
+      : pipeline.options.scaling === 'robust'
+        ? 3
+        : network.spec.batchNormalization
+          ? 2
+          : 1,
     engineVersion: network.spec.batchNormalization ? 2 : 1,
     appVersion,
     savedAt: new Date().toISOString(),
@@ -319,4 +285,32 @@ export function predictWithModel(model: InferenceModel, values: Record<string, C
     label: decision === null ? null : model.classOrder[decision]!,
     warnings,
   };
+}
+
+function validateNumeric(
+  column: import('@/domain/data/pipeline').NumericState,
+  scaling: import('@/domain/data/pipeline').Scaling,
+) {
+  if (
+    column.min > column.max ||
+    column.constant !== (column.min === column.max) ||
+    (column.constant && column.std !== 0) ||
+    column.mean < column.min ||
+    column.mean > column.max ||
+    column.fill < column.min ||
+    column.fill > column.max
+  )
+    throw new Error('MODEL_STATISTICS');
+  const r = column.robust;
+  if (
+    scaling === 'robust'
+      ? !r ||
+        r.q1 < column.min ||
+        r.q3 > column.max ||
+        r.q1 > r.median ||
+        r.median > r.q3 ||
+        r.iqr !== r.q3 - r.q1
+      : r !== undefined
+  )
+    throw new Error('MODEL_STATISTICS');
 }

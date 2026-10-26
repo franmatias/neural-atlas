@@ -1,3 +1,4 @@
+import { applySegment, segmentContext, validateSegments, type TrainingSegment } from './segments';
 import {
   createNetwork,
   validateNetwork,
@@ -59,6 +60,7 @@ export interface TrainingConfig {
   seed: number;
   initialization: Initialization;
   optimizer: OptimizerConfig;
+  segments?: TrainingSegment[];
   epochs: number;
   batchSize: number;
   loss: RegressionLoss;
@@ -117,17 +119,19 @@ export function configHash(input: TrainingInput) {
     splitHash: input.splitHash,
     pipelineHash: input.pipelineHash,
     classOrder: input.classOrder,
-    engineVersion: input.config.augmentation
-      ? 6
-      : input.config.spec.batchNormalization
-        ? 5
-        : input.config.dropout
-          ? 4
-          : input.config.earlyStopping
-            ? 3
-            : input.config.regularization
-              ? 2
-              : 1,
+    engineVersion: input.config.segments
+      ? 9
+      : input.config.augmentation
+        ? 6
+        : input.config.spec.batchNormalization
+          ? 5
+          : input.config.dropout
+            ? 4
+            : input.config.earlyStopping
+              ? 3
+              : input.config.regularization
+                ? 2
+                : 1,
   });
 }
 export function validateSamples(samples: Samples, config: TrainingConfig) {
@@ -156,6 +160,13 @@ export function validateTraining(input: TrainingInput) {
   validateSpec(c.spec);
   validateOptimizer(c.optimizer);
   validateSeed(c.seed);
+  if (c.segments) {
+    if (c.earlyStopping) throw new RangeError('SEGMENTS_EARLY_STOPPING');
+    validateSegments(
+      c.segments,
+      c.epochs * batchCount(input.train.ids.length, c.batchSize, !!c.spec.batchNormalization),
+    );
+  }
   if (c.regularization) validateRegularization(c.regularization);
   if (c.earlyStopping) validateEarlyConfig(c.earlyStopping);
   if (c.dropout) validateDropout(c.dropout, c.spec.hidden);
@@ -322,6 +333,8 @@ export function* advanceBatch(
   if (state.frozen) throw new RangeError('FROZEN');
   if (state.earlyStopping?.reason) throw new RangeError('INVALID_STATE');
   if (state.epoch >= input.config.epochs) throw new RangeError('COMPLETED');
+  state = applySegment(state, input.config);
+  const segment = segmentContext(input.config, state.updates);
   const indices = state.order.slice(
     state.cursor,
     batchEnd(
@@ -386,8 +399,9 @@ export function* advanceBatch(
     state.model,
     state.optimizer,
     controlled?.gradient ?? gradient,
-    input.config.optimizer,
-    learningRate(input.config.optimizer, state.epoch, input.config.epochs),
+    segment.optimizer,
+    learningRate(segment.optimizer, state.epoch, input.config.epochs),
+    state.updates - segment.resetAt + 1,
   );
   if (statistics) commitStatistics(candidate.model, statistics);
   const gradientNorms =

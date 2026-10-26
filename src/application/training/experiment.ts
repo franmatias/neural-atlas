@@ -1,3 +1,6 @@
+import { segmentRecords } from '@/domain/training/segments';
+import { optionsSchema } from './pipeline-schema';
+export { optionsSchema } from './pipeline-schema';
 import { z } from '@/shared/validation';
 import { exportDatasetJson, importDatasetJson, guardJson } from '@/application/data/json-files';
 import { hashValue, utf8Length } from '@/domain/data/integrity';
@@ -17,22 +20,35 @@ import { checkpointSchema, checkpointWire, checkpointFromWire } from './checkpoi
 
 export const experimentLimit = 64 * 1024 * 1024;
 const finite = z.number().finite();
+export const optimizerSchema = z.strictObject({
+  kind: z.enum(['sgd', 'momentum', 'rmsprop', 'adam']),
+  rate: finite,
+  momentum: finite,
+  rho: finite,
+  beta1: finite,
+  beta2: finite,
+  epsilon: finite,
+  scheduler: z.enum(['constant', 'step', 'cosine']),
+  period: z.number(),
+  minimum: finite,
+});
 export const configSchema = z.strictObject({
   spec,
   seed: z.number(),
   initialization: z.enum(['zero', 'xavier', 'he']),
-  optimizer: z.strictObject({
-    kind: z.enum(['sgd', 'momentum', 'rmsprop', 'adam']),
-    rate: finite,
-    momentum: finite,
-    rho: finite,
-    beta1: finite,
-    beta2: finite,
-    epsilon: finite,
-    scheduler: z.enum(['constant', 'step', 'cosine']),
-    period: z.number(),
-    minimum: finite,
-  }),
+  optimizer: optimizerSchema,
+  segments: z
+    .array(
+      z.strictObject({
+        id: z.string().regex(/^[a-z0-9-]{1,40}$/),
+        atUpdate: z.number().int().min(0),
+        optimizer: optimizerSchema,
+        restart: z.boolean(),
+      }),
+    )
+    .min(1)
+    .max(16)
+    .optional(),
   epochs: z.number(),
   batchSize: z.number(),
   loss: z.enum(['mse', 'mae']),
@@ -56,12 +72,6 @@ export const configSchema = z.strictObject({
     })
     .optional(),
 });
-export const optionsSchema = z.strictObject({
-  featureIds: z.array(z.string()).min(1).max(32),
-  imputation: z.enum(['mean', 'median', 'mode']),
-  scaling: z.enum(['none', 'minmax', 'standard', 'robust']),
-  missingIndicators: z.boolean(),
-});
 const fileSchema = z.strictObject({
   format: z.literal('neural-atlas.experiment'),
   schemaVersion: z.union([
@@ -72,6 +82,8 @@ const fileSchema = z.strictObject({
     z.literal(5),
     z.literal(6),
     z.literal(7),
+    z.literal(8),
+    z.literal(9),
   ]),
   engineVersion: z.union([
     z.literal(1),
@@ -81,6 +93,8 @@ const fileSchema = z.strictObject({
     z.literal(5),
     z.literal(6),
     z.literal(7),
+    z.literal(8),
+    z.literal(9),
   ]),
   appVersion: z
     .string()
@@ -95,11 +109,24 @@ const fileSchema = z.strictObject({
   threshold: finite.min(0).max(1),
   positive: z.number().int().min(0).max(9),
   testConsulted: z.boolean(),
+  timeline: z
+    .array(
+      z.strictObject({
+        id: z.string(),
+        atUpdate: z.number().int().min(0),
+        optimizer: optimizerSchema,
+        restart: z.boolean(),
+        configHash: z.string().regex(/^[a-f0-9]{64}$/),
+      }),
+    )
+    .min(2)
+    .max(17)
+    .optional(),
 });
 export interface Experiment {
   format: 'neural-atlas.experiment';
-  schemaVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-  engineVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  schemaVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  engineVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   appVersion: string;
   savedAt: string;
   dataset: unknown;
@@ -110,6 +137,7 @@ export interface Experiment {
   threshold: number;
   positive: number;
   testConsulted: boolean;
+  timeline?: ReturnType<typeof segmentRecords>;
 }
 /** Explicit tensor conversion: JSON never relies on typed-array enumerable properties. */
 export function experimentWire(value: Experiment) {
@@ -117,20 +145,7 @@ export function experimentWire(value: Experiment) {
 }
 export function prepareExperiment(value: Experiment) {
   const wire = fileSchema.parse(experimentWire(value));
-  const version =
-    wire.pipelineOptions.scaling === 'robust'
-      ? 7
-      : wire.config.augmentation
-        ? 6
-        : wire.config.spec.batchNormalization
-          ? 5
-          : wire.config.dropout
-            ? 4
-            : wire.config.earlyStopping
-              ? 3
-              : wire.config.regularization
-                ? 2
-                : 1;
+  const version = experimentVersion(wire.config, wire.pipelineOptions);
   if (wire.schemaVersion !== version || wire.engineVersion !== version)
     throw new Error('EXPERIMENT_VERSION');
   const { dataset, split } = importDatasetJson(JSON.stringify(wire.dataset));
@@ -145,6 +160,12 @@ export function prepareExperiment(value: Experiment) {
     (wire.config.spec.task === 'binary' && wire.positive > 1)
   )
     throw new Error('EXPERIMENT_CONFIG');
+  if (
+    wire.config.segments
+      ? !wire.timeline || hashValue(wire.timeline) !== hashValue(segmentRecords(source.input))
+      : !!wire.timeline
+  )
+    throw new Error('EXPERIMENT_SEGMENTS');
   validateCheckpoint(value.checkpoint, source.input);
   return { dataset, split, prepared, source };
 }
@@ -161,43 +182,18 @@ export function captureExperiment(
 ): Experiment {
   const result: Experiment = {
     format: 'neural-atlas.experiment',
-    schemaVersion:
-      pipelineOptions.scaling === 'robust'
-        ? 7
-        : config.augmentation
-          ? 6
-          : config.spec.batchNormalization
-            ? 5
-            : config.dropout
-              ? 4
-              : config.earlyStopping
-                ? 3
-                : config.regularization
-                  ? 2
-                  : 1,
-    engineVersion:
-      pipelineOptions.scaling === 'robust'
-        ? 7
-        : config.augmentation
-          ? 6
-          : config.spec.batchNormalization
-            ? 5
-            : config.dropout
-              ? 4
-              : config.earlyStopping
-                ? 3
-                : config.regularization
-                  ? 2
-                  : 1,
+    schemaVersion: experimentVersion(config, pipelineOptions),
+    engineVersion: experimentVersion(config, pipelineOptions),
     appVersion,
     savedAt: new Date().toISOString(),
     dataset: JSON.parse(exportDatasetJson(dataset, split)) as unknown,
-    pipelineOptions: { ...pipelineOptions, featureIds: [...pipelineOptions.featureIds] },
+    pipelineOptions: structuredClone(pipelineOptions),
     pipelineHash,
     config: {
       ...config,
       spec: { ...config.spec, hidden: [...config.spec.hidden] },
       optimizer: { ...config.optimizer },
+      ...(config.segments ? { segments: structuredClone(config.segments) } : {}),
       ...(config.regularization ? { regularization: { ...config.regularization } } : {}),
       ...(config.earlyStopping ? { earlyStopping: { ...config.earlyStopping } } : {}),
       ...(config.dropout ? { dropout: { ...config.dropout } } : {}),
@@ -207,6 +203,17 @@ export function captureExperiment(
     threshold,
     positive,
     testConsulted,
+    ...(config.segments
+      ? {
+          timeline: segmentRecords({
+            config,
+            dataHash: split.dataHash,
+            splitHash: split.splitHash,
+            pipelineHash,
+            classOrder: dataset.classOrder ?? [],
+          }),
+        }
+      : {}),
   };
   prepareExperiment(result);
   return result;
@@ -233,4 +240,18 @@ export function importExperiment(text: string): Experiment {
   };
   prepareExperiment(value);
   return value;
+}
+
+function experimentVersion(
+  config: TrainingConfig,
+  options: PipelineOptions,
+): Experiment['schemaVersion'] {
+  if (config.segments) return 9;
+  if (options.derived) return 8;
+  if (options.scaling === 'robust') return 7;
+  if (config.augmentation) return 6;
+  if (config.spec.batchNormalization) return 5;
+  if (config.dropout) return 4;
+  if (config.earlyStopping) return 3;
+  return config.regularization ? 2 : 1;
 }

@@ -77,6 +77,7 @@ export function* optimizerStep(
   gradient: Float64Array[],
   config: OptimizerConfig,
   rate: number,
+  iteration = state.step + 1,
 ) {
   const next = cloneNetwork(model),
     vectors = parameterVectors(next);
@@ -89,6 +90,8 @@ export function* optimizerStep(
   const first = state.first.map((v) => v.slice()),
     second = state.second.map((v) => v.slice());
   const step = state.step + 1;
+  if (!Number.isInteger(iteration) || iteration < 1 || iteration > step)
+    throw new RangeError('OPTIMIZER_ITERATION');
   for (let i = 0; i < vectors.length; i++) {
     const vector = vectors[i]!,
       g = gradient[i]!,
@@ -111,8 +114,8 @@ export function* optimizerStep(
           v[j] = config.beta2 * v[j]! + (1 - config.beta2) * value ** 2;
           update =
             m[j]! /
-            (1 - config.beta1 ** step) /
-            (Math.sqrt(v[j]! / (1 - config.beta2 ** step)) + config.epsilon);
+            (1 - config.beta1 ** iteration) /
+            (Math.sqrt(v[j]! / (1 - config.beta2 ** iteration)) + config.epsilon);
         }
         vector[j]! -= rate * update;
         if (

@@ -1,3 +1,4 @@
+import { derivedLabel, derivedValue, validateDerived, type DerivedFeature } from './derived';
 import { hashValue } from './integrity';
 import { mode, numericStatistics, quantile } from './statistics';
 import { DataError, type Cell, type DataSplit, type Dataset, type Sample } from './types';
@@ -9,6 +10,7 @@ export interface PipelineOptions {
   imputation: Imputation;
   scaling: Scaling;
   missingIndicators: boolean;
+  derived?: DerivedFeature[];
 }
 export interface NumericState {
   kind: 'numeric';
@@ -28,7 +30,7 @@ export interface CategoryState {
   vocabulary: string[];
 }
 export interface PipelineState {
-  version: 1 | 2;
+  version: 1 | 2 | 3;
   inputFeatureIds: string[];
   outputFeatureIds: string[];
   outputLabels: string[];
@@ -37,6 +39,7 @@ export interface PipelineState {
   splitHash: string;
   options: PipelineOptions;
   columns: (NumericState | CategoryState)[];
+  derived?: NumericState[];
 }
 export function fitPipeline(
   dataset: Dataset,
@@ -112,16 +115,54 @@ export function fitPipeline(
     }
     if (outputFeatureIds.length > 32) throw new DataError('DIMENSIONS');
   }
+  const derived: NumericState[] = [];
+  if (options.derived) {
+    const numeric = columns.filter((c): c is NumericState => c.kind === 'numeric');
+    validateDerived(
+      options.derived,
+      numeric.map((c) => c.id),
+    );
+    const fills = new Map(numeric.map((c) => [c.id, c.fill]));
+    const names = new Map(dataset.features.map((f) => [f.id, f.name]));
+    for (const d of options.derived) {
+      const values = train.map((row) => derivedValue(d, row, fills));
+      const stats = numericStatistics(values),
+        sorted = [...values].sort((a, b) => a - b);
+      const q1 = quantile(sorted, 0.25),
+        q3 = quantile(sorted, 0.75);
+      derived.push({
+        kind: 'numeric',
+        id: d.id,
+        fill: stats.mean,
+        mean: stats.mean,
+        std: stats.std,
+        min: stats.min,
+        max: stats.max,
+        constant: stats.min === stats.max,
+        ...(options.scaling === 'robust'
+          ? { robust: { median: stats.median, q1, q3, iqr: q3 - q1 } }
+          : {}),
+      });
+      outputFeatureIds.push('derived:' + d.id + ':numeric');
+      outputLabels.push(derivedLabel(d, names));
+    }
+    if (outputFeatureIds.length > 32) throw new DataError('DIMENSIONS');
+  }
   return {
-    version: options.scaling === 'robust' ? 2 : 1,
+    version: options.derived ? 3 : options.scaling === 'robust' ? 2 : 1,
     inputFeatureIds: [...options.featureIds],
     outputFeatureIds,
     outputLabels,
     fittedOn: { split: 'train', idsHash: hashValue(split.train) },
     dataHash: split.dataHash,
     splitHash: split.splitHash,
-    options: { ...options, featureIds: [...options.featureIds] },
+    options: {
+      ...options,
+      featureIds: [...options.featureIds],
+      ...(options.derived ? { derived: structuredClone(options.derived) } : {}),
+    },
     columns,
+    ...(options.derived ? { derived } : {}),
   };
 }
 export function transformRow(row: Sample, state: PipelineState): number[] {
@@ -132,17 +173,7 @@ export function transformRow(row: Sample, state: PipelineState): number[] {
     const value = raw === null ? column.fill : raw;
     if (column.kind === 'numeric') {
       if (typeof value !== 'number') throw new DataError('PIPELINE', column.id);
-      const scaled =
-        state.options.scaling === 'none'
-          ? value
-          : column.constant
-            ? 0
-            : state.options.scaling === 'minmax'
-              ? (value - column.min) / (column.max - column.min)
-              : state.options.scaling === 'robust'
-                ? (value - column.robust!.median) / (column.robust!.iqr || 1)
-                : (value - column.mean) / (column.std || 1);
-      if (!Number.isFinite(scaled)) throw new DataError('NON_FINITE', column.id);
+      const scaled = scaleNumeric(value, column, state.options.scaling);
       output.push(scaled);
     } else {
       const index = column.vocabulary.indexOf(String(value));
@@ -150,5 +181,31 @@ export function transformRow(row: Sample, state: PipelineState): number[] {
     }
     if (state.options.missingIndicators) output.push(Number(raw === null));
   }
+  if (state.options.derived) {
+    const fills = new Map(
+      state.columns
+        .filter((c): c is NumericState => c.kind === 'numeric')
+        .map((c) => [c.id, c.fill]),
+    );
+    state.options.derived.forEach((d, i) =>
+      output.push(
+        scaleNumeric(derivedValue(d, row, fills), state.derived![i]!, state.options.scaling),
+      ),
+    );
+  }
   return output;
+}
+export function scaleNumeric(value: number, column: NumericState, scaling: Scaling): number {
+  const scaled =
+    scaling === 'none'
+      ? value
+      : column.constant
+        ? 0
+        : scaling === 'minmax'
+          ? (value - column.min) / (column.max - column.min)
+          : scaling === 'robust'
+            ? (value - column.robust!.median) / (column.robust!.iqr || 1)
+            : (value - column.mean) / (column.std || 1);
+  if (!Number.isFinite(scaled)) throw new DataError('NON_FINITE', column.id);
+  return scaled;
 }

@@ -4,7 +4,7 @@ import { defaultGenerator } from '@/domain/data/types';
 import { splitDataset } from '@/domain/data/split';
 import { defaultSpec } from '@/domain/network/model';
 import { defaultOptimizer } from '@/domain/training/optimizer';
-import { type TrainingConfig } from '@/domain/training/session';
+import { type EpochPoint, type TrainingConfig } from '@/domain/training/session';
 import { defaultRegularization } from '@/domain/training/regularization';
 import { trainStudyRun } from './study-run';
 import { type Experiment } from './experiment';
@@ -47,6 +47,13 @@ export interface GeneralizationRun {
   weights: number;
   trainingRows: number;
   augmentation?: AugmentationReport;
+  stop?: {
+    kind: 'updates' | 'time';
+    limit: number;
+    elapsedMs: number;
+    reason: 'updates' | 'time' | 'horizon';
+    point: EpochPoint;
+  };
 }
 export interface GeneralizationResult {
   options: GeneralizationOptions;
