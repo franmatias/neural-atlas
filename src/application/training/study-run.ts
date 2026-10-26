@@ -1,5 +1,5 @@
 import type { Dataset, DataSplit } from '@/domain/data/types';
-import { fitPipeline, transformRow } from '@/domain/data/pipeline';
+import { fitPipeline, transformRow, type PipelineOptions } from '@/domain/data/pipeline';
 import { stableNorm } from '@/domain/network/model';
 import { initialSession, advanceBatch, type TrainingConfig } from '@/domain/training/session';
 import { exhaust } from '@/domain/training/kernel';
@@ -14,13 +14,19 @@ export function trainStudyRun(
   split: DataSplit,
   config: TrainingConfig,
   label: string,
+  pipelineOptions?: PipelineOptions,
+  testConsulted = false,
 ): GeneralizationRun {
-  const pipeline = fitPipeline(dataset, split, {
-    featureIds: dataset.features.map((f) => f.id),
-    imputation: 'mean',
-    scaling: 'standard',
-    missingIndicators: false,
-  });
+  const pipeline = fitPipeline(
+    dataset,
+    split,
+    pipelineOptions ?? {
+      featureIds: dataset.features.map((f) => f.id),
+      imputation: 'mean',
+      scaling: 'standard',
+      missingIndicators: false,
+    },
+  );
   const source = trainingSource(
     dataset,
     split,
@@ -52,7 +58,7 @@ export function trainStudyRun(
       state,
       0.5,
       1,
-      false,
+      testConsulted,
     ),
     weightNorm: stableNorm(weights),
     smallWeights: weights.filter((w) => Math.abs(w) < 0.01).length,

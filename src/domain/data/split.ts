@@ -10,6 +10,7 @@ import {
   type SplitOptions,
 } from './types';
 import { validateDataset } from './validation';
+import { foldPartition } from './folds';
 export function allocate(count: number, ratios: readonly number[]): number[] {
   const ideal = ratios.map((r) => r * count);
   const sizes = ideal.map(Math.floor);
@@ -227,6 +228,11 @@ export function splitDataset(dataset: Dataset, options: SplitOptions): DataSplit
     });
   }
   const selection = options.selection;
+  const fold = options.fold;
+  if (fold) {
+    if (selection || strategy === 'temporal') throw new DataError('OPTIONS', 'fold');
+    result = foldPartition(dataset, result, fold);
+  }
   if (selection) {
     validateSeed(selection.seed);
     if (
@@ -263,6 +269,7 @@ export function splitDataset(dataset: Dataset, options: SplitOptions): DataSplit
   return {
     ...result,
     ...(selection ? { selection: { ...selection } } : {}),
+    ...(fold ? { fold: { ...fold } } : {}),
     strategy,
     seed: options.seed,
     ratios: options.ratios,
@@ -274,6 +281,7 @@ export function splitDataset(dataset: Dataset, options: SplitOptions): DataSplit
       seed: options.seed,
       dataHash,
       ...(selection ? { selection } : {}),
+      ...(fold ? { fold } : {}),
     }),
   };
 }
@@ -284,6 +292,7 @@ export function validateSplit(dataset: Dataset, split: DataSplit): void {
     ratios: split.ratios,
     seed: split.seed,
     ...(split.selection ? { selection: split.selection } : {}),
+    ...(split.fold ? { fold: split.fold } : {}),
   });
   if (hashValue(expected) !== hashValue(split)) throw new DataError('INTEGRITY', 'splitHash');
 }

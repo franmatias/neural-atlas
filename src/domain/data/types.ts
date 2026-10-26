@@ -57,13 +57,22 @@ export interface TrainSelection {
   count: number;
   seed: number;
 }
+export interface FoldSelection {
+  kind: 'k-fold-v1';
+  count: number;
+  index: number;
+  seed: number;
+  strategy: 'random' | 'stratified' | 'grouped';
+}
 export interface SplitOptions {
+  fold?: FoldSelection;
   strategy: SplitStrategy;
   seed: number;
   ratios: readonly [number, number, number];
   selection?: TrainSelection;
 }
 export interface DataSplit {
+  fold?: FoldSelection;
   selection?: TrainSelection;
   strategy: SplitStrategy;
   train: string[];

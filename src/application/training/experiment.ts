@@ -17,7 +17,7 @@ import { checkpointSchema, checkpointWire, checkpointFromWire } from './checkpoi
 
 export const experimentLimit = 64 * 1024 * 1024;
 const finite = z.number().finite();
-const configSchema = z.strictObject({
+export const configSchema = z.strictObject({
   spec,
   seed: z.number(),
   initialization: z.enum(['zero', 'xavier', 'he']),
@@ -56,7 +56,7 @@ const configSchema = z.strictObject({
     })
     .optional(),
 });
-const optionsSchema = z.strictObject({
+export const optionsSchema = z.strictObject({
   featureIds: z.array(z.string()).min(1).max(32),
   imputation: z.enum(['mean', 'median', 'mode']),
   scaling: z.enum(['none', 'minmax', 'standard']),

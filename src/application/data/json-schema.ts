@@ -29,6 +29,15 @@ const annotation = z.strictObject({
   sourceId: id.optional(),
 });
 const split = z.strictObject({
+  fold: z
+    .strictObject({
+      kind: z.literal('k-fold-v1'),
+      count: z.number().int().min(2).max(10),
+      index: z.number().int().min(0).max(9),
+      seed,
+      strategy: z.enum(['random', 'stratified', 'grouped']),
+    })
+    .optional(),
   selection: z
     .strictObject({
       kind: z.literal('balanced-prefix-v1'),
@@ -56,7 +65,7 @@ const split = z.strictObject({
 export const datasetFileSchema = z
   .strictObject({
     format: z.literal('neural-atlas.dataset'),
-    schemaVersion: z.union([z.literal(1), z.literal(2)]),
+    schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
     dataHash: z
       .string()
       .regex(/^[a-f0-9]{64}$/)
@@ -91,4 +100,7 @@ export const datasetFileSchema = z
     }),
     split: split.optional(),
   })
-  .refine((file) => file.schemaVersion === (file.split?.selection ? 2 : 1), 'DATASET_VERSION');
+  .refine(
+    (file) => file.schemaVersion === (file.split?.fold ? 3 : file.split?.selection ? 2 : 1),
+    'DATASET_VERSION',
+  );
