@@ -78,3 +78,5 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 ## Qué revisar antes de D1
 
 Nombre/identidad, secuencia didáctica, casos prioritarios, alcance de CNN, límites de datos/modelos y formato de intercambio. Los valores de rendimiento/cobertura son objetivos; su cumplimiento se medirá con la aplicación implementada. Los controles documentales no sustituyen a esas pruebas.
+
+[43 · Diseño e implementación de los laboratorios visuales](43-laboratorios-visuales-de-decision.md): sandbox binario y clasificador multiclase con entrenamiento real.

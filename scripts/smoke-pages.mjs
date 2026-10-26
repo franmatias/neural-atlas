@@ -270,11 +270,26 @@ try {
       assert.equal(cvFold.checkpoint.order.length, 64);
       assert.equal(cvFold.checkpoint.updates, 30);
       assert.equal(cvFold.config.earlyStopping, undefined);
+      for (const [route, task, classes] of [['arquitectura/frontera', 'binary', 2], ['clasificacion/visual', 'multiclass', 4]]) {
+        await page.goto(new URL('#/lab/' + route, url).href);
+        await page.getByTestId('visual-epoch').filter({ hasText: /^0$/ }).waitFor();
+        await page.getByRole('slider', { name: /^Ritmo/ }).fill('0');
+        await page.getByRole('button', { name: 'Una época', exact: true }).click();
+        await page.getByTestId('visual-epoch').filter({ hasText: /^1$/ }).waitFor();
+        const downloadedVisual = page.waitForEvent('download');
+        await page.getByRole('button', { name: 'Exportar experimento visual', exact: true }).click();
+        const visual = JSON.parse(await readFile(await (await downloadedVisual).path(), 'utf8'));
+        assert.equal(visual.appVersion, expectedVersion);
+        assert.equal(visual.config.spec.task, task);
+        assert.equal(visual.config.spec.classes, classes);
+        assert.equal(visual.checkpoint.epoch, 1);
+        assert.equal(visual.testConsulted, false);
+      }
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7 and fold dataset v3 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 and two visual decision laboratories at ${url}`,
       );
       failure = undefined;
       break;

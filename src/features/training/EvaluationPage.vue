@@ -62,6 +62,11 @@ const metric = (value: number | null) => (value === null ? 'No definida' : forma
   <div class="page training-page">
     <p class="eyebrow">{{ mode === 'regression' ? 'L10 / REGRESIÓN' : 'L09 / CLASIFICACIÓN' }}</p>
     <h1>{{ mode === 'regression' ? 'Del número al error.' : 'Más allá de los aciertos.' }}</h1>
+    <p v-if="mode === 'classification'">
+      <RouterLink class="button primary" to="/lab/clasificacion/visual"
+        >Abrir clasificador visual multiclase</RouterLink
+      >
+    </p>
     <p class="page-intro">
       {{
         mode === 'regression'

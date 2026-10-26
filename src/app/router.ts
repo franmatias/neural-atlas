@@ -18,6 +18,16 @@ export const routes = [
     component: () => import('@/features/neuron/NeuronPage.vue'),
   },
   {
+    path: '/lab/arquitectura/frontera',
+    name: 'binary-visual',
+    component: () => import('@/features/decision/BinaryDecisionPage.vue'),
+  },
+  {
+    path: '/lab/clasificacion/visual',
+    name: 'multiclass-visual',
+    component: () => import('@/features/decision/MulticlassDecisionPage.vue'),
+  },
+  {
     path: '/lab/arquitectura',
     name: 'architecture',
     component: () => import('@/features/network/ArchitecturePage.vue'),

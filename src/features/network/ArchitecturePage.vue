@@ -63,6 +63,11 @@ onScopeDispose(state.cancel);
     <p class="eyebrow">L03 / {{ t('net.hidden') }}</p>
     <h1>{{ t('net.archTitle') }}</h1>
     <p class="muted">{{ t('net.archIntro') }}</p>
+    <p>
+      <RouterLink class="button primary" to="/lab/arquitectura/frontera"
+        >Abrir sandbox visual de separación de clases</RouterLink
+      >
+    </p>
     <div class="data-view-switch" role="group" :aria-label="t('net.archTitle')">
       <button
         v-for="item in ['single', 'xor', 'build'] as const"
