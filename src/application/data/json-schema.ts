@@ -29,6 +29,13 @@ const annotation = z.strictObject({
   sourceId: id.optional(),
 });
 const split = z.strictObject({
+  selection: z
+    .strictObject({
+      kind: z.literal('balanced-prefix-v1'),
+      count: z.number().int().min(4).max(10000),
+      seed,
+    })
+    .optional(),
   strategy: z.enum(['random', 'stratified', 'grouped', 'stratified-grouped', 'temporal']),
   train: list(id),
   validation: list(id),
@@ -46,40 +53,42 @@ const split = z.strictObject({
     }),
   ),
 });
-export const datasetFileSchema = z.strictObject({
-  format: z.literal('neural-atlas.dataset'),
-  schemaVersion: z.literal(1),
-  dataHash: z
-    .string()
-    .regex(/^[a-f0-9]{64}$/)
-    .optional(),
-  provenance: z.strictObject({
-    appVersion: z.string().max(100),
-    synthetic: z.boolean(),
-    recipeExact: z.boolean(),
-  }),
-  dataset: z.strictObject({
-    id,
-    revision: z.number().int().positive(),
-    task: z.enum(['binary', 'multiclass', 'regression']),
-    features: z.array(feature).min(1).max(63),
-    targetName: text.min(1),
-    rowIds: list(id),
-    targets: list(cell),
-    columns: z.record(id, list(cell)),
-    origins: list(z.enum(['generated', 'imported', 'manual', 'augmented'])),
-    groupIds: list(id.nullable()).optional(),
-    timestamps: list(text.nullable()).optional(),
-    annotations: list(annotation.nullable()).optional(),
-    classOrder: z.array(text.min(1)).min(2).max(10).optional(),
-    recipe: z
-      .strictObject({
-        id: z.enum(recipeIds),
-        version: z.literal(1),
-        seed,
-        options: generatorSchema,
-      })
+export const datasetFileSchema = z
+  .strictObject({
+    format: z.literal('neural-atlas.dataset'),
+    schemaVersion: z.union([z.literal(1), z.literal(2)]),
+    dataHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
       .optional(),
-  }),
-  split: split.optional(),
-});
+    provenance: z.strictObject({
+      appVersion: z.string().max(100),
+      synthetic: z.boolean(),
+      recipeExact: z.boolean(),
+    }),
+    dataset: z.strictObject({
+      id,
+      revision: z.number().int().positive(),
+      task: z.enum(['binary', 'multiclass', 'regression']),
+      features: z.array(feature).min(1).max(63),
+      targetName: text.min(1),
+      rowIds: list(id),
+      targets: list(cell),
+      columns: z.record(id, list(cell)),
+      origins: list(z.enum(['generated', 'imported', 'manual', 'augmented'])),
+      groupIds: list(id.nullable()).optional(),
+      timestamps: list(text.nullable()).optional(),
+      annotations: list(annotation.nullable()).optional(),
+      classOrder: z.array(text.min(1)).min(2).max(10).optional(),
+      recipe: z
+        .strictObject({
+          id: z.enum(recipeIds),
+          version: z.literal(1),
+          seed,
+          options: generatorSchema,
+        })
+        .optional(),
+    }),
+    split: split.optional(),
+  })
+  .refine((file) => file.schemaVersion === (file.split?.selection ? 2 : 1), 'DATASET_VERSION');

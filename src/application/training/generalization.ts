@@ -2,15 +2,12 @@ import { z } from '@/shared/validation';
 import { generateDataset } from '@/domain/data/generate';
 import { defaultGenerator } from '@/domain/data/types';
 import { splitDataset } from '@/domain/data/split';
-import { fitPipeline, transformRow } from '@/domain/data/pipeline';
-import { defaultSpec, stableNorm } from '@/domain/network/model';
+import { defaultSpec } from '@/domain/network/model';
 import { defaultOptimizer } from '@/domain/training/optimizer';
-import { initialSession, advanceBatch, type TrainingConfig } from '@/domain/training/session';
+import { type TrainingConfig } from '@/domain/training/session';
 import { defaultRegularization } from '@/domain/training/regularization';
-import { exhaust } from '@/domain/training/kernel';
-import { hashValue } from '@/domain/data/integrity';
-import { trainingSource } from './source';
-import { captureExperiment, type Experiment } from './experiment';
+import { trainStudyRun } from './study-run';
+import { type Experiment } from './experiment';
 import type { AugmentationReport } from '@/domain/data/augmentation';
 export const generalizationOptions = z.strictObject({
   seed: z.number().int().min(0).max(4294967295),
@@ -80,13 +77,6 @@ export function compareGeneralization(
     ratios: [0.6, 0.2, 0.2],
     seed: options.seed,
   });
-  const pipeline = fitPipeline(dataset, split, {
-    featureIds: dataset.features.map((f) => f.id),
-    imputation: 'mean',
-    scaling: 'standard',
-    missingIndicators: false,
-  });
-  const prepared = { pipeline, matrix: dataset.rows.map((row) => transformRow(row, pipeline)) };
   const runs: GeneralizationRun[] = [];
   for (const intervention of [false, true]) {
     const regularization = { ...defaultRegularization };
@@ -128,47 +118,18 @@ export function compareGeneralization(
         ? { earlyStopping: { patience: options.patience, minDelta: options.minDelta } }
         : {}),
     };
-    const source = trainingSource(dataset, split, prepared, config);
-    let state = exhaust(initialSession(source.input));
-    const initialHash = hashValue(
-      state.model.layers.map((l) => ({
-        weights: Array.from(l.weights),
-        biases: Array.from(l.biases),
-      })),
-    );
-    while (state.epoch < options.epochs && !state.earlyStopping?.reason)
-      state = exhaust(advanceBatch(state, source.input));
-    const weights = state.model.layers.flatMap((layer) => Array.from(layer.weights));
-    runs.push({
-      label: intervention
-        ? options.intervention === 'augmentation'
-          ? 'Aumento de datos'
-          : options.intervention === 'dropout'
-            ? 'Dropout invertido'
-            : options.intervention === 'early'
-              ? 'Parada temprana'
-              : options.intervention === 'clip'
-                ? 'Recorte global'
-                : options.intervention.toUpperCase()
-        : 'Referencia sin intervención',
-      initialHash,
-      experiment: captureExperiment(
-        dataset,
-        split,
-        pipeline.options,
-        source.input.pipelineHash,
-        source.input.config,
-        state,
-        0.5,
-        1,
-        false,
-      ),
-      weightNorm: stableNorm(weights),
-      smallWeights: weights.filter((w) => Math.abs(w) < 0.01).length,
-      weights: weights.length,
-      trainingRows: source.input.train.ids.length,
-      ...(source.augmentation ? { augmentation: source.augmentation } : {}),
-    });
+    const label = intervention
+      ? options.intervention === 'augmentation'
+        ? 'Aumento de datos'
+        : options.intervention === 'dropout'
+          ? 'Dropout invertido'
+          : options.intervention === 'early'
+            ? 'Parada temprana'
+            : options.intervention === 'clip'
+              ? 'Recorte global'
+              : options.intervention.toUpperCase()
+      : 'Referencia sin intervención';
+    runs.push(trainStudyRun(dataset, split, config, label));
   }
   return {
     options,

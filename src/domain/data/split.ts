@@ -226,6 +226,32 @@ export function splitDataset(dataset: Dataset, options: SplitOptions): DataSplit
       });
     });
   }
+  const selection = options.selection;
+  if (selection) {
+    validateSeed(selection.seed);
+    if (
+      selection.kind !== 'balanced-prefix-v1' ||
+      strategy !== 'stratified' ||
+      dataset.task !== 'binary' ||
+      rows.some((r) => r.groupId) ||
+      !Number.isInteger(selection.count) ||
+      selection.count < 4 ||
+      selection.count % 2 !== 0 ||
+      selection.count > result.train.length
+    )
+      throw new DataError('OPTIONS', 'selection');
+    const lookup = new Map(rows.map((r) => [r.id, r]));
+    const classes = dataset.classOrder!.map((c, i) =>
+      shuffle(
+        result.train.filter((id) => String(lookup.get(id)!.target) === c),
+        selection.seed,
+        `subset-${i}`,
+      ),
+    );
+    if (classes[0]!.length !== classes[1]!.length)
+      throw new DataError('OPTIONS', 'balanced-selection');
+    result.train = classes[0]!.flatMap((id, i) => [id, classes[1]![i]!]).slice(0, selection.count);
+  }
   const supportByClass: DataSplit['supportByClass'] = Object.fromEntries(
     (dataset.classOrder ?? []).map((c) => [c, { train: 0, validation: 0, test: 0 }]),
   );
@@ -236,12 +262,19 @@ export function splitDataset(dataset: Dataset, options: SplitOptions): DataSplit
   const dataHash = datasetHash(dataset);
   return {
     ...result,
+    ...(selection ? { selection: { ...selection } } : {}),
     strategy,
     seed: options.seed,
     ratios: options.ratios,
     dataHash,
     supportByClass,
-    splitHash: hashValue({ ...result, strategy, seed: options.seed, dataHash }),
+    splitHash: hashValue({
+      ...result,
+      strategy,
+      seed: options.seed,
+      dataHash,
+      ...(selection ? { selection } : {}),
+    }),
   };
 }
 export function validateSplit(dataset: Dataset, split: DataSplit): void {
@@ -250,6 +283,7 @@ export function validateSplit(dataset: Dataset, split: DataSplit): void {
     strategy: split.strategy,
     ratios: split.ratios,
     seed: split.seed,
+    ...(split.selection ? { selection: split.selection } : {}),
   });
   if (hashValue(expected) !== hashValue(split)) throw new DataError('INTEGRITY', 'splitHash');
 }
