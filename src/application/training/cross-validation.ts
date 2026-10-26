@@ -16,6 +16,7 @@ export const crossValidationOptions = z.strictObject({
   seed: z.number().int().min(0).max(0xffffffff),
   strategy: z.enum(['random', 'stratified', 'grouped']),
   testPreviouslyConsulted: z.boolean(),
+  hypothesis: z.string().max(2000),
 });
 export type CrossValidationOptions = z.infer<typeof crossValidationOptions>;
 export function crossValidate(raw: CrossValidationOptions) {

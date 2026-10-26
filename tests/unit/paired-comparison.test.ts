@@ -86,6 +86,13 @@ it('diferencias estructurales, ausencias y pipelines se distinguen sin ocultar v
     'pipeline.scaling',
   ]);
   expect(result.runs[0]!.initialHash).not.toBe(result.runs[1]!.initialHash);
+  options.b.spec.hidden = [4];
+  options.pipelineB.scaling = 'standard';
+  options.pipelineB.featureIds = ['x1'];
+  const ablation = compareModels(options);
+  expect(ablation.differences.map((d) => d.field)).toEqual(['pipeline.featureIds']);
+  expect(ablation.runs[1]!.experiment.config.spec.inputs).toBe(1);
+  expect(ablation.probes[0]!.predictions[1]!.transformed).toHaveLength(1);
 });
 it('preflight rechaza fuente sin split y presupuestos incompatibles antes de ejecutar', () => {
   const { options, dataset } = fixture();
@@ -107,4 +114,17 @@ it('preflight rechaza fuente sin split y presupuestos incompatibles antes de eje
     'COMPARISON_BUDGET',
   );
   expect(handleDataJob(1, { kind: 'abComparison', payload: options }).ok).toBe(true);
+});
+it('MSE y MAE de regresión no se restan como si fueran la misma función', () => {
+  const { options } = fixture();
+  const dataset = generateDataset({ ...defaultGenerator, recipe: 'sine', count: 120 });
+  const split = splitDataset(dataset, { strategy: 'random', ratios: [0.6, 0.2, 0.2], seed: 42 });
+  const result = compareModels({
+    ...options,
+    datasetJson: exportDatasetJson(dataset, split),
+    b: { ...options.b, loss: 'mae' },
+  });
+  expect(result.delta.trainLoss).toBeNull();
+  expect(result.delta.validationLoss).toBeNull();
+  expect(Number.isFinite(result.delta.validationScore)).toBe(true);
 });

@@ -6,6 +6,7 @@ import { fitPipeline, transformRow } from '@/domain/data/pipeline';
 import { trainingSource } from './source';
 import { trainingBudget } from '@/domain/training/budget';
 import { trainStudyRun } from './study-run';
+import { modelFromExperiment, predictWithModel } from './inference-model';
 export const pairedComparisonOptions = z.strictObject({
   datasetJson: z.string().max(jsonLimit),
   a: configSchema,
@@ -79,19 +80,37 @@ export function compareModels(raw: PairedComparisonOptions) {
   );
   const a = runs[0]!.experiment.checkpoint.history.at(-1)!;
   const b = runs[1]!.experiment.checkpoint.history.at(-1)!;
+  const comparableLoss = dataset.task !== 'regression' || configs[0]!.loss === configs[1]!.loss;
+  const models = runs.map((run) => modelFromExperiment(run.experiment));
+  const lookup = new Map(dataset.rows.map((row) => [row.id, row]));
+  const probes = split.validation.slice(0, 8).map((id) => {
+    const row = lookup.get(id)!;
+    return {
+      id,
+      features: { ...row.features },
+      target: row.target,
+      predictions: models.map((model) =>
+        predictWithModel(
+          model,
+          Object.fromEntries(model.features.map((f) => [f.id, row.features[f.id]!])),
+        ),
+      ),
+    };
+  });
   return {
     options,
     task: dataset.task,
     provenance: { dataHash: split.dataHash, splitHash: split.splitHash },
     runs,
+    probes,
     budgets: prepared.map((p) => p.budget),
     differences: configurationDifferences(
       { config: prepared[0]!.source.input.config, pipeline: options.pipelineA },
       { config: prepared[1]!.source.input.config, pipeline: options.pipelineB },
-    ),
+    ).filter((d) => d.field !== 'config.spec.inputs'),
     delta: {
-      validationLoss: b.validationLoss - a.validationLoss,
-      trainLoss: b.trainLoss - a.trainLoss,
+      validationLoss: comparableLoss ? b.validationLoss - a.validationLoss : null,
+      trainLoss: comparableLoss ? b.trainLoss - a.trainLoss : null,
       validationScore: b.validationScore - a.validationScore,
     },
     testEvaluatedInStudy: false as const,
@@ -108,6 +127,7 @@ export function exportPairedComparison(result: PairedComparisonResult) {
       task: result.task,
       provenance: result.provenance,
       differences: result.differences,
+      probes: result.probes,
       delta: result.delta,
       budgets: result.budgets,
       runs: result.runs.map((run) => ({

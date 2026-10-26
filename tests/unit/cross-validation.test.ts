@@ -53,6 +53,7 @@ function fixture(recipe: 'moons' | 'flowers' | 'sine' = 'moons') {
     count: 5,
     strategy: recipe === 'sine' ? 'random' : 'stratified',
     testPreviouslyConsulted: false,
+    hypothesis: '',
   };
   return { dataset, base, options };
 }
