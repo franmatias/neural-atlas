@@ -37,7 +37,7 @@ export const es = {
   'nav.label': 'Navegación principal',
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
-  'app.delivery': 'Evaluación y funciones · D8 en curso',
+  'app.delivery': 'Evaluación, funciones y ética · D8',
   'app.available': '{count} laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',

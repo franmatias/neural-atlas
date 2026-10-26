@@ -73,6 +73,11 @@ export const routes = [
     component: () => import('@/features/training/TrainingPage.vue'),
   },
   {
+    path: '/lab/clasificacion/etica',
+    name: 'group-ethics',
+    component: () => import('@/features/ethics/EthicsPage.vue'),
+  },
+  {
     path: '/lab/clasificacion',
     name: 'classification',
     component: () => import('@/features/training/EvaluationPage.vue'),

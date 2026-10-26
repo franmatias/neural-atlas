@@ -67,6 +67,9 @@ const metric = (value: number | null) => (value === null ? 'No definida' : forma
       <RouterLink class="button primary" to="/lab/clasificacion/visual"
         >Abrir clasificador visual multiclase</RouterLink
       >
+      <RouterLink class="button secondary" to="/lab/clasificacion/etica"
+        >Ética y métricas por grupos</RouterLink
+      >
     </p>
     <p v-else>
       <RouterLink class="button primary" to="/lab/regresion/funciones"

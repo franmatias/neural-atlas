@@ -369,9 +369,33 @@ try {
       assert.equal(functionCheckpoint.config.spec.inputs,1);assert.equal(functionCheckpoint.checkpoint.epoch,1);assert.equal(functionCheckpoint.checkpoint.updates,9);
       await page.goto(new URL('#/lab/entrenamiento',url).href);
       await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
+      await page.goto(new URL('#/lab/clasificacion/etica',url).href);
+      await page.getByRole('button',{name:'Generar cohorte de auditoría',exact:true}).click();
+      await page.getByTestId('audit-reference-accuracy').waitFor();
+      async function auditReport() {
+        const pending=page.waitForEvent('download');
+        await page.getByRole('button',{name:'Exportar informe de ética y grupos',exact:true}).click();
+        return JSON.parse(await readFile(await(await pending).path(),'utf8'));
+      }
+      const audit=await auditReport();
+      assert.equal(audit.format,'neural-atlas.group-audit-report');assert.equal(audit.appVersion,expectedVersion);
+      assert.equal(audit.options.seed,42);assert.equal(audit.rows.length,400);assert.equal(audit.dataHash.length,64);
+      assert(audit.analysis.reference.overall.accuracy>0.9);assert(audit.analysis.reference.groups.G2.recall<0.8);
+      await page.getByLabel('Umbral común alternativo',{exact:true}).fill('0');
+      await page.getByLabel('Umbral común alternativo',{exact:true}).press('Enter');
+      const auditAlternative=await auditReport();
+      assert.equal(auditAlternative.dataHash,audit.dataHash);assert.deepEqual(auditAlternative.rows,audit.rows);
+      assert.equal(auditAlternative.analysis.alternative.overall.selection,1);assert.equal(auditAlternative.analysis.alternative.overall.fn,0);
+      await page.getByRole('combobox',{name:'Caso de ética',exact:true}).selectOption('absent');
+      await page.getByRole('button',{name:'Generar cohorte de auditoría',exact:true}).click();
+      await expect(page.getByRole('button',{name:'Generar cohorte de auditoría',exact:true})).toBeEnabled();
+      const absentAudit=await auditReport();
+      assert.equal(absentAudit.analysis.reference.groups.G2.n,0);assert.equal(absentAudit.analysis.reference.groups.G2.accuracy,null);
+      await page.goto(new URL('#/lab/entrenamiento',url).href);
+      await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report and resumable function approximation at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit at ${url}`,
       );
       failure = undefined;
       break;
