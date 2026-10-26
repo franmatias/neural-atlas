@@ -112,6 +112,7 @@ export function exportCapacity(result: CapacityResult): string {
   return JSON.stringify(
     {
       format: 'neural-atlas.capacity-report',
+      metric: 'binary-cross-entropy',
       schemaVersion: 1,
       appVersion,
       options: result.options,

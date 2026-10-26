@@ -2,7 +2,8 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
-  workers: process.env.CI ? 2 : 3,
+  // Keep native browser pressure bounded on Windows as well as CI.
+  workers: 2,
   timeout: 60000,
   expect: { timeout: 6000 },
   retries: process.env.CI ? 1 : 0,

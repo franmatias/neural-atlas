@@ -215,11 +215,29 @@ try {
       assert.equal(multiseed.summary.equalLoss, 3);
       assert.equal(multiseed.summary.lossDelta.mean, 0);
       assert.equal(multiseed.testConsulted, false);
+      await page.goto(new URL('#/lab/generalizacion/capacidad', url).href);
+      await page.getByLabel('Épocas del estudio', { exact: true }).fill('5');
+      await page.getByRole('button', { name: 'Comparar capacidad y datos', exact: true }).click();
+      await page.getByRole('table', { name: 'Resumen de capacidad y tamaño', exact: true }).waitFor();
+      const downloadedCapacity = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar informe de capacidad', exact: true }).click();
+      const capacity = JSON.parse(await readFile(await (await downloadedCapacity).path(), 'utf8'));
+      assert.equal(capacity.format, 'neural-atlas.capacity-report');
+      assert.equal(capacity.measurements.length, 27);
+      assert.deepEqual(capacity.summary.filter(p => p.size === 24).map(p => p.parameters), [3, 9, 337]);
+      assert.equal(capacity.testConsulted, false);
+      const downloadedSubset = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar ensayo de capacidad', exact: true }).click();
+      const subset = JSON.parse(await readFile(await (await downloadedSubset).path(), 'utf8'));
+      assert.equal(subset.dataset.schemaVersion, 2);
+      assert.equal(subset.dataset.split.selection.count, 24);
+      assert.equal(subset.checkpoint.order.length, 24);
+      assert.equal(subset.checkpoint.updates, 10);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 and paired multiseed report at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report and nested capacity study at ${url}`,
       );
       failure = undefined;
       break;

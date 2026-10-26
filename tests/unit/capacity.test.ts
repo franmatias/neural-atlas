@@ -24,6 +24,7 @@ import { defaultOptimizer } from '@/domain/training/optimizer';
 import { initialSession, advanceBatch } from '@/domain/training/session';
 import { exhaust } from '@/domain/training/kernel';
 import { captureExperiment } from '@/application/training/experiment';
+// These cases train complete 27-run matrices under coverage; browser latency has separate tests.
 const base = { strategy: 'stratified' as const, ratios: [0.6, 0.2, 0.2] as const, seed: 42 };
 const selection = { kind: 'balanced-prefix-v1' as const, count: 24, seed: 42 };
 const dataset = () => generateDataset({ ...defaultGenerator, recipe: 'moons', count: 120 });
@@ -155,47 +156,53 @@ it('pipeline aprende únicamente del prefijo, sin consultar filas omitidas ni va
   expect(a.fittedOn).toEqual(b.fittedOn);
   expect(a.dataHash).not.toBe(b.dataHash);
 });
-it('capacidad: 27 ensayos reales, conteos de parámetros, semillas y presupuesto declarado', () => {
-  const result = compareCapacity({ ...defaultCapacity, epochs: 5 });
-  expect(result.trials).toHaveLength(27);
-  expect(result.summary).toHaveLength(9);
-  expect(result.summary.filter((s) => s.size === 24).map((s) => s.parameters)).toEqual([3, 9, 337]);
-  for (const trial of result.trials) {
-    const restored = importExperiment(exportExperiment(trial.run.experiment));
-    const prepared = prepareExperiment(restored);
-    expect(prepared.source.input.train.ids).toHaveLength(trial.size);
-    expect(prepared.split.selection!.count).toBe(trial.size);
-    expect(restored.checkpoint.updates).toBe((trial.size / 12) * 5);
-    expect(restored.config.seed).toBe(trial.seed);
-    expect(restored.testConsulted).toBe(false);
-    const same = result.trials.filter(
-      (t) => t.capacity === trial.capacity && t.seed === trial.seed,
+it(
+  'capacidad: 27 ensayos reales, conteos de parámetros, semillas y presupuesto declarado',
+  { timeout: 30000 },
+  () => {
+    const result = compareCapacity({ ...defaultCapacity, epochs: 5 });
+    expect(result.trials).toHaveLength(27);
+    expect(result.summary).toHaveLength(9);
+    expect(result.summary.filter((s) => s.size === 24).map((s) => s.parameters)).toEqual([
+      3, 9, 337,
+    ]);
+    for (const trial of result.trials) {
+      const restored = importExperiment(exportExperiment(trial.run.experiment));
+      const prepared = prepareExperiment(restored);
+      expect(prepared.source.input.train.ids).toHaveLength(trial.size);
+      expect(prepared.split.selection!.count).toBe(trial.size);
+      expect(restored.checkpoint.updates).toBe((trial.size / 12) * 5);
+      expect(restored.config.seed).toBe(trial.seed);
+      expect(restored.testConsulted).toBe(false);
+      const same = result.trials.filter(
+        (t) => t.capacity === trial.capacity && t.seed === trial.seed,
+      );
+      expect(new Set(same.map((t) => t.run.initialHash)).size).toBe(1);
+      const model = fromExperiment(restored);
+      const imported = importInferenceModel(exportInferenceModel(model));
+      expect(predictWithModel(imported, prepared.dataset.rows[0]!.features)).toEqual(
+        predictWithModel(model, prepared.dataset.rows[0]!.features),
+      );
+    }
+    const group = result.summary[0]!,
+      trials = result.trials.filter((t) => t.size === group.size && t.capacity === group.capacity);
+    const values = trials.map((t) => t.run.experiment.checkpoint.history.at(-1)!);
+    expect(group.validation.mean).toBeCloseTo(
+      values.reduce((s, p) => s + p.validationLoss, 0) / 3,
+      14,
     );
-    expect(new Set(same.map((t) => t.run.initialHash)).size).toBe(1);
-    const model = fromExperiment(restored);
-    const imported = importInferenceModel(exportInferenceModel(model));
-    expect(predictWithModel(imported, prepared.dataset.rows[0]!.features)).toEqual(
-      predictWithModel(model, prepared.dataset.rows[0]!.features),
+    expect(group.gap.mean).toBeCloseTo(
+      values.reduce((s, p) => s + p.validationLoss - p.trainLoss, 0) / 3,
+      14,
     );
-  }
-  const group = result.summary[0]!,
-    trials = result.trials.filter((t) => t.size === group.size && t.capacity === group.capacity);
-  const values = trials.map((t) => t.run.experiment.checkpoint.history.at(-1)!);
-  expect(group.validation.mean).toBeCloseTo(
-    values.reduce((s, p) => s + p.validationLoss, 0) / 3,
-    14,
-  );
-  expect(group.gap.mean).toBeCloseTo(
-    values.reduce((s, p) => s + p.validationLoss - p.trainLoss, 0) / 3,
-    14,
-  );
-  const report = JSON.parse(exportCapacity(result));
-  expect(report.format).toBe('neural-atlas.capacity-report');
-  expect(report.measurements).toHaveLength(27);
-  expect(report.testConsulted).toBe(false);
-});
+    const report = JSON.parse(exportCapacity(result));
+    expect(report.format).toBe('neural-atlas.capacity-report');
+    expect(report.measurements).toHaveLength(27);
+    expect(report.testConsulted).toBe(false);
+  },
+);
 for (const recipe of ['circles', 'xor'] as const)
-  it(`${recipe}: repetibilidad de estadísticas y vuelta uint32`, () => {
+  it(`${recipe}: repetibilidad de estadísticas y vuelta uint32`, { timeout: 30000 }, () => {
     const raw = { ...defaultCapacity, recipe, epochs: 5, firstSeed: 4294967295 };
     const a = compareCapacity(raw),
       b = compareCapacity(raw);

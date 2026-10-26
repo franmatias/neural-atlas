@@ -19,6 +19,14 @@ const strategies: SplitStrategy[] = [
   'temporal',
 ];
 const warnings = computed(() => (data.split ? splitWarnings(data.split) : undefined));
+const unused = computed(() =>
+  data.split?.selection
+    ? data.dataset.rows.filter((r) => r.target !== null).length -
+      data.split.train.length -
+      data.split.validation.length -
+      data.split.test.length
+    : 0,
+);
 watch(
   () => data.dataset.task,
   (task) => {
@@ -100,6 +108,12 @@ function divide() {
       <button class="button primary" :disabled="data.busy">{{ t('data.applySplit') }}</button>
     </form>
     <div v-if="data.split" class="panel split-result">
+      <p v-if="data.split.selection">
+        Subconjunto anidado de train: {{ data.split.selection.count }} filas, semilla de selección
+        {{ data.split.selection.seed }}. Validación y test conservan la división base. Las filas
+        restantes del pool train quedan sin usar; los porcentajes configurados describen la división
+        base, no el tamaño del subconjunto. Crear una partición nueva sustituye esta selección.
+      </p>
       <h3>{{ t('data.actualSplit') }} · {{ t(`data.strategy.${data.split.strategy}`) }}</h3>
       <div class="split-bar" :aria-label="t('data.actualSplit')">
         <div
@@ -110,8 +124,17 @@ function divide() {
         >
           <span>{{ t(`data.${name}`) }} {{ data.split[name].length }}</span>
         </div>
+        <div
+          v-if="unused"
+          :style="{ flex: unused, background: 'var(--surface)', color: 'var(--ink)' }"
+        >
+          <span>Sin usar {{ unused }}</span>
+        </div>
       </div>
       <div class="data-metrics">
+        <div v-if="unused">
+          <span>Train sin usar</span><strong>{{ unused }}</strong>
+        </div>
         <div v-for="name in splitNames" :key="name">
           <span>{{ t(`data.${name}`) }}</span
           ><strong>{{ data.split[name].length }}</strong

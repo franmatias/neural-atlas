@@ -71,6 +71,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [37 · Normalización por lotes D6](37-normalizacion-lotes-d6.md) | Gradientes del lote completo, medias móviles, gamma/beta y modelos de inferencia v2 |
 | [38 · Aumento de datos D6](38-aumento-datos-d6.md) | Copias fijas solo de train, oráculos, trazabilidad y experimentos v6 |
 | [39 · Multisemilla D6](39-comparacion-multisemilla-d6.md) | Datos fijos, parejas reproducibles, dispersión y diferencias por semilla |
+| [40 · Capacidad D6](40-capacidad-y-tamano-d6.md) | Curvas por tamaños anidados, tres arquitecturas y dataset v2 con selección reproducible |
 
 ## Qué revisar antes de D1
 
