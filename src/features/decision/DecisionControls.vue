@@ -85,7 +85,7 @@ function layers(event: Event) {
     /></label>
     <label
       >Tamaño de lote<select v-model.number="options.batchSize">
-        <option :value="1">1 · SGD por muestra</option>
+        <option :value="1">1 · una muestra</option>
         <option :value="16">16 · Mini-batch</option>
         <option :value="32">32 · Mini-batch</option>
         <option :value="512">Completo · Batch</option>

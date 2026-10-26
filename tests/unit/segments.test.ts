@@ -8,7 +8,7 @@ import {
 } from '@/domain/training/session';
 import { exhaust } from '@/domain/training/kernel';
 import { createOptimizer, defaultOptimizer } from '@/domain/training/optimizer';
-import { applySegment, segmentContext } from '@/domain/training/segments';
+import { applySegment, segmentContext, segmentRecords } from '@/domain/training/segments';
 import {
   captureExperiment,
   exportExperiment,
@@ -54,11 +54,21 @@ it.each(['moons', 'flowers', 'sine'] as const)(
       false,
     );
     expect(file.schemaVersion).toBe(9);
+    const corrupted = structuredClone(file);
+    corrupted.timeline![1]!.configHash = '0'.repeat(64);
+    expect(() => prepareExperiment(corrupted)).toThrow('EXPERIMENT_SEGMENTS');
     const copy = importExperiment(exportExperiment(file)),
       restored = prepareExperiment(copy);
     const next = exhaust(advanceBatch(state, f.input)),
       recovered = exhaust(advanceBatch(copy.checkpoint, restored.source.input));
     expect(recovered).toEqual(next);
+    const m = next.optimizer.first[0]![0]!,
+      v = next.optimizer.second[0]![0]!;
+    const expected =
+      restarted.model.layers[0]!.weights[0]! -
+      (defaultOptimizer.rate * (m / (1 - defaultOptimizer.beta1))) /
+        (Math.sqrt(v / (1 - defaultOptimizer.beta2)) + defaultOptimizer.epsilon);
+    expect(next.model.layers[0]!.weights[0]).toBeCloseTo(expected, 14);
     validateCheckpoint(next, f.input);
   },
 );
@@ -77,6 +87,20 @@ it('segmentos con BN/dropout preservan cursor, RNG e invariantes después del re
   expect(state.updates).toBe(8);
   expect(state.optimizer.step).toBe(8);
 });
+it('las identidades de los tramos anteriores no cambian al añadir uno posterior', () => {
+  const f = trainingFixture();
+  f.input.config.segments = [
+    { id: 'first', atUpdate: 1, optimizer: { ...defaultOptimizer, rate: 0.02 }, restart: false },
+  ];
+  const before = segmentRecords(f.input);
+  f.input.config.segments.push({
+    id: 'later',
+    atUpdate: 3,
+    optimizer: { ...defaultOptimizer, kind: 'sgd' },
+    restart: true,
+  });
+  expect(segmentRecords(f.input).slice(0, 2)).toEqual(before);
+});
 it('rechaza segmentos fuera del horizonte, desordenados, duplicados y parada temprana', () => {
   const f = trainingFixture(),
     s = { id: 's', atUpdate: 1, optimizer: { ...defaultOptimizer }, restart: false };
@@ -86,6 +110,7 @@ it('rechaza segmentos fuera del horizonte, desordenados, duplicados y parada tem
     [{ ...s, atUpdate: -1 }],
     [{ ...s, atUpdate: 1e8 }],
     [{ ...s, id: 'bad!' }],
+    [{ ...s, id: 'initial' }],
   ]) {
     f.input.config.segments = segments;
     expect(() => validateTraining(f.input)).toThrow();

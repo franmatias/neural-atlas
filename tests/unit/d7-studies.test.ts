@@ -14,6 +14,7 @@ import { compareModels, exportPairedComparison } from '@/application/training/pa
 import { prepareExperiment } from '@/application/training/experiment';
 import { exhaust } from '@/domain/training/kernel';
 import { evaluateChunks } from '@/domain/training/session';
+import { prepareBoundedStudy } from '@/application/training/study-budget';
 const shift = {
   kind: 'covariate' as const,
   severity: 0.8,
@@ -22,6 +23,29 @@ const shift = {
   rate: 0.02,
   hypothesis: 'La regla se conserva.',
 };
+it('el estudio rechaza presupuestos excesivos antes de entrenar o reservar diez modelos', () => {
+  const f = trainingFixture(),
+    json = exportDatasetJson(f.dataset, f.split),
+    options = f.prepared.pipeline.options;
+  expect(() => prepareBoundedStudy(json, { ...f.config, epochs: 121 }, options)).toThrow(
+    'STUDY_BUDGET',
+  );
+  expect(() =>
+    prepareBoundedStudy(
+      json,
+      { ...f.config, spec: { ...f.config.spec, hidden: [64, 64, 64] } },
+      options,
+    ),
+  ).toThrow('STUDY_BUDGET');
+  expect(() =>
+    prepareBoundedStudy(
+      json,
+      { ...f.config, epochs: 120, spec: { ...f.config.spec, hidden: [64, 64] } },
+      options,
+      10,
+    ),
+  ).toThrow('STUDY_BUDGET');
+});
 it.each(['moons', 'flowers', 'sine'] as const)(
   'dispersión %s: todas las filas val, media/SD independientes, test reservado',
   (recipe) => {

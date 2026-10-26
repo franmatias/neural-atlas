@@ -46,3 +46,7 @@ sequenceDiagram
 Pruebas unitarias con cuartiles esperados calculados de forma independiente, filas de validación/test alteradas, imputación previa, IQR cero y columnas constantes. Roundtrip y siguiente lote idénticos en clasificación binaria, multiclase y regresión; rechazo de estados corruptos y conservación de formatos anteriores. Playwright cubre el Worker de L01, móvil, comparación A/B con una sola diferencia, exportación, recuperación tras recarga y apertura del modelo independiente.
 
 El plan mantiene pendientes features derivadas, dispersión de predicciones, escenarios de deriva, segmentos de entrenamiento, ampliación del proyector y fases D8–D10. Este documento no certifica una aceptación docente que no se ha realizado.
+
+## Actualización 0.10.0
+
+Los pendientes de D7 descritos en este informe histórico se completan en el [cierre técnico D7](44-cierre-d7.md). D8–D10 y la validación humana en aula continúan pendientes. Los números de pruebas y versiones anteriores se conservan como evidencia de su incremento.

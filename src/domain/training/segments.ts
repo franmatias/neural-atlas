@@ -23,6 +23,7 @@ export function validateSegments(segments: TrainingSegment[], totalUpdates: numb
   for (const s of segments) {
     if (
       !/^[a-z0-9-]{1,40}$/.test(s.id) ||
+      s.id === 'initial' ||
       !Number.isInteger(s.atUpdate) ||
       s.atUpdate <= previous ||
       s.atUpdate >= totalUpdates ||

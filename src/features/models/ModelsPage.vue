@@ -188,6 +188,14 @@ onBeforeRouteLeave(() => {
               >
             </li>
           </ul>
+          <p v-if="inference.model.pipeline.derived">
+            Derivadas sobre orígenes imputados:
+            {{
+              inference.model.pipeline.outputLabels
+                .slice(-inference.model.pipeline.derived.length)
+                .join(' · ')
+            }}. Se escalan con sus propias estadísticas de train, conservadas en el archivo.
+          </p>
         </details>
         <button class="button primary" :disabled="busy" @click="download">
           Exportar modelo sin dataset

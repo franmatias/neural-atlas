@@ -152,3 +152,7 @@ Capturas reproducibles con `scripts/capture-d7-experiments.mjs`:
 ![CV en móvil y tema oscuro](implementation/d7-cross-validation-mobile.png)
 
 Este incremento implementa la comparación básica y CV de US-032/040 y una parte de los controles comunes de US-054. Permanecen pendientes el modo de proyector especializado completo, presupuestos por actualizaciones/tiempo, robust scaling/features derivadas y dispersión de predicciones, escenarios de deriva y timeline de segmentos. Las fases D8–D10 y talleres posteriores siguen su plan. No se afirma una validación humana en aula ni la finalización de todo el alcance original.
+
+## Actualización 0.10.0
+
+Los pendientes de D7 descritos en este informe histórico se completan en el [cierre técnico D7](44-cierre-d7.md). D8–D10 y la validación humana en aula continúan pendientes. Los números de pruebas y versiones anteriores se conservan como evidencia de su incremento.

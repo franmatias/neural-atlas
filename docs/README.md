@@ -1,12 +1,12 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-Diseño inicial: 22/10/2026. Esta carpeta conserva la especificación 0.2. D1 se documenta en [implementación 0.3](23-implementacion-d1.md), D2 en [implementación 0.4](25-implementacion-d2.md) y D3 en [implementación 0.5](26-implementacion-d3.md), con funciones reales, pruebas y límites. D4 se documenta en [implementación 0.6](29-implementacion-d4.md); D5 y siguientes continúan pendientes. Público: FP de especialización y universidad. Proyecto: `simulator-neural-networks`, independiente del simulador original.
+Diseño inicial: 22/10/2026; estado de implementación: 26/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. D8–D10 y la validación humana en aula siguen pendientes. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
 
 La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
 
 ## Resumen revisable
 
-Alcance de diseño: 12 laboratorios, 12 talleres previstos, **152 conceptos iniciales más 500 nuevos de consulta (652 en total)**, **88 RF**, 24 RNF y **65 historias**. El catálogo contiene **30 diagramas Mermaid**: 26 de diseño y cuatro de implementación D3/D4. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js por fases. Biblioteca/checkpoints en IndexedDB y progreso docente siguen pendientes; las preferencias ya usan LocalStorage. Repositorio: [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
+Alcance de diseño: 12 laboratorios, 12 talleres previstos, **152 conceptos iniciales más 500 nuevos de consulta (652 en total)**, **88 RF**, 24 RNF y **65 historias**. El catálogo contiene **30 diagramas Mermaid**: 26 de diseño y cuatro de implementación D3/D4. Vue con Composition API/TS, Tailwind/Vite, motor CPU en Worker y vistas D3/SVG/Canvas/Three.js por fases. Biblioteca, checkpoints y los cuadernos de los cinco talleres actuales usan IndexedDB; las preferencias usan LocalStorage. PWA, catálogo importable, grafo, repaso y paquetes docentes siguen en D10. Repositorio: [franmatias/neural-atlas](https://github.com/franmatias/neural-atlas).
 
 La lista original se conserva y amplía con 52 conceptos; la ampliación [C153–C652](27-ampliacion-conceptos.md) incorpora otras 500 fichas de consulta; siguiente ID disponible C653, sin máximo fijo. Cada concepto lleva estado y entrega. MVP D1–D5 prioriza POE, diagnóstico y mapas junto al núcleo y T01–T05; v1.1 completa el alcance original; seis extensiones v1.2 quedan propuestas, no prometidas para el MVP.
 
@@ -75,8 +75,10 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [41 · Experimentos D7](41-experimentos-y-validacion-cruzada-d7.md) | A/B, hipótesis, CV sin fuga, grupos, pipeline por fold y dataset v3 |
 | [42 · Escalado robusto D7](42-escalado-robusto-d7.md) | Mediana/IQR, comparación sin fuga, experimentos v7 y modelos v3 |
 
-## Qué revisar antes de D1
+## Revisión histórica de D0
 
-Nombre/identidad, secuencia didáctica, casos prioritarios, alcance de CNN, límites de datos/modelos y formato de intercambio. Los valores de rendimiento/cobertura son objetivos; su cumplimiento se medirá con la aplicación implementada. Los controles documentales no sustituyen a esas pruebas.
+La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, límites y formatos. Los informes de implementación registran las mediciones y pruebas realizadas; los objetivos de las fases pendientes conservan su carácter de diseño. Los controles documentales no sustituyen las pruebas funcionales ni la valoración docente.
 
 [43 · Diseño e implementación de los laboratorios visuales](43-laboratorios-visuales-de-decision.md): sandbox binario y clasificador multiclase con entrenamiento real.
+
+[44 · Cierre técnico D7](44-cierre-d7.md): estado de las seis historias, contratos, límites, versiones y evidencia.

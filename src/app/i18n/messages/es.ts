@@ -37,7 +37,7 @@ export const es = {
   'nav.label': 'Navegación principal',
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
-  'app.delivery': 'Experimentos · D7 en curso',
+  'app.delivery': 'Experimentación y robustez · D7',
   'app.available': '10 laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',

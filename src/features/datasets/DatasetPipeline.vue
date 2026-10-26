@@ -5,12 +5,15 @@ import { useDatasetsStore } from '@/stores/datasets';
 import { formatData } from '@/shared/utils/data-format';
 import type { Imputation, Scaling } from '@/domain/data/pipeline';
 import DatasetTable from './DatasetTable.vue';
+import DerivedEditor from './DerivedEditor.vue';
+import type { DerivedFeature } from '@/domain/data/derived';
 const data = useDatasetsStore();
 const { t } = useI18n();
 const featureIds = ref<string[]>([]);
 const imputation = ref<Imputation>('mean');
 const scaling = ref<Scaling>('minmax');
 const indicators = ref(false);
+const derived = ref<DerivedFeature[]>();
 watch(
   () => data.dataset.features,
   (features) => (featureIds.value = features.map((f) => f.id)),
@@ -25,6 +28,7 @@ function fit() {
     imputation: imputation.value,
     scaling: scaling.value,
     missingIndicators: indicators.value,
+    ...(derived.value ? { derived: JSON.parse(JSON.stringify(derived.value)) } : {}),
   });
 }
 </script>
@@ -64,6 +68,11 @@ function fit() {
           </select></label
         >
       </div>
+      <DerivedEditor
+        v-model="derived"
+        :features="data.dataset.features.filter((f) => featureIds.includes(f.id))"
+        label="Datos"
+      />
       <label class="check-row"
         ><input v-model="indicators" type="checkbox" />{{ t('data.indicators') }}</label
       ><button class="button primary" :disabled="!data.split || data.busy">
@@ -129,6 +138,53 @@ function fit() {
             >
           </article>
         </div>
+        <p v-if="data.prepared.pipeline.derived" class="small">
+          Derivadas:
+          {{
+            data.prepared.pipeline.outputLabels
+              .slice(-data.prepared.pipeline.derived.length)
+              .join(' · ')
+          }}. Sus estadísticas se ajustaron solo en train.
+        </p>
+        <details v-if="data.prepared.pipeline.derived">
+          <summary>Estadísticas aprendidas de las derivadas</summary>
+          <div class="data-table-scroll">
+            <table class="dataset-table">
+              <thead>
+                <tr>
+                  <th>Fórmula</th>
+                  <th>Media</th>
+                  <th>Desviación</th>
+                  <th>Min / Max</th>
+                  <th>Mediana / IQR robustos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(d, i) in data.prepared.pipeline.derived" :key="d.id">
+                  <th>
+                    {{
+                      data.prepared.pipeline.outputLabels[
+                        data.prepared.pipeline.outputLabels.length -
+                          data.prepared.pipeline.derived.length +
+                          i
+                      ]
+                    }}
+                  </th>
+                  <td>{{ formatData(d.mean) }}</td>
+                  <td>{{ formatData(d.std) }}</td>
+                  <td>{{ formatData(d.min) }} / {{ formatData(d.max) }}</td>
+                  <td>
+                    {{
+                      d.robust
+                        ? formatData(d.robust.median) + ' / ' + formatData(d.robust.iqr)
+                        : 'No aplicado'
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
         <div v-if="sample" class="sample-transform">
           <h4>{{ t('data.transformation') }} · {{ data.selectedId }}</h4>
           <dl>
