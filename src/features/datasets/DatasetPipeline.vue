@@ -55,7 +55,7 @@ function fit() {
           >{{ t('data.scaling')
           }}<select id="pipeline-scaling" v-model="scaling">
             <option
-              v-for="item in ['none', 'minmax', 'standard'] as const"
+              v-for="item in ['none', 'minmax', 'standard', 'robust'] as const"
               :key="item"
               :value="item"
             >
@@ -70,6 +70,10 @@ function fit() {
         {{ t('data.fit') }}
       </button>
       <p class="small muted">{{ t('data.fitHint') }}</p>
+      <p v-if="scaling === 'robust'" class="small muted">
+        (x − mediana) / IQR. Cuartiles por interpolación lineal tipo 7 sobre train tras imputar. IQR
+        = Q3 − Q1; si es cero, la escala es 1. No elimina ni recorta outliers.
+      </p>
     </form>
     <template v-if="data.prepared"
       ><div class="panel pipeline-result">
@@ -101,9 +105,23 @@ function fit() {
                 <dt>{{ t('data.max') }}</dt>
                 <dd>{{ formatData(column.max) }}</dd></template
               >
+              <template v-if="column.kind === 'numeric' && column.robust">
+                <dt>Mediana</dt>
+                <dd>{{ formatData(column.robust.median) }}</dd>
+                <dt>Q1 / Q3</dt>
+                <dd>{{ formatData(column.robust.q1) }} / {{ formatData(column.robust.q3) }}</dd>
+                <dt>IQR</dt>
+                <dd>{{ formatData(column.robust.iqr) }}</dd>
+              </template>
             </dl>
             <p v-if="column.kind === 'numeric' && column.constant" class="small muted">
               {{ t('data.constant') }}
+            </p>
+            <p
+              v-if="column.kind === 'numeric' && column.robust?.iqr === 0 && !column.constant"
+              class="small muted"
+            >
+              IQR cero con valores distintos: se centra en la mediana y se usa escala 1.
             </p>
             <template v-if="column.kind === 'categorical'"
               ><p class="small">{{ t('data.vocabulary') }}: {{ column.vocabulary.join(', ') }}</p>

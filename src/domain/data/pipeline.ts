@@ -1,8 +1,8 @@
 import { hashValue } from './integrity';
-import { mode, numericStatistics } from './statistics';
+import { mode, numericStatistics, quantile } from './statistics';
 import { DataError, type Cell, type DataSplit, type Dataset, type Sample } from './types';
 import { validateSplit } from './split';
-export type Scaling = 'none' | 'minmax' | 'standard';
+export type Scaling = 'none' | 'minmax' | 'standard' | 'robust';
 export type Imputation = 'mean' | 'median' | 'mode';
 export interface PipelineOptions {
   featureIds: string[];
@@ -19,6 +19,7 @@ export interface NumericState {
   min: number;
   max: number;
   constant: boolean;
+  robust?: { median: number; q1: number; q3: number; iqr: number };
 }
 export interface CategoryState {
   kind: 'categorical';
@@ -27,7 +28,7 @@ export interface CategoryState {
   vocabulary: string[];
 }
 export interface PipelineState {
-  version: 1;
+  version: 1 | 2;
   inputFeatureIds: string[];
   outputFeatureIds: string[];
   outputLabels: string[];
@@ -45,7 +46,7 @@ export function fitPipeline(
   validateSplit(dataset, split);
   if (
     !['mean', 'median', 'mode'].includes(options.imputation) ||
-    !['none', 'minmax', 'standard'].includes(options.scaling) ||
+    !['none', 'minmax', 'standard', 'robust'].includes(options.scaling) ||
     options.featureIds.length < 1 ||
     new Set(options.featureIds).size !== options.featureIds.length ||
     typeof options.missingIndicators !== 'boolean'
@@ -76,6 +77,14 @@ export function fitPipeline(
       const stats = numericStatistics(
         train.map((row) => (row.features[id] === null ? fill : (row.features[id] as number))),
       );
+      const sorted =
+        options.scaling === 'robust'
+          ? train
+              .map((row) => (row.features[id] === null ? fill : (row.features[id] as number)))
+              .sort((a, b) => a - b)
+          : [];
+      const q1 = sorted.length ? quantile(sorted, 0.25) : 0;
+      const q3 = sorted.length ? quantile(sorted, 0.75) : 0;
       columns.push({
         kind: 'numeric',
         id,
@@ -85,6 +94,9 @@ export function fitPipeline(
         min: stats.min,
         max: stats.max,
         constant: stats.max === stats.min,
+        ...(options.scaling === 'robust'
+          ? { robust: { median: stats.median, q1, q3, iqr: q3 - q1 } }
+          : {}),
       });
       outputFeatureIds.push(`${id}:numeric`);
       outputLabels.push(feature.name);
@@ -101,7 +113,7 @@ export function fitPipeline(
     if (outputFeatureIds.length > 32) throw new DataError('DIMENSIONS');
   }
   return {
-    version: 1,
+    version: options.scaling === 'robust' ? 2 : 1,
     inputFeatureIds: [...options.featureIds],
     outputFeatureIds,
     outputLabels,
@@ -127,7 +139,9 @@ export function transformRow(row: Sample, state: PipelineState): number[] {
             ? 0
             : state.options.scaling === 'minmax'
               ? (value - column.min) / (column.max - column.min)
-              : (value - column.mean) / (column.std || 1);
+              : state.options.scaling === 'robust'
+                ? (value - column.robust!.median) / (column.robust!.iqr || 1)
+                : (value - column.mean) / (column.std || 1);
       if (!Number.isFinite(scaled)) throw new DataError('NON_FINITE', column.id);
       output.push(scaled);
     } else {

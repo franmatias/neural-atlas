@@ -244,6 +244,7 @@ try {
       assert.equal(ab.format, 'neural-atlas.comparison-report');
       assert.deepEqual(ab.differences.map(d => d.field), ['config.spec.hidden']);
       assert.equal(ab.probes.length, 8);
+      await page.getByRole('combobox', { name: 'Escalado A', exact: true }).selectOption('robust');
       await page.getByRole('combobox', { name: 'Tipo de estudio', exact: true }).selectOption('cv');
       await page.getByLabel('Número de folds K', { exact: true }).fill('3');
       await page.getByRole('button', { name: 'Ejecutar estudio', exact: true }).click();
@@ -262,6 +263,8 @@ try {
       const downloadedFold = page.waitForEvent('download');
       await page.getByRole('button', { name: 'Exportar experimento seleccionado', exact: true }).click();
       const cvFold = JSON.parse(await readFile(await (await downloadedFold).path(), 'utf8'));
+      assert.equal(cvFold.schemaVersion, 7);
+      assert.equal(cvFold.pipelineOptions.scaling, 'robust');
       assert.equal(cvFold.dataset.schemaVersion, 3);
       assert.equal(cvFold.dataset.split.fold.count, 3);
       assert.equal(cvFold.checkpoint.order.length, 64);
@@ -271,7 +274,7 @@ try {
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence and fold dataset v3 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7 and fold dataset v3 at ${url}`,
       );
       failure = undefined;
       break;

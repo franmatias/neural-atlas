@@ -59,7 +59,7 @@ export const configSchema = z.strictObject({
 export const optionsSchema = z.strictObject({
   featureIds: z.array(z.string()).min(1).max(32),
   imputation: z.enum(['mean', 'median', 'mode']),
-  scaling: z.enum(['none', 'minmax', 'standard']),
+  scaling: z.enum(['none', 'minmax', 'standard', 'robust']),
   missingIndicators: z.boolean(),
 });
 const fileSchema = z.strictObject({
@@ -71,6 +71,7 @@ const fileSchema = z.strictObject({
     z.literal(4),
     z.literal(5),
     z.literal(6),
+    z.literal(7),
   ]),
   engineVersion: z.union([
     z.literal(1),
@@ -79,6 +80,7 @@ const fileSchema = z.strictObject({
     z.literal(4),
     z.literal(5),
     z.literal(6),
+    z.literal(7),
   ]),
   appVersion: z
     .string()
@@ -96,8 +98,8 @@ const fileSchema = z.strictObject({
 });
 export interface Experiment {
   format: 'neural-atlas.experiment';
-  schemaVersion: 1 | 2 | 3 | 4 | 5 | 6;
-  engineVersion: 1 | 2 | 3 | 4 | 5 | 6;
+  schemaVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  engineVersion: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   appVersion: string;
   savedAt: string;
   dataset: unknown;
@@ -115,17 +117,20 @@ export function experimentWire(value: Experiment) {
 }
 export function prepareExperiment(value: Experiment) {
   const wire = fileSchema.parse(experimentWire(value));
-  const version = wire.config.augmentation
-    ? 6
-    : wire.config.spec.batchNormalization
-      ? 5
-      : wire.config.dropout
-        ? 4
-        : wire.config.earlyStopping
-          ? 3
-          : wire.config.regularization
-            ? 2
-            : 1;
+  const version =
+    wire.pipelineOptions.scaling === 'robust'
+      ? 7
+      : wire.config.augmentation
+        ? 6
+        : wire.config.spec.batchNormalization
+          ? 5
+          : wire.config.dropout
+            ? 4
+            : wire.config.earlyStopping
+              ? 3
+              : wire.config.regularization
+                ? 2
+                : 1;
   if (wire.schemaVersion !== version || wire.engineVersion !== version)
     throw new Error('EXPERIMENT_VERSION');
   const { dataset, split } = importDatasetJson(JSON.stringify(wire.dataset));
@@ -156,28 +161,34 @@ export function captureExperiment(
 ): Experiment {
   const result: Experiment = {
     format: 'neural-atlas.experiment',
-    schemaVersion: config.augmentation
-      ? 6
-      : config.spec.batchNormalization
-        ? 5
-        : config.dropout
-          ? 4
-          : config.earlyStopping
-            ? 3
-            : config.regularization
-              ? 2
-              : 1,
-    engineVersion: config.augmentation
-      ? 6
-      : config.spec.batchNormalization
-        ? 5
-        : config.dropout
-          ? 4
-          : config.earlyStopping
-            ? 3
-            : config.regularization
-              ? 2
-              : 1,
+    schemaVersion:
+      pipelineOptions.scaling === 'robust'
+        ? 7
+        : config.augmentation
+          ? 6
+          : config.spec.batchNormalization
+            ? 5
+            : config.dropout
+              ? 4
+              : config.earlyStopping
+                ? 3
+                : config.regularization
+                  ? 2
+                  : 1,
+    engineVersion:
+      pipelineOptions.scaling === 'robust'
+        ? 7
+        : config.augmentation
+          ? 6
+          : config.spec.batchNormalization
+            ? 5
+            : config.dropout
+              ? 4
+              : config.earlyStopping
+                ? 3
+                : config.regularization
+                  ? 2
+                  : 1,
     appVersion,
     savedAt: new Date().toISOString(),
     dataset: JSON.parse(exportDatasetJson(dataset, split)) as unknown,
