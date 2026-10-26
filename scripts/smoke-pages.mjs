@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
 const url = process.env.PAGES_URL ?? 'https://franmatias.github.io/neural-atlas/';
+const expectedVersion = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8')).version;
 const parsed = new URL(url);
 assert.equal(parsed.protocol, 'https:');
 assert.equal(parsed.hostname, 'franmatias.github.io');
@@ -251,6 +252,8 @@ try {
       await page.getByRole('button', { name: 'Exportar informe del estudio', exact: true }).click();
       const cv = JSON.parse(await readFile(await (await downloadedCV).path(), 'utf8'));
       assert.equal(cv.format, 'neural-atlas.cross-validation-report');
+      assert.equal(cv.appVersion, expectedVersion);
+      assert(cv.folds.every(f => f.config.spec.task === 'binary'));
       assert.equal(cv.folds.length, 3);
       const cvIds = cv.folds.flatMap(f => f.validationIds);
       assert.equal(new Set(cvIds).size, 96);

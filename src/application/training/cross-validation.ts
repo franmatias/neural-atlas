@@ -117,6 +117,7 @@ export function exportCrossValidation(result: CrossValidationResult) {
       budget: result.budget,
       folds: result.folds.map((f) => ({
         index: f.index,
+        config: f.run.experiment.config,
         trainIds: f.trainIds,
         validationIds: f.validationIds,
         trainLoss: f.trainLoss,

@@ -219,6 +219,11 @@ for (const recipe of ['moons', 'flowers', 'sine'] as const)
       expect(report.options.datasetJson).toBeUndefined();
       expect(report.provenance.dataHash).toBe(base.dataHash);
       expect(report.folds).toHaveLength(5);
+      expect(
+        report.folds.every(
+          (f: { config: { spec: { task: string } } }) => f.config.spec.task === result.task,
+        ),
+      ).toBe(true);
     },
   );
 it(

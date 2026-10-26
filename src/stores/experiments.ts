@@ -80,6 +80,8 @@ export const useExperimentsStore = defineStore('experiments', () => {
   ) {
     source.value = { dataset: clone(dataset), split: clone(split) };
     a.value = clone(config ?? defaultConfig());
+    a.value.spec.task = dataset.task;
+    a.value.spec.classes = Math.max(2, dataset.classOrder?.length ?? 2);
     b.value = clone(a.value);
     if (!config) b.value.spec.hidden = [8, 8];
     const options: PipelineOptions = pipeline ?? {

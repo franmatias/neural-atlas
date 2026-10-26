@@ -88,6 +88,12 @@ for (const [recipe, task] of [
     await setup(page, 'cv', recipe);
     const report = await file(page, 'Exportar informe del estudio');
     expect(report.task).toBe(task);
+    expect(report.options.config.spec.task).toBe(task);
+    expect(
+      report.folds.every(
+        (f: { config: { spec: { task: string } } }) => f.config.spec.task === task,
+      ),
+    ).toBe(true);
     expect(report.folds).toHaveLength(5);
     const model = await file(page, 'Exportar modelo seleccionado');
     expect(model.task).toBe(task);

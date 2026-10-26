@@ -105,6 +105,11 @@ it('CV agrupada conserva test consultado, desactiva early stopping y permite ins
   study.selectedFold = 2;
   expect(study.selected!.testConsulted).toBe(true);
   expect(study.selected!.config.earlyStopping).toBeUndefined();
+  study.preset('flowers');
+  expect(study.a.spec.task).toBe('multiclass');
+  expect(study.a.spec.classes).toBe(3);
+  study.preset('sine');
+  expect(study.a.spec.task).toBe('regression');
   expect(JSON.parse(study.exportReport()).folds).toHaveLength(5);
   expect(
     wrapper

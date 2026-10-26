@@ -54,6 +54,10 @@ La correspondencia entre versión y metadatos es obligatoria. Los lectores anter
 
 Los formatos `neural-atlas.comparison-report` y `neural-atlas.cross-validation-report`, schemaVersion 1, incluyen opciones ejecutadas, procedencia, métricas, presupuestos, hipótesis y reflexión. El informe CV conserva IDs y hashes por fold, sin incrustar el dataset completo. Son informes de análisis; los botones de inspección exportan aparte el experimento completo o el modelo de inferencia importables. La apertura es detenida, no ejecuta test, y conserva el antecedente `testPreviouslyConsulted` en los archivos individuales.
 
+Las opciones superiores describen la configuración solicitada. El informe CV incluye además la **configuración efectiva de cada fold**: tarea, clases y dimensión de entrada adaptadas al dataset/pipeline. Esto es necesario porque vocabularios categóricos de distintos train pueden producir dimensiones diferentes. Los ejemplos y copias del espacio de trabajo también actualizan la tarea y las clases del formulario para corresponder a sus datos.
+
+Esta precisión de metadatos se publica en la revisión **0.8.1**, sin cambiar el cálculo del entrenamiento ni los contratos de experimento/modelo. El smoke público comprueba también que la versión servida coincide con la versión del commit desplegado.
+
 ## Arquitectura y estados
 
 | Responsabilidad | Archivo |
@@ -136,6 +140,8 @@ Las pruebas de unidad recorren K=2–10, variantes aleatoria/estratificada/grupo
 Verificación local: **433 pruebas unitarias/integración** en 42 archivos, cobertura de líneas **95,84%** y ramas **93,22%**, tipos/lint, build, CSP/presupuesto y documentación correctos. La batería Chromium/WebKit completó **154 recorridos sin reintentos**; CI ejecuta 231 en Chromium/Firefox/WebKit. Los ajustes finales de estilo se verifican también con el recorrido de accesibilidad móvil en ambos modos y temas. Firefox local conserva la incidencia de Windows documentada en D1.
 
 El smoke completo adaptado temporalmente a localhost también pasó, incluidos el informe A/B, el desarrollo CV sin solapamiento con test y el archivo dataset v3 de un fold. El script publicado conserva la exigencia de HTTPS y dominio de Pages y registra la causa breve de un reintento para facilitar el diagnóstico.
+
+La [ejecución de CI 0.8.0](https://github.com/franmatias/neural-atlas/actions/runs/40287893893) completó **231 recorridos**, despliegue y smoke público correctamente. La revisión de metadatos añade comprobaciones unitarias/integración y cuatro recorridos locales de archivos multiclase/regresión, conservando el mismo número de casos y los controles completos de CI.
 
 Capturas reproducibles con `scripts/capture-d7-experiments.mjs`:
 
