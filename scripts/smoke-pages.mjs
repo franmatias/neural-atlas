@@ -233,17 +233,48 @@ try {
       assert.equal(subset.dataset.split.selection.count, 24);
       assert.equal(subset.checkpoint.order.length, 24);
       assert.equal(subset.checkpoint.updates, 10);
+      await page.goto(new URL('#/lab/experimentos', url).href);
+      await page.getByLabel('Épocas comunes', { exact: true }).fill('5');
+      await page.getByRole('button', { name: 'Ejecutar estudio', exact: true }).click();
+      await page.getByRole('table', { name: 'Resultados de experimentos A/B', exact: true }).waitFor();
+      const downloadedAB = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar informe del estudio', exact: true }).click();
+      const ab = JSON.parse(await readFile(await (await downloadedAB).path(), 'utf8'));
+      assert.equal(ab.format, 'neural-atlas.comparison-report');
+      assert.deepEqual(ab.differences.map(d => d.field), ['config.spec.hidden']);
+      assert.equal(ab.probes.length, 8);
+      await page.getByRole('combobox', { name: 'Tipo de estudio', exact: true }).selectOption('cv');
+      await page.getByLabel('Número de folds K', { exact: true }).fill('3');
+      await page.getByRole('button', { name: 'Ejecutar estudio', exact: true }).click();
+      await page.getByRole('table', { name: 'Resultados de validación cruzada', exact: true }).waitFor();
+      const downloadedCV = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar informe del estudio', exact: true }).click();
+      const cv = JSON.parse(await readFile(await (await downloadedCV).path(), 'utf8'));
+      assert.equal(cv.format, 'neural-atlas.cross-validation-report');
+      assert.equal(cv.folds.length, 3);
+      const cvIds = cv.folds.flatMap(f => f.validationIds);
+      assert.equal(new Set(cvIds).size, 96);
+      assert.equal(cvIds.some(id => cv.testIds.includes(id)), false);
+      assert.equal(cv.testEvaluatedInStudy, false);
+      const downloadedFold = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar experimento seleccionado', exact: true }).click();
+      const cvFold = JSON.parse(await readFile(await (await downloadedFold).path(), 'utf8'));
+      assert.equal(cvFold.dataset.schemaVersion, 3);
+      assert.equal(cvFold.dataset.split.fold.count, 3);
+      assert.equal(cvFold.checkpoint.order.length, 64);
+      assert.equal(cvFold.checkpoint.updates, 30);
+      assert.equal(cvFold.config.earlyStopping, undefined);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report and nested capacity study at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence and fold dataset v3 at ${url}`,
       );
       failure = undefined;
       break;
     } catch (error) {
       failure = error;
-      console.log(`Pages propagation/check attempt ${attempt + 1} pending.`);
+      console.log(`Pages propagation/check attempt ${attempt + 1} pending: ${error instanceof Error ? error.message.split('\n')[0] : 'unknown error'}`);
     } finally {
       await page.close();
     }
