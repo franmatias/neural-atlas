@@ -143,6 +143,10 @@ test('cancelar y abandonar un estudio conserva el informe anterior y su hipótes
   await cancel.click();
   await page.getByRole('button', { name: 'Ejecutar estudio', exact: true }).click();
   await page.getByRole('link', { name: 'Datos', exact: true }).click();
+  // A click resolves before Vue Router commits a lazy route. Returning sooner
+  // can target the still-current hash and leave the test on Datos in Firefox.
+  await expect(page).toHaveURL(/#\/lab\/datos$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Todo empieza en los datos.');
   await page.goto('#/lab/experimentos');
   await expect(page.getByRole('button', { name: 'Ejecutar estudio', exact: true })).toBeEnabled();
   const report = await file(page, 'Exportar informe del estudio');
