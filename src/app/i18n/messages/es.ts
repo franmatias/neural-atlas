@@ -38,7 +38,7 @@ export const es = {
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
   'app.delivery': 'Experimentación y robustez · D7',
-  'app.available': '10 laboratorios disponibles',
+  'app.available': '{count} laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',
   'home.eyebrow': 'EL CONOCIMIENTO SE CONSTRUYE EXPERIMENTANDO',
@@ -56,7 +56,7 @@ export const es = {
   'home.routeTitle': 'Tu recorrido por el aprendizaje automático',
   'home.routeDescription':
     'Un atlas que crece por entregas. Lo que está disponible se puede experimentar; el resto conserva su lugar en el recorrido.',
-  'home.viewAll': 'Ver los 12 laboratorios',
+  'home.viewAll': 'Ver los {count} laboratorios',
   'home.first': 'Primero, comprende',
   'home.firstText':
     'Explora una idea a la vez, con ejemplos numéricos y explicaciones en tres niveles.',
@@ -65,7 +65,7 @@ export const es = {
     'Compara lo que esperabas con lo que ocurre y explica el resultado con tus palabras.',
   'labs.title': 'Un recorrido, muchas preguntas.',
   'labs.description':
-    'Doce laboratorios conectados. Empieza por la neurona y descubre qué viene después.',
+    '{count} laboratorios conectados. Empieza por la neurona y descubre qué viene después.',
   'labs.open': 'Abrir laboratorio',
   'labs.available': 'Disponible',
   'labs.planned': 'Próxima entrega',

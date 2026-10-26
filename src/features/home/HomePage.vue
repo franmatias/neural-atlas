@@ -68,7 +68,7 @@ const { t } = useI18n();
           <h2>{{ t('home.routeTitle') }}</h2>
         </div>
         <RouterLink to="/laboratorios" class="text-link"
-          >{{ t('home.viewAll') }} <AppIcon name="arrow"
+          >{{ t('home.viewAll', { count: laboratories.length }) }} <AppIcon name="arrow"
         /></RouterLink>
       </div>
       <p class="muted section-intro">{{ t('home.routeDescription') }}</p>

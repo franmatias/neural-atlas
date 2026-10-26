@@ -116,6 +116,24 @@ export const laboratories: readonly Laboratory[] = [
     phase: 'D7',
     available: true,
   },
+  {
+    id: 'L13',
+    slug: 'arquitectura/frontera',
+    title: 'Sandbox de dos clases',
+    question: '¿Cómo aprende una red a separar dos conjuntos de datos?',
+    group: 'practice',
+    phase: 'D7',
+    available: true,
+  },
+  {
+    id: 'L14',
+    slug: 'clasificacion/visual',
+    title: 'Clasificador visual multiclase',
+    question: '¿Cómo se reparten las regiones y las probabilidades entre varias clases?',
+    group: 'practice',
+    phase: 'D7',
+    available: true,
+  },
 ];
 export function findLaboratory(slug: string) {
   return laboratories.find((lab) => lab.slug === slug);

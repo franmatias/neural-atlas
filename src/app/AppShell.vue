@@ -3,6 +3,7 @@ import { nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n, type MessageKey } from '@/app/i18n';
 import { usePreferencesStore } from '@/stores/preferences';
+import { laboratories } from '@/content/laboratories';
 import AppIcon from '@/shared/ui/AppIcon.vue';
 import SettingsForm from '@/shared/ui/SettingsForm.vue';
 import { trapDialogFocus } from '@/shared/ui/dialog-focus';
@@ -76,7 +77,9 @@ watch(
         <AppIcon name="menu" />
       </button>
       <span class="topbar-title">{{ t('app.title') }}</span>
-      <span class="status-pill">{{ t('app.available') }}</span>
+      <span class="status-pill">{{
+        t('app.available', { count: laboratories.filter((lab) => lab.available).length })
+      }}</span>
       <button
         class="icon-button"
         :aria-label="t(prefs.resolvedTheme === 'dark' ? 'settings.light' : 'settings.dark')"

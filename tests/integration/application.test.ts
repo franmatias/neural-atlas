@@ -34,8 +34,15 @@ describe('navegación y contenido disponible', () => {
     expect(wrapper.get('h1').text()).toContain('dentro de una red');
     await router.push('/laboratorios');
     await flushPromises();
-    expect(wrapper.findAll('.lab-card')).toHaveLength(12);
-    expect(wrapper.findAll('.lab-card.live')).toHaveLength(10);
+    expect(wrapper.findAll('.lab-card')).toHaveLength(14);
+    expect(wrapper.findAll('.lab-card.live')).toHaveLength(12);
+    expect(wrapper.get('.topbar .status-pill').text()).toBe('12 laboratorios disponibles');
+    expect(wrapper.get('.lab-card[href="/lab/arquitectura/frontera"]').text()).toContain(
+      'Sandbox de dos clases',
+    );
+    expect(wrapper.get('.lab-card[href="/lab/clasificacion/visual"]').text()).toContain(
+      'Clasificador visual multiclase',
+    );
     for (const [path, text] of [
       ['/lab/datos', 'Todo empieza en los datos.'],
       ['/taller', 'Investiga antes de concluir.'],

@@ -12,9 +12,26 @@ for (const mode of ['binary', 'multiclass'] as const) {
   }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.goto(
-      mode === 'binary' ? '#/lab/arquitectura/frontera' : '#/lab/clasificacion/visual',
+    await page.goto('#/laboratorios');
+    await expect(page.locator('.lab-card')).toHaveCount(14);
+    await expect(page.getByText('12 laboratorios disponibles', { exact: true })).toBeVisible();
+    const card = page.locator('.lab-card').filter({
+      has: page.getByRole('heading', {
+        name: mode === 'binary' ? 'Sandbox de dos clases' : 'Clasificador visual multiclase',
+        exact: true,
+      }),
+    });
+    await expect(card).toContainText(mode === 'binary' ? 'L13' : 'L14');
+    await expect(card).toContainText('Disponible');
+    await card.click();
+    await expect(page).toHaveURL(
+      new RegExp(
+        mode === 'binary' ? '#/lab/arquitectura/frontera$' : '#/lab/clasificacion/visual$',
+      ),
     );
+    await expect(
+      page.getByRole('link', { name: 'Todos los laboratorios', exact: true }),
+    ).toBeVisible();
     await expect(page.getByTestId('visual-epoch')).toHaveText('0');
     await page
       .getByRole('combobox', { name: 'Conjunto de datos', exact: true })
@@ -73,7 +90,7 @@ test('añadir puntos reinicia explícitamente; cambiar de laboratorio crea la ta
   await expect(page.getByTestId('visual-epoch')).toHaveText('0');
   const dataset = await exportFile(page, 'Exportar datos visuales');
   expect(dataset.dataset.rowIds).toHaveLength(241);
-  await page.getByRole('link', { name: 'Clasificador multiclase', exact: true }).click();
+  await page.getByRole('link', { name: 'Clasificador visual multiclase', exact: true }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Cada región, una clase.');
   await expect(page.locator('.probability-row')).toHaveCount(4);
   await page.getByRole('combobox', { name: 'Número de clases', exact: true }).selectOption('3');
