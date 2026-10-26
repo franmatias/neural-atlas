@@ -80,3 +80,7 @@ Captura reproducible mediante `tests/e2e/probability-evaluation.spec.ts`, caso S
 ![Evaluación probabilística y costes con datos reales de la sesión](implementation/d8-probability-evaluation.png)
 
 El ensayo local completo del script de Pages pasa con el nuevo informe. Se añade una espera al fin del guardado del taller antes de recargar: el mensaje de éxito podía corresponder a una transacción anterior; el catálogo permanece deshabilitado mientras el guardado actual continúa. No se relajan las comprobaciones ni se cambia el comportamiento del taller.
+
+### Control de estabilidad de CI
+
+La primera ejecución de publicación pasó las funciones nuevas y el smoke público, pero una prueba previa de cancelar/abandonar L12 necesitó reintento en Firefox: volvía al mismo hash antes de que Vue Router confirmara la salida a Datos. La prueba ahora espera la URL y el título de Datos antes de regresar. Pasan cinco repeticiones en Chromium y otras cinco en WebKit. El Firefox local de Windows no inicia (`spawn UNKNOWN`), por lo que su comprobación se realiza en Linux mediante CI. Se activa `failOnFlakyTests` en CI: un reintento exitoso conserva el diagnóstico, pero impide publicar como si la prueba hubiera sido estable.
