@@ -4,6 +4,7 @@ import { useTrainingStore } from '@/stores/training';
 import { formatData } from '@/shared/utils/data-format';
 import { trainingError } from './messages';
 import PredictionPanel from './PredictionPanel.vue';
+import ProbabilityEvaluation from './ProbabilityEvaluation.vue';
 const props = defineProps<{ mode: 'classification' | 'regression' }>();
 const session = useTrainingStore(),
   consent = ref(false),
@@ -137,7 +138,7 @@ const metric = (value: number | null) => (value === null ? 'No definida' : forma
           type="range"
           min="0"
           max="1"
-          step="0.01"
+          step="any"
         />
         <p class="small muted">
           Se decide positivo si su probabilidad alcanza el umbral. El cambio de umbral modifica
@@ -369,6 +370,27 @@ const metric = (value: number | null) => (value === null ? 'No definida' : forma
           Añadir a comparación de validación
         </button>
       </section>
+      <ProbabilityEvaluation
+        v-if="session.analysis && session.evaluation?.kind === 'classification' && selected"
+        :actual="selected.y"
+        :predictions="session.analysis.predictions"
+        :class-order="session.input!.classOrder"
+        :positive="session.positive"
+        :threshold="session.threshold"
+        :split="session.analysis.split"
+        :update="session.analysis.update"
+        :current-update="session.state.updates"
+        :frozen="session.state.frozen"
+        :busy="session.running || session.evaluating"
+        :consulted="session.consulted"
+        :source="{
+          dataHash: session.input!.dataHash,
+          splitHash: session.input!.splitHash,
+          pipelineHash: session.input!.pipelineHash,
+          configHash: session.state.configHash,
+        }"
+        @threshold="session.threshold = $event"
+      />
       <section v-if="session.comparisons.length" class="training-panel">
         <h2>Comparación con los mismos datos</h2>
         <p>
