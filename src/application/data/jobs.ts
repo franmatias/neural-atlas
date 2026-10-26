@@ -1,5 +1,10 @@
 import { generateDataset } from '@/domain/data/generate';
 import {
+  compareCapacity,
+  type CapacityOptions,
+  type CapacityResult,
+} from '@/application/training/capacity';
+import {
   compareMultiseed,
   type MultiseedOptions,
   type MultiseedResult,
@@ -45,6 +50,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  capacity: CapacityOptions;
   multiseed: MultiseedOptions;
   generalization: GeneralizationOptions;
   workshop: { caseId: WorkshopEvidence['caseId']; options: WorkshopOptions };
@@ -75,6 +81,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  capacity: CapacityResult;
   multiseed: MultiseedResult;
   generalization: GeneralizationResult;
   workshop: WorkshopEvidence;
@@ -100,6 +107,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'capacity':
+      return compareCapacity(job.payload);
     case 'multiseed':
       return compareMultiseed(job.payload);
     case 'generalization':

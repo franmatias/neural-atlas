@@ -82,7 +82,7 @@ export function exportDatasetJson(dataset: Dataset, split?: DataSplit): string {
   if (split) validateSplit(dataset, split);
   const file = {
     format: 'neural-atlas.dataset',
-    schemaVersion: 1,
+    schemaVersion: split?.selection ? 2 : 1,
     dataHash: datasetHash(dataset),
     provenance: {
       appVersion,

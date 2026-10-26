@@ -52,12 +52,19 @@ export interface GeneratorOptions {
 export type SplitName = 'train' | 'validation' | 'test';
 export const splitNames: readonly SplitName[] = ['train', 'validation', 'test'];
 export type SplitStrategy = 'random' | 'stratified' | 'grouped' | 'stratified-grouped' | 'temporal';
+export interface TrainSelection {
+  kind: 'balanced-prefix-v1';
+  count: number;
+  seed: number;
+}
 export interface SplitOptions {
   strategy: SplitStrategy;
   seed: number;
   ratios: readonly [number, number, number];
+  selection?: TrainSelection;
 }
 export interface DataSplit {
+  selection?: TrainSelection;
   strategy: SplitStrategy;
   train: string[];
   validation: string[];
