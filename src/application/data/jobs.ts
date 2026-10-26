@@ -4,6 +4,11 @@ import {
   type DispersionResult,
 } from '@/application/training/prediction-dispersion';
 import {
+  generateAuditCohort,
+  type AuditCohort,
+  type AuditScenarioOptions,
+} from '@/application/training/group-audit';
+import {
   approximateFunction,
   type FunctionOptions,
   type FunctionResult,
@@ -75,6 +80,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  groupAudit: AuditScenarioOptions;
   functionApproximation: FunctionOptions;
   dispersion: DispersionOptions;
   shift: ShiftOptions;
@@ -111,6 +117,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  groupAudit: AuditCohort;
   functionApproximation: FunctionResult;
   dispersion: DispersionResult;
   shift: ShiftResult;
@@ -142,6 +149,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'groupAudit':
+      return generateAuditCohort(job.payload);
     case 'functionApproximation':
       return approximateFunction(job.payload);
     case 'dispersion':
