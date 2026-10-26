@@ -96,6 +96,9 @@ onBeforeRouteLeave(() => {
   <div class="page training-page generalization-page">
     <p class="eyebrow">L08 / GENERALIZACIÓN · D6 EN DESARROLLO</p>
     <h1>Aprender sin memorizar.</h1>
+    <RouterLink class="button secondary" to="/lab/generalizacion/capacidad"
+      >Explorar capacidad y tamaño de datos</RouterLink
+    >
     <p class="page-intro">
       Cambia una intervención, conserva el resto y compara con validación. Una penalización menor o
       pesos pequeños no garantizan mejores predicciones.

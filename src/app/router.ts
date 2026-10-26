@@ -33,6 +33,11 @@ export const routes = [
     component: () => import('@/features/network/PropagationPage.vue'),
   },
   {
+    path: '/lab/generalizacion/capacidad',
+    name: 'capacity',
+    component: () => import('@/features/generalization/CapacityPage.vue'),
+  },
+  {
     path: '/lab/generalizacion',
     name: 'generalization',
     component: () => import('@/features/generalization/GeneralizationPage.vue'),
