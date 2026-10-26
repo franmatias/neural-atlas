@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SegmentControls from './SegmentControls.vue';
+import { segmentContext } from '@/domain/training/segments';
 import { computed, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { useTrainingStore } from '@/stores/training';
@@ -194,6 +196,7 @@ const alerts: Record<string, string> = {
       {{ trainingError(session.error) }}
     </p>
     <p v-if="session.notice" class="training-alert">{{ session.notice }}</p>
+    <SegmentControls />
     <template v-if="session.state && session.input"
       ><div class="training-metrics">
         <article>
@@ -205,7 +208,8 @@ const alerts: Record<string, string> = {
           ><strong>{{
             formatData(
               learningRate(
-                session.input.config.optimizer,
+                segmentContext(session.input.config, Math.max(0, session.state.updates - 1))
+                  .optimizer,
                 Math.max(
                   0,
                   session.state.epoch -
@@ -234,7 +238,10 @@ const alerts: Record<string, string> = {
             : 'La exactitud de seguimiento usa umbral 0,5 o argmax; no es una medida de calibración.'
         }}
       </p>
-      <LossChart :history="session.state.history" /><NetworkDiagram
+      <LossChart
+        :segments="session.input.config.segments"
+        :history="session.state.history"
+      /><NetworkDiagram
         tabindex="0"
         role="region"
         aria-label="Esquema del modelo activo; desplazamiento horizontal con teclado"

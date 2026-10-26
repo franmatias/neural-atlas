@@ -12,6 +12,13 @@ export const trainingStatuses: Record<string, string> = {
   error: 'Revisa la configuración',
 };
 const errors: Record<string, string> = {
+  SEGMENT_LOCKED:
+    'Registra segmentos con la sesión pausada, antes de terminar las épocas y sin parada temprana ni test consultado.',
+  SEGMENT_ADVANCE_FIRST:
+    'Avanza al menos un lote antes de registrar otro segmento. El máximo es de 16 tramos.',
+  SEGMENTS: 'Revisa los límites y el orden de los segmentos.',
+  SEGMENTS_EARLY_STOPPING:
+    'Los segmentos no se combinan con parada temprana. Usa una sesión sin ella para estudiar cambios controlados.',
   BUDGET:
     'Revisa y acepta el presupuesto del experimento antes de inicializar esta configuración amplia.',
   PREPARE_DATA: 'Prepara una partición y un pipeline en Datos o carga uno de los ejemplos.',
@@ -21,9 +28,12 @@ const errors: Record<string, string> = {
   INVALID_CONFIG:
     'Revisa épocas, lote, tasa y parámetros del optimizador. El lote no puede superar train; los mini-batches tienen un máximo de 512.',
   INVALID_DATA: 'Hay datos, dimensiones o etiquetas incompatibles con la tarea.',
-  AUGMENTATION_CONFIG:'Revisa el aumento: σ entre 0 y 0,01, de 1 a 3 copias y una semilla entera válida.',
-  AUGMENTATION_POLICY:'El aumento automático requiere una receta de círculos o XOR compatible. Cambia de ejemplo o desactiva el aumento.',
-  AUGMENTATION_LIMIT:'El máximo solicitado de copias supera las 10.000 filas de train y validación. Reduce las copias o el dataset.',
+  AUGMENTATION_CONFIG:
+    'Revisa el aumento: σ entre 0 y 0,01, de 1 a 3 copias y una semilla entera válida.',
+  AUGMENTATION_POLICY:
+    'El aumento automático requiere una receta de círculos o XOR compatible. Cambia de ejemplo o desactiva el aumento.',
+  AUGMENTATION_LIMIT:
+    'El máximo solicitado de copias supera las 10.000 filas de train y validación. Reduce las copias o el dataset.',
   ARCHITECTURE: 'Usa entre cero y seis capas ocultas de 1–64 neuronas y hasta 32 entradas.',
   SEED: 'La semilla debe ser un entero entre 0 y 4294967295.',
   PIPELINE: 'El preprocesamiento no corresponde a los datos y a su partición. Vuelve a prepararlo.',

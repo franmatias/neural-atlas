@@ -1,3 +1,6 @@
+import { segmentContext } from '@/domain/training/segments';
+import { configHash, cloneState } from '@/domain/training/session';
+import type { OptimizerKind } from '@/domain/training/optimizer';
 import { computed, onScopeDispose, ref, shallowRef, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { TrainingClient } from '@/infrastructure/workers/training-client';
@@ -232,6 +235,58 @@ export const useTrainingStore = defineStore('training', () => {
       consulted.value,
     );
   }
+  async function appendSegment(kind: OptimizerKind, rate: number, restartWeights: boolean) {
+    error.value = '';
+    try {
+      const snapshot = capture();
+      if (
+        snapshot.testConsulted ||
+        snapshot.checkpoint.frozen ||
+        snapshot.config.earlyStopping ||
+        snapshot.checkpoint.epoch >= snapshot.config.epochs
+      )
+        throw new Error('SEGMENT_LOCKED');
+      const previous = snapshot.config.segments ?? [];
+      if (previous.length >= 16 || (previous.at(-1)?.atUpdate ?? -1) >= snapshot.checkpoint.updates)
+        throw new Error('SEGMENT_ADVANCE_FIRST');
+      const config = {
+        ...snapshot.config,
+        segments: [
+          ...previous,
+          {
+            id: 'seg-' + (previous.length + 1),
+            atUpdate: snapshot.checkpoint.updates,
+            optimizer: {
+              ...segmentContext(snapshot.config, snapshot.checkpoint.updates).optimizer,
+              kind,
+              rate,
+            },
+            restart: restartWeights,
+          },
+        ],
+      };
+      const prepared = prepareExperiment(snapshot);
+      const next = trainingSource(prepared.dataset, prepared.split, prepared.prepared, config);
+      const checkpoint = cloneState(snapshot.checkpoint);
+      checkpoint.configHash = configHash(next.input);
+      const updated = captureExperiment(
+        prepared.dataset,
+        prepared.split,
+        snapshot.pipelineOptions,
+        snapshot.pipelineHash,
+        next.input.config,
+        checkpoint,
+        snapshot.threshold,
+        snapshot.positive,
+        snapshot.testConsulted,
+      );
+      await restore(updated);
+      notice.value =
+        'Segmento registrado. El cambio se aplica en el siguiente lote; la sesión permanece pausada.';
+    } catch (caught) {
+      error.value = caught instanceof Error ? caught.message : 'SEGMENT_INVALID';
+    }
+  }
   async function restore(snapshot: Experiment) {
     // Fully validate before replacing the current workspace. Never automatically RUN.
     const restored = prepareExperiment(snapshot);
@@ -417,5 +472,6 @@ export const useTrainingStore = defineStore('training', () => {
     capture,
     restore,
     saveRecovery,
+    appendSegment,
   };
 });

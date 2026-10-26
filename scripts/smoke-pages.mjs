@@ -285,17 +285,64 @@ try {
         assert.equal(visual.checkpoint.epoch, 1);
         assert.equal(visual.testConsulted, false);
       }
-      await page.goto(new URL('#/lab/entrenamiento', url).href);
-      await page.locator('.training-status').filter({ hasText: 'Época 2' }).waitFor();
+      await page.goto(new URL('#/lab/experimentos', url).href);
+      await page.getByRole('combobox', {name:'Tipo de estudio',exact:true}).selectOption('ab');
+      await page.getByRole('combobox', {name:'Presupuesto A/B',exact:true}).selectOption('updates');
+      await page.getByLabel('Límite del presupuesto',{exact:false}).fill('7');
+      await page.getByRole('button',{name:'Añadir derivada B',exact:true}).click();
+      await page.getByRole('combobox',{name:'Operación B d1',exact:true}).selectOption('product');
+      await page.getByRole('combobox',{name:'Segundo origen B d1',exact:true}).selectOption('x2');
+      await page.getByRole('button',{name:'Ejecutar estudio',exact:true}).click();
+      await page.getByRole('table',{name:'Resultados de experimentos A/B',exact:true}).waitFor();
+      const derivedDownload=page.waitForEvent('download');
+      await page.getByRole('button',{name:'Exportar experimento seleccionado',exact:true}).click();
+      const derived=JSON.parse(await readFile(await(await derivedDownload).path(),'utf8'));
+      assert.equal(derived.schemaVersion,8);assert.equal(derived.config.spec.inputs,3);assert.equal(derived.checkpoint.updates,7);
+      await page.getByRole('button',{name:'Activar vista de proyección A/B',exact:true}).click();
+      assert.equal(await page.locator('.projection-grid article').count(),2);
+      await page.goto(new URL('#/lab/experimentos/robustez',url).href);
+      await page.getByLabel('Épocas por semilla',{exact:true}).fill('5');
+      await page.getByRole('button',{name:'Ejecutar estudio de robustez',exact:true}).click();
+      await page.getByRole('table',{name:'Dispersión de predicciones',exact:true}).waitFor();
+      const dispersionDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar informe de robustez',exact:true}).click();
+      const dispersion=JSON.parse(await readFile(await(await dispersionDownload).path(),'utf8'));
+      assert.equal(dispersion.appVersion,expectedVersion);assert.equal(dispersion.probes.length,24);assert.equal(dispersion.runs.length,3);assert.equal(dispersion.testEvaluatedInStudy,false);
+      await page.getByRole('combobox',{name:'Estudio de robustez',exact:true}).selectOption('shift');
+      await page.getByRole('combobox',{name:'Escenario de deriva',exact:true}).selectOption('concept');
+      await page.getByRole('slider',{name:/Intensidad de deriva/}).fill('1');
+      await page.getByLabel('Épocas antes de la deriva',{exact:true}).fill('5');
+      await page.getByRole('button',{name:'Ejecutar estudio de robustez',exact:true}).click();
+      await page.getByRole('table',{name:'Resultados de deriva',exact:true}).waitFor();
+      const shiftDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar informe de robustez',exact:true}).click();
+      const shift=JSON.parse(await readFile(await(await shiftDownload).path(),'utf8'));
+      assert.equal(shift.options.kind,'concept');assert.equal(shift.options.severity,1);assert.equal(shift.pipelineRefitted,false);assert.equal(shift.pairs.length,48);assert.equal(shift.testEvaluatedInStudy,false);
+      await page.goto(new URL('#/lab/entrenamiento',url).href);
+      await page.locator('.training-status').filter({hasText:'Época 2'}).waitFor();
+      await page.getByRole('button',{name:'Cargar ejemplo y sustituir datos',exact:true}).click();
+      await page.getByLabel('Épocas máximas',{exact:true}).fill('8');
+      await page.getByRole('button',{name:'Inicializar modelo',exact:true}).click();
+      await page.getByRole('button',{name:'Un lote',exact:true}).click();
+      await page.locator('.training-status').filter({hasText:'Actualizaciones 1'}).waitFor();
+      await page.getByRole('combobox',{name:'Optimizador del segmento',exact:true}).selectOption('momentum');
+      await page.getByLabel('Tasa del segmento',{exact:true}).fill('0.02');
+      await page.getByRole('button',{name:'Registrar segmento',exact:true}).click();
+      await page.getByRole('table',{name:'Segmentos registrados',exact:true}).locator('tbody tr').filter({hasText:'seg-1'}).waitFor();
+      await page.getByRole('button',{name:'Un lote',exact:true}).click();
+      await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
+      await page.goto(new URL('#/biblioteca',url).href);
+      const segmentDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar sesión JSON',exact:true}).click();
+      const segmented=JSON.parse(await readFile(await(await segmentDownload).path(),'utf8'));
+      assert.equal(segmented.schemaVersion,9);assert.equal(segmented.config.segments[0].optimizer.kind,'momentum');assert.equal(segmented.checkpoint.updates,2);assert.equal(segmented.timeline.length,2);assert.equal(segmented.timeline[1].configHash.length,64);
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 and two visual decision laboratories at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection and segment recovery v9 at ${url}`,
       );
       failure = undefined;
       break;
     } catch (error) {
       failure = error;
-      console.log(`Pages propagation/check attempt ${attempt + 1} pending: ${error instanceof Error ? error.message.split('\n')[0] : 'unknown error'}`);
+      const reason = error instanceof Error ? error.message.split('\n').filter(line => line.trim() && !line.includes('Call log:')).slice(0, 3).join(' | ') : 'unknown error';
+      console.log(`Pages propagation/check attempt ${attempt + 1} pending at ${page.url()}: ${reason}`);
     } finally {
       await page.close();
     }

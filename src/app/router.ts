@@ -43,6 +43,11 @@ export const routes = [
     component: () => import('@/features/network/PropagationPage.vue'),
   },
   {
+    path: '/lab/experimentos/robustez',
+    name: 'robustness',
+    component: () => import('@/features/experiments/RobustnessPage.vue'),
+  },
+  {
     path: '/lab/experimentos',
     name: 'experiments',
     component: () => import('@/features/experiments/ExperimentsPage.vue'),

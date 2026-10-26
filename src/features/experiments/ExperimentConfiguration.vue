@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import DerivedEditor from '@/features/datasets/DerivedEditor.vue';
 import type { TrainingConfig } from '@/domain/training/session';
 import type { PipelineOptions } from '@/domain/data/pipeline';
 import type { FeatureSpec } from '@/domain/data/types';
@@ -20,6 +21,7 @@ function updateLayers() {
 }
 function resetAdvanced() {
   const copy = { ...config.value, spec: { ...config.value.spec } };
+  delete copy.segments;
   delete copy.regularization;
   delete copy.dropout;
   delete copy.earlyStopping;
@@ -114,8 +116,20 @@ function resetAdvanced() {
         ><input v-model="pipeline.featureIds" :value="f.id" type="checkbox" />{{ f.name }}</label
       >
     </fieldset>
+    <DerivedEditor
+      :model-value="pipeline.derived"
+      :features="features.filter((f) => pipeline.featureIds.includes(f.id))"
+      :label="label"
+      @update:model-value="
+        (value) => {
+          if (value) pipeline.derived = value;
+          else delete pipeline.derived;
+        }
+      "
+    />
     <p class="small">
-      La copia del laboratorio conserva sus ajustes avanzados: BN
+      La copia del laboratorio conserva sus ajustes avanzados:
+      {{ config.segments?.length ?? 0 }} segmentos, BN
       {{ config.spec.batchNormalization ? 'activo' : 'inactivo' }}, dropout
       {{ config.dropout ? config.dropout.rate : 'inactivo' }}, parada temprana
       {{ config.earlyStopping ? 'activa' : 'inactiva' }}, aumento

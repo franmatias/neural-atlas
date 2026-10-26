@@ -77,7 +77,7 @@ async function open() {
       actualizaciones en el checkpoint {{ experiment.checkpoint.updates }} · consulta previa de
       test: {{ experiment.testConsulted ? 'sí' : 'no' }}.
     </p>
-    <LossChart :history="experiment.checkpoint.history" />
+    <LossChart :segments="experiment.config.segments" :history="experiment.checkpoint.history" />
     <label class="training-check"
       ><input v-model="animate" type="checkbox" :disabled="prefs.reducedMotion" />Animar conexiones
       de la inspección (velocidad en Ajustes)</label

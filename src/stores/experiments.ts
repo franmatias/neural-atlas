@@ -48,6 +48,8 @@ export const useExperimentsStore = defineStore('experiments', () => {
     epochs = ref(40),
     batchSize = ref(12),
     sameSeed = ref(true);
+  const budgetKind = ref<'epochs' | 'updates' | 'time'>('epochs'),
+    budgetLimit = ref(100);
   const hypothesis = ref(''),
     reflection = ref(''),
     previousTest = ref(false);
@@ -164,6 +166,9 @@ export const useExperimentsStore = defineStore('experiments', () => {
           pipelineB: clone(pipelineB.value),
           testPreviouslyConsulted: previousTest.value,
           hypothesis: hypothesis.value,
+          ...(budgetKind.value !== 'epochs'
+            ? { budget: { kind: budgetKind.value, limit: budgetLimit.value } }
+            : {}),
         });
         if (id === sequence) {
           abResult.value = next;
@@ -223,6 +228,8 @@ export const useExperimentsStore = defineStore('experiments', () => {
     epochs,
     batchSize,
     sameSeed,
+    budgetKind,
+    budgetLimit,
     hypothesis,
     reflection,
     previousTest,

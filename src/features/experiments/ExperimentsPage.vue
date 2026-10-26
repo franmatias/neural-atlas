@@ -1,15 +1,29 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { useExperimentsStore } from '@/stores/experiments';
 import { formatData } from '@/shared/utils/data-format';
 import ExperimentConfiguration from './ExperimentConfiguration.vue';
+import ProjectionComparison from './ProjectionComparison.vue';
 import StudyInspector from './StudyInspector.vue';
 import FoldDiagram from './FoldDiagram.vue';
 const study = useExperimentsStore();
 const sourcePreset = ref('moons'),
   probeIndex = ref(0),
   fileError = ref('');
+const projecting = ref(false),
+  projection = ref<HTMLElement>();
+async function toggleProjection() {
+  projecting.value = !projecting.value;
+  if (projecting.value) {
+    await nextTick();
+    projection.value?.focus();
+  }
+}
+watch(
+  () => study.mode,
+  () => (projecting.value = false),
+);
 const differenceNames: Record<string, string> = {
   'config.spec.hidden': 'Capas ocultas',
   'config.spec.activation': 'Activación',
@@ -18,6 +32,7 @@ const differenceNames: Record<string, string> = {
   'config.optimizer.rate': 'Tasa de aprendizaje',
   'config.loss': 'Pérdida de regresión',
   'pipeline.scaling': 'Escalado',
+  'pipeline.derived': 'Características derivadas',
   'pipeline.imputation': 'Imputación',
   'pipeline.featureIds': 'Características incluidas',
 };
@@ -57,11 +72,16 @@ onBeforeRouteLeave(() => {
 </script>
 <template>
   <div class="page training-page experiments-page">
-    <p class="eyebrow">L12 / EXPERIMENTOS · D7 EN DESARROLLO</p>
+    <p class="eyebrow">L12 / EXPERIMENTOS</p>
     <h1>Compara con una pregunta.</h1>
     <p class="page-intro">
       Define qué cambia, conserva una base común y contrasta resultados reales. Puedes comparar A/B
       o validar una configuración en distintos folds, sin puntuar el test final.
+    </p>
+    <p>
+      <RouterLink to="/lab/experimentos/robustez"
+        >Dispersión de predicciones y cambios de distribución</RouterLink
+      >
     </p>
     <section class="training-panel">
       <h2>Datos del estudio</h2>
@@ -74,7 +94,7 @@ onBeforeRouteLeave(() => {
         Se copia la configuración de entrenamiento y el pipeline disponible. La evaluación binaria
         de estos estudios usa umbral 0,5; los informes indican la consulta previa de test.
       </p>
-      <fieldset :disabled="study.busy">
+      <fieldset :disabled="study.busy || projecting">
         <legend>Selecciona una fuente</legend>
         <div class="training-fields">
           <label
@@ -105,7 +125,7 @@ onBeforeRouteLeave(() => {
     </section>
     <section class="training-panel">
       <h2>Hipótesis y configuración</h2>
-      <fieldset :disabled="study.busy">
+      <fieldset :disabled="study.busy || projecting">
         <legend>Configura el estudio</legend>
         <div class="training-fields">
           <label
@@ -130,6 +150,23 @@ onBeforeRouteLeave(() => {
               max="512"
               step="1"
           /></label>
+          <template v-if="study.mode === 'ab'"
+            ><label
+              >Presupuesto A/B<select v-model="study.budgetKind">
+                <option value="epochs">Épocas comunes</option>
+                <option value="updates">Actualizaciones comunes</option>
+                <option value="time">Tiempo de entrenamiento por ensayo</option>
+              </select></label
+            ><label v-if="study.budgetKind !== 'epochs'"
+              >Límite del presupuesto<input
+                v-model.number="study.budgetLimit"
+                type="number"
+                :min="study.budgetKind === 'time' ? 50 : 1"
+                :max="study.budgetKind === 'time' ? 3000 : 10000"
+                step="1"
+              />{{ study.budgetKind === 'time' ? 'milisegundos' : 'actualizaciones' }}</label
+            ></template
+          >
           <template v-if="study.mode === 'cv'"
             ><label
               >Número de folds K<input
@@ -224,6 +261,17 @@ onBeforeRouteLeave(() => {
         parciales como completos. El tiempo depende del equipo y la configuración.
       </p>
     </section>
+    <button
+      v-if="study.mode === 'ab' && study.abResult"
+      class="button secondary"
+      :aria-pressed="projecting"
+      @click="toggleProjection"
+    >
+      {{ projecting ? 'Salir de la vista de proyección' : 'Activar vista de proyección A/B' }}
+    </button>
+    <div v-if="projecting && study.abResult" ref="projection" tabindex="-1">
+      <ProjectionComparison v-model="probeIndex" :result="study.abResult" />
+    </div>
     <section v-if="study.mode === 'ab' && study.abResult" class="training-panel ab-results">
       <h2>Resultados A/B</h2>
       <p>
@@ -278,8 +326,20 @@ onBeforeRouteLeave(() => {
                       : 'Entropía cruzada categórica'
                 }}
               </td>
-              <td>{{ formatData(run.experiment.checkpoint.history.at(-1)!.trainLoss) }}</td>
-              <td>{{ formatData(run.experiment.checkpoint.history.at(-1)!.validationLoss) }}</td>
+              <td>
+                {{
+                  formatData(
+                    (run.stop?.point ?? run.experiment.checkpoint.history.at(-1)!).trainLoss,
+                  )
+                }}
+              </td>
+              <td>
+                {{
+                  formatData(
+                    (run.stop?.point ?? run.experiment.checkpoint.history.at(-1)!).validationLoss,
+                  )
+                }}
+              </td>
               <td>{{ study.abResult.budgets[i]!.parameters }}</td>
               <td>
                 {{ run.experiment.checkpoint.epoch }} /
@@ -308,6 +368,12 @@ onBeforeRouteLeave(() => {
         Las funciones de pérdida de A y B son distintas: no se calcula Δ de pérdida porque los
         valores no son comparables. Contrasta las predicciones y evalúa con una métrica común antes
         de concluir.
+      </p>
+      <p v-if="study.abResult.options.budget" class="small">
+        Métricas recalculadas en el checkpoint final, aunque la última época esté incompleta. La
+        curva conserva solo épocas completas. El tope de épocas sigue vigente; el informe declara si
+        se alcanzó antes del presupuesto. No se combina presupuesto fijo con parada temprana. Tiempo
+        medido entre lotes, sin garantía de tiempo real ni reproducibilidad.
       </p>
       <label class="inspection-select"
         >Sonda compartida de validación<select v-model.number="probeIndex">
@@ -451,8 +517,8 @@ onBeforeRouteLeave(() => {
       <p class="small">
         Estudios e hipótesis viven en RAM. El informe JSON es de análisis, no se importa como
         experimento. Exporta también el ensayo completo para conservar dataset, partición, pipeline,
-        pesos y optimizador. Pipelines robustos/derivados, deriva y timeline de segmentos siguen en
-        el plan D7.
+        pesos y optimizador. Las derivadas y el escalado robusto se configuran arriba; la dispersión
+        y los escenarios de deriva están en Robustez, y los segmentos en Entrenamiento.
       </p>
     </section>
   </div>
