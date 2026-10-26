@@ -2,7 +2,7 @@
 
 Laboratorio visual de aprendizaje automático para FP de especialización y universidad. Vue 3 Composition API, TypeScript, Tailwind, Pinia, Vue Router y D3.
 
-**Versión 0.11.0 · doce laboratorios disponibles, cinco talleres POE y recuperación automática.** Experimenta con datos, una neurona, arquitectura/XOR, activaciones y propagación. Constructor MLP, perceptrón en Worker, mapas reales, softmax/Jacobiano y una actualización de pesos comprobable numéricamente. Entrenamiento en Worker con SGD/Momentum/RMSprop/Adam, calendarios, pasos por lote/época, pausa/cancelación y recuperación automática en RAM; evaluación de clasificación/regresión y predicción de nuevas muestras. Guarda manualmente experimentos completos en IndexedDB, recupera el siguiente lote después de recargar e importa/exporta JSON con datos y optimizador. Exporta también modelos sin filas y predice en un espacio independiente conservando su pipeline. Generadores, fallos, split/pipeline sin fuga e intercambio CSV/JSON de datasets. Temas claro/oscuro, responsive, ajustes y animaciones regulables.
+**Versión 0.12.0 · doce laboratorios disponibles, cinco talleres POE y recuperación automática.** Experimenta con datos, una neurona, arquitectura/XOR, activaciones y propagación. Constructor MLP, perceptrón en Worker, mapas reales, softmax/Jacobiano y una actualización de pesos comprobable numéricamente. Entrenamiento en Worker con SGD/Momentum/RMSprop/Adam, calendarios, pasos por lote/época, pausa/cancelación y recuperación automática en RAM; evaluación de clasificación/regresión y predicción de nuevas muestras. Guarda manualmente experimentos completos en IndexedDB, recupera el siguiente lote después de recargar e importa/exporta JSON con datos y optimizador. Exporta también modelos sin filas y predice en un espacio independiente conservando su pipeline. Generadores, fallos, split/pipeline sin fuga e intercambio CSV/JSON de datasets. Temas claro/oscuro, responsive, ajustes y animaciones regulables.
 
 ![Entrenamiento y curvas reales](docs/implementation/d4-training.png)
 
@@ -10,7 +10,9 @@ Los nuevos [laboratorios visuales de decisión](docs/43-laboratorios-visuales-de
 
 La entrega [D7 completa](docs/44-cierre-d7.md) añade derivadas declarativas, dispersión de predicciones entre semillas, tres escenarios de deriva, comparador A/B para proyección con presupuestos por épocas/actualizaciones/tiempo y segmentos reanudables al cambiar tasa/optimizador o reiniciar pesos. Acceso a [Robustez](https://franmatias.github.io/neural-atlas/#/lab/experimentos/robustez), [Comparación](https://franmatias.github.io/neural-atlas/#/lab/experimentos) y [Entrenamiento](https://franmatias.github.io/neural-atlas/#/lab/entrenamiento). D8 continúa por incrementos; D9–D10 y la validación docente mantienen su alcance pendiente.
 
-La primera entrega de [D8 · Evaluación probabilística](docs/45-evaluacion-probabilidades.md) añade en L09 Brier, fiabilidad, ROC/PR, AP y costes con selección del umbral en validación. D8 sigue en curso: aproximación de funciones y ética por grupos quedan pendientes.
+La primera entrega de [D8 · Evaluación probabilística](docs/45-evaluacion-probabilidades.md) añade en L09 Brier, fiabilidad, ROC/PR, AP y costes con selección del umbral en validación. D8 sigue en curso; la actividad de ética por grupos queda pendiente.
+
+El modo [Construir una función · D8.2](docs/46-aproximacion-funciones.md) añade seno, valor absoluto y escalón, 1/2/8/32 neuronas, contribuciones exactas y reproducción de instantáneas reales. Acceso desde L10, sin sustituir la sesión activa; informes, modelos y checkpoints exportables. D8 conserva pendiente la actividad de ética por grupos.
 
 ## Arrancar
 

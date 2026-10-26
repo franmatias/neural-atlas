@@ -349,9 +349,29 @@ try {
       const segmentDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar sesión JSON',exact:true}).click();
       const segmented=JSON.parse(await readFile(await(await segmentDownload).path(),'utf8'));
       assert.equal(segmented.schemaVersion,9);assert.equal(segmented.config.segments[0].optimizer.kind,'momentum');assert.equal(segmented.checkpoint.updates,2);assert.equal(segmented.timeline.length,2);assert.equal(segmented.timeline[1].configHash.length,64);
+      await page.goto(new URL('#/lab/regresion/funciones',url).href);
+      await page.getByRole('combobox',{name:'Función objetivo',exact:true}).selectOption('step');
+      await page.getByLabel('Épocas de aproximación',{exact:true}).fill('5');
+      await page.getByRole('button',{name:'Entrenar aproximación',exact:true}).click();
+      await page.getByTestId('function-grid-mse').waitFor();
+      const functionDownload=page.waitForEvent('download');
+      await page.getByRole('button',{name:'Exportar informe de aproximación',exact:true}).click();
+      const functionReport=JSON.parse(await readFile(await(await functionDownload).path(),'utf8'));
+      assert.equal(functionReport.format,'neural-atlas.function-approximation-report');assert.equal(functionReport.appVersion,expectedVersion);
+      assert.equal(functionReport.testEvaluated,false);assert.equal(functionReport.split.train.length,144);assert.equal(functionReport.split.test.length,48);
+      assert.equal(functionReport.runs[0].snapshots.at(-1).epoch,5);assert.equal(functionReport.runs[0].snapshots.at(-1).curve.length,241);
+      assert(functionReport.runs[0].snapshots.at(-1).jumpLowerBound>=0.5);
+      const snap=functionReport.runs[0].snapshots.at(-1), probe=snap.curve[120];
+      assert.equal(probe.contributions.reduce((sum,term)=>sum+term,snap.model.layers[1].biases[0]),probe.prediction);
+      await page.getByRole('slider',{name:'Instantánea de entrenamiento',exact:true}).fill('1');
+      const functionCheckpointDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar experimento seleccionado',exact:true}).click();
+      const functionCheckpoint=JSON.parse(await readFile(await(await functionCheckpointDownload).path(),'utf8'));
+      assert.equal(functionCheckpoint.config.spec.inputs,1);assert.equal(functionCheckpoint.checkpoint.epoch,1);assert.equal(functionCheckpoint.checkpoint.updates,9);
+      await page.goto(new URL('#/lab/entrenamiento',url).href);
+      await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR and validation cost report at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report and resumable function approximation at ${url}`,
       );
       failure = undefined;
       break;

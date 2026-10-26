@@ -1,6 +1,6 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-Diseño inicial: 22/10/2026; estado de implementación: 26/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 continúa con funciones/ética pendientes; D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
+Diseño inicial: 22/10/2026; estado de implementación: 26/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 continúa con ética por grupos pendiente; D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
 
 La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
 
@@ -82,3 +82,5 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 [43 · Diseño e implementación de los laboratorios visuales](43-laboratorios-visuales-de-decision.md): sandbox binario y clasificador multiclase con entrenamiento real.
 
 [44 · Cierre técnico D7](44-cierre-d7.md): estado de las seis historias, contratos, límites, versiones y evidencia.
+
+[Construir una función · D8.2](46-aproximacion-funciones.md) implementa US-050 / RF-073 en L10; US-064 (ética por grupos) mantiene D8 abierto. Las fases D9/D10 y la validación en aula siguen pendientes.

@@ -124,3 +124,5 @@ Comprobar árbol y rama → crear rama descriptiva → implementar/verificar inc
 Las [dependencias críticas](fixtures/story-dependencies.json) se verifican sin ciclos ni referencias a fases futuras; cada fase además parte del main ya integrado de su predecesora. No es una estimación automática del calendario ni sustituye el orden de trabajo dentro de cada fase.
 
 La especificación 0.1 quedó en seis ramas documentales. La revisión 0.2 añade ramas reales de contratos, experiencias educativas, planificación/trazabilidad y verificación/diagramas. Los commits documentales no se presentan como historias funcionales implementadas. La implementación se inició después de aquella revisión. Los informes de cada entrega y el cierre D7 prevalecen para consultar el estado actual; no se pide aprobación por cada commit reversible dentro del alcance autorizado.
+
+[Construir una función · D8.2](46-aproximacion-funciones.md) implementa US-050 / RF-073 en L10; US-064 (ética por grupos) mantiene D8 abierto. Las fases D9/D10 y la validación en aula siguen pendientes.
