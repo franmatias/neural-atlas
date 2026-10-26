@@ -78,6 +78,7 @@ function resetAdvanced() {
         >Escalado {{ label
         }}<select v-model="pipeline.scaling">
           <option value="standard">Estándar</option>
+          <option value="robust">Robusto · mediana / IQR</option>
           <option value="minmax">Min-Max</option>
           <option value="none">Sin escalado</option>
         </select></label
@@ -98,6 +99,11 @@ function resetAdvanced() {
         </select></label
       >
     </div>
+    <p class="small">
+      El escalado robusto usa (x − mediana) / IQR, ajustado solo con train después de imputar. Si
+      IQR es cero usa escala 1; las columnas constantes se transforman en cero. Reduce la influencia
+      de extremos al estimar el centro y la escala; no elimina los outliers.
+    </p>
     <p class="small">
       Capas: hasta seis enteros 1–64 separados por comas; vacío significa sin ocultas. Clasificación
       usa BCE o entropía cruzada categórica, con independencia del selector de regresión.

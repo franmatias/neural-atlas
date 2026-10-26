@@ -162,7 +162,9 @@ onBeforeRouteLeave(() => {
                 ? 'estandarización'
                 : inference.model.pipeline.options.scaling === 'minmax'
                   ? 'Min-Max'
-                  : 'sin escalado'
+                  : inference.model.pipeline.options.scaling === 'robust'
+                    ? 'robusto (mediana / IQR)'
+                    : 'sin escalado'
             }}. Los parámetros se conservan al predecir; no se ajustan a la muestra nueva.
           </p>
           <ul>
@@ -175,7 +177,12 @@ onBeforeRouteLeave(() => {
                 desviación {{ formatData(column.std) }} · rango [{{ formatData(column.min) }},
                 {{ formatData(column.max) }}].</span
               >
-              <span v-else
+              <span v-if="column.kind === 'numeric' && column.robust">
+                Mediana {{ formatData(column.robust.median) }} · IQR
+                {{ formatData(column.robust.iqr) }} (escala
+                {{ formatData(column.robust.iqr || 1) }}).
+              </span>
+              <span v-if="column.kind === 'categorical'"
                 >: vocabulario {{ column.vocabulary.join(' · ') }} · imputación {{ column.fill }}.
                 Una categoría nueva activa la columna desconocida.</span
               >

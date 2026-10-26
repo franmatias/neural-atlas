@@ -132,6 +132,7 @@ export const dataEs = {
   'data.scaling.none': 'Ninguno: conserva las unidades',
   'data.scaling.minmax': 'Min-Max, sin recortar valores',
   'data.scaling.standard': 'Z-score, desviación poblacional',
+  'data.scaling.robust': 'Robusto, mediana e IQR',
   'data.indicators': 'Añadir indicadores de faltantes',
   'data.fit': 'Ajustar con train y transformar',
   'data.fitted': 'Estado aprendido exclusivamente con train',

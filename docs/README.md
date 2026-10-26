@@ -73,6 +73,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [39 · Multisemilla D6](39-comparacion-multisemilla-d6.md) | Datos fijos, parejas reproducibles, dispersión y diferencias por semilla |
 | [40 · Capacidad D6](40-capacidad-y-tamano-d6.md) | Curvas por tamaños anidados, tres arquitecturas y dataset v2 con selección reproducible |
 | [41 · Experimentos D7](41-experimentos-y-validacion-cruzada-d7.md) | A/B, hipótesis, CV sin fuga, grupos, pipeline por fold y dataset v3 |
+| [42 · Escalado robusto D7](42-escalado-robusto-d7.md) | Mediana/IQR, comparación sin fuga, experimentos v7 y modelos v3 |
 
 ## Qué revisar antes de D1
 

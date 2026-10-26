@@ -15,7 +15,7 @@ const text = z.string().max(4096),
 const id = z.string().refine(safeId),
   hash = z.string().regex(/^[a-f0-9]{64}$/);
 const pipelineSchema = z.strictObject({
-  version: z.literal(1),
+  version: z.union([z.literal(1), z.literal(2)]),
   inputFeatureIds: z.array(id).min(1).max(32),
   outputFeatureIds: z.array(text).min(1).max(32),
   outputLabels: z.array(text).min(1).max(32),
@@ -25,7 +25,7 @@ const pipelineSchema = z.strictObject({
   options: z.strictObject({
     featureIds: z.array(id).min(1).max(32),
     imputation: z.enum(['mean', 'median', 'mode']),
-    scaling: z.enum(['none', 'minmax', 'standard']),
+    scaling: z.enum(['none', 'minmax', 'standard', 'robust']),
     missingIndicators: z.boolean(),
   }),
   columns: z
@@ -40,6 +40,9 @@ const pipelineSchema = z.strictObject({
           min: finite,
           max: finite,
           constant: z.boolean(),
+          robust: z
+            .strictObject({ median: finite, q1: finite, q3: finite, iqr: finite.min(0) })
+            .optional(),
         }),
         z.strictObject({
           kind: z.literal('categorical'),
@@ -54,7 +57,7 @@ const pipelineSchema = z.strictObject({
 });
 const modelSchema = z.strictObject({
   format: z.literal('neural-atlas.model'),
-  schemaVersion: z.union([z.literal(1), z.literal(2)]),
+  schemaVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   engineVersion: z.union([z.literal(1), z.literal(2)]),
   appVersion: z
     .string()
@@ -94,7 +97,7 @@ const modelSchema = z.strictObject({
 });
 export interface InferenceModel {
   format: 'neural-atlas.model';
-  schemaVersion: 1 | 2;
+  schemaVersion: 1 | 2 | 3;
   engineVersion: 1 | 2;
   appVersion: string;
   savedAt: string;
@@ -118,9 +121,14 @@ export function validateInferenceModel(model: InferenceModel): void {
   modelSchema.parse(wire);
   validateNetwork(model.network);
   const version = model.network.spec.batchNormalization ? 2 : 1;
-  if (model.schemaVersion !== version || model.engineVersion !== version)
+  if (
+    model.schemaVersion !== (model.pipeline.options.scaling === 'robust' ? 3 : version) ||
+    model.engineVersion !== version
+  )
     throw new Error('MODEL_VERSION');
   const p = model.pipeline;
+  if (p.version !== (p.options.scaling === 'robust' ? 2 : 1))
+    throw new Error('MODEL_PIPELINE_VERSION');
   const featureIds = model.features.map((feature) => feature.id);
   if (
     new Set(featureIds).size !== featureIds.length ||
@@ -143,6 +151,18 @@ export function validateInferenceModel(model: InferenceModel): void {
         column.mean > column.max ||
         column.fill < column.min ||
         column.fill > column.max
+      )
+        throw new Error('MODEL_STATISTICS');
+      const r = column.robust;
+      if (
+        p.options.scaling === 'robust'
+          ? !r ||
+            r.q1 < column.min ||
+            r.q3 > column.max ||
+            r.q1 > r.median ||
+            r.median > r.q3 ||
+            r.iqr !== r.q3 - r.q1
+          : r !== undefined
       )
         throw new Error('MODEL_STATISTICS');
       outputs.push(`${column.id}:numeric`);
@@ -200,7 +220,8 @@ export function modelFromExperiment(experiment: Experiment): InferenceModel {
   const pipeline = structuredClone(prepared.pipeline);
   const model: InferenceModel = {
     format: 'neural-atlas.model',
-    schemaVersion: network.spec.batchNormalization ? 2 : 1,
+    schemaVersion:
+      pipeline.options.scaling === 'robust' ? 3 : network.spec.batchNormalization ? 2 : 1,
     engineVersion: network.spec.batchNormalization ? 2 : 1,
     appVersion,
     savedAt: new Date().toISOString(),
