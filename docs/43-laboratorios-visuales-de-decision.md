@@ -70,7 +70,7 @@ Pruebas de determinismo y soporte de clases, escala y dirección de coordenadas,
 
 ## Implementación y evidencia de 0.9.0
 
-Disponibles desde Arquitectura, Clasificación y los accesos destacados del catálogo. Se mantienen diez laboratorios principales; estos son dos espacios nuevos dentro de L03/L09, con componentes compartidos. Cinco recetas binarias y cuatro multiclase. Configuración acotada a 240 filas sintéticas, 40 puntos manuales, 3/4 clases en multiclase, hasta tres capas de 16 neuronas en el contrato interno y 500 épocas. Los controles de la interfaz ofrecen cero, una o dos capas; el límite interno cubre también entradas programáticas. Los datos completos y sus particiones viajan en la exportación del experimento.
+Disponibles como laboratorios independientes L13/L14 en el catálogo, además de los accesos desde Arquitectura y Clasificación. Comparten componentes de visualización y entrenamiento. Cinco recetas binarias y cuatro multiclase. Configuración acotada a 240 filas sintéticas, 40 puntos manuales, 3/4 clases en multiclase, hasta tres capas de 16 neuronas en el contrato interno y 500 épocas. Los controles de la interfaz ofrecen cero, una o dos capas; el límite interno cubre también entradas programáticas. Los datos completos y sus particiones viajan en la exportación del experimento.
 
 `decision-study.ts` prepara datos, split y pipeline; `decision-surface.ts` muestrea el modelo; `useDecisionSession.ts` controla un Worker independiente por visita. `DecisionControls.vue`, `DecisionMap.vue` y `VisualDecisionPage.vue` reparten controles, interacción SVG y composición de pantalla. Dos componentes de entrada distintos evitan conservar la tarea binaria al navegar al clasificador multiclase.
 
@@ -87,3 +87,8 @@ Capturas reproducibles con `scripts/capture-visual-decision.mjs`:
 ![Clasificador de cuatro clases con Softmax](implementation/visual-multiclass.png)
 
 ![Mapa multiclase en móvil y tema oscuro](implementation/visual-multiclass-mobile.png)
+
+
+## Entradas independientes en el catálogo · 0.10.1
+
+Los dos espacios visuales se presentan como laboratorios propios, con tarjeta, pregunta didáctica e identificación estable: L13 «Sandbox de dos clases» y L14 «Clasificador visual multiclase», en Evaluación y práctica. El catálogo contiene ahora 14 laboratorios (12 disponibles y 2 previstos); el diseño inicial de 12 se conserva como referencia histórica. Los contadores de la interfaz se calculan a partir del catálogo. Se mantienen las direcciones publicadas `/lab/arquitectura/frontera` y `/lab/clasificacion/visual`, las sesiones y los enlaces existentes. Cada vista permite volver a todos los laboratorios. Las pruebas de los dos simuladores comienzan desde sus respectivas tarjetas y verifican identificación, disponibilidad y destino antes de entrenar.

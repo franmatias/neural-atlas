@@ -64,7 +64,9 @@ function select(x: number, y: number) {
 <template>
   <div class="page visual-decision-page">
     <p class="eyebrow">
-      {{ mode === 'binary' ? 'L03 / SANDBOX MULTICAPA' : 'L09 / CLASIFICADOR VISUAL' }}
+      {{
+        mode === 'binary' ? 'L13 / SANDBOX DE DOS CLASES' : 'L14 / CLASIFICADOR VISUAL MULTICLASE'
+      }}
     </p>
     <h1>{{ mode === 'binary' ? 'Mira cómo aprende una frontera.' : 'Cada región, una clase.' }}</h1>
     <p class="page-intro">
@@ -75,11 +77,12 @@ function select(x: number, y: number) {
       }}
     </p>
     <nav class="decision-links" aria-label="Laboratorios visuales">
-      <RouterLink to="/lab/arquitectura/frontera">Separar dos clases</RouterLink
-      ><RouterLink to="/lab/clasificacion/visual">Clasificador multiclase</RouterLink
-      ><RouterLink :to="mode === 'binary' ? '/lab/arquitectura' : '/lab/clasificacion'"
-        >Volver al laboratorio principal</RouterLink
-      >
+      <RouterLink to="/laboratorios">Todos los laboratorios</RouterLink
+      ><RouterLink to="/lab/arquitectura/frontera">Sandbox de dos clases</RouterLink
+      ><RouterLink to="/lab/clasificacion/visual">Clasificador visual multiclase</RouterLink
+      ><RouterLink :to="mode === 'binary' ? '/lab/arquitectura' : '/lab/clasificacion'">{{
+        mode === 'binary' ? 'Arquitectura y XOR' : 'Clasificar y evaluar'
+      }}</RouterLink>
     </nav>
     <p v-if="lab.error" class="field-error" role="alert">{{ lab.error }}</p>
     <p v-if="lab.notice" class="small muted" role="status">{{ lab.notice }}</p>
