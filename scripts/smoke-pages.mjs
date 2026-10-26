@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 const url = process.env.PAGES_URL ?? 'https://franmatias.github.io/neural-atlas/';
 const expectedVersion = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8')).version;
 const parsed = new URL(url);
@@ -82,6 +82,19 @@ try {
       await page.getByRole('link', { name: 'Evaluar este modelo' }).click();
       await page.getByRole('button', { name: 'Evaluar validación', exact: true }).click();
       await page.getByRole('heading', { name: 'Resultados: validación' }).waitFor();
+      await page.getByTestId('probability-brier').waitFor();
+      const probabilityDownload = page.waitForEvent('download');
+      await page.getByRole('button', { name: 'Exportar informe de probabilidades y costes', exact: true }).click();
+      const probabilityReport = JSON.parse(await readFile(await (await probabilityDownload).path(), 'utf8'));
+      assert.equal(probabilityReport.format, 'neural-atlas.probability-evaluation-report');
+      assert.equal(probabilityReport.appVersion, expectedVersion);
+      assert.equal(probabilityReport.actual.length, 60);
+      assert.equal(probabilityReport.predictions.length, 60);
+      assert.equal(probabilityReport.metrics.convention, 'binary-scalar');
+      assert.equal(probabilityReport.metrics.perClass[1].points[0].threshold, null);
+      assert(probabilityReport.validationCandidate.threshold >= 0 && probabilityReport.validationCandidate.threshold <= 1);
+      const checkedBrier = probabilityReport.predictions.reduce((sum, p, i) => sum + (p[0] - probabilityReport.actual[i]) ** 2 / 60, 0);
+      assert(Math.abs(checkedBrier - probabilityReport.metrics.brier) < 1e-12);
       await page.getByRole('button', { name: 'Predecir muestra', exact: true }).click();
       await page.locator('.prediction-result').waitFor();
       await page.goto(new URL('#/biblioteca', url).href);
@@ -128,6 +141,9 @@ try {
       await page.getByRole('button', { name: 'Registrar reflexión y completar recorrido' }).click();
       await page.getByRole('heading', { name: 'Recorrido registrado', exact: true }).waitFor();
       await page.getByText('Progreso y evidencias guardados en este navegador', { exact: true }).waitFor();
+      // The status text may still describe the preceding save; the catalog stays
+      // disabled until this completion transaction has actually finished.
+      await expect(page.getByRole('button', { name: /^T02 ·/ })).toBeEnabled();
       await page.reload();
       await page.getByRole('button', { name: /^T02 ·/ }).click();
       await page.getByRole('heading', { name: 'Recorrido registrado', exact: true }).waitFor();
@@ -335,7 +351,7 @@ try {
       assert.equal(segmented.schemaVersion,9);assert.equal(segmented.config.segments[0].optimizer.kind,'momentum');assert.equal(segmented.checkpoint.updates,2);assert.equal(segmented.timeline.length,2);assert.equal(segmented.timeline[1].configHash.length,64);
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection and segment recovery v9 at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR and validation cost report at ${url}`,
       );
       failure = undefined;
       break;
