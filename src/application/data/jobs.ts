@@ -1,5 +1,15 @@
 import { generateDataset } from '@/domain/data/generate';
 import {
+  compareModels,
+  type PairedComparisonOptions,
+  type PairedComparisonResult,
+} from '@/application/training/paired-comparison';
+import {
+  crossValidate,
+  type CrossValidationOptions,
+  type CrossValidationResult,
+} from '@/application/training/cross-validation';
+import {
   compareCapacity,
   type CapacityOptions,
   type CapacityResult,
@@ -50,6 +60,8 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  abComparison: PairedComparisonOptions;
+  crossValidation: CrossValidationOptions;
   capacity: CapacityOptions;
   multiseed: MultiseedOptions;
   generalization: GeneralizationOptions;
@@ -81,6 +93,8 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  abComparison: PairedComparisonResult;
+  crossValidation: CrossValidationResult;
   capacity: CapacityResult;
   multiseed: MultiseedResult;
   generalization: GeneralizationResult;
@@ -107,6 +121,10 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'abComparison':
+      return compareModels(job.payload);
+    case 'crossValidation':
+      return crossValidate(job.payload);
     case 'capacity':
       return compareCapacity(job.payload);
     case 'multiseed':

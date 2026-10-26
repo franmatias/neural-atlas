@@ -114,7 +114,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué evidencia respalda tu explicación?',
     group: 'practice',
     phase: 'D7',
-    available: false,
+    available: true,
   },
 ];
 export function findLaboratory(slug: string) {

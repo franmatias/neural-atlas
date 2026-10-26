@@ -72,6 +72,7 @@ Son wireframes de especificación con cifras ilustrativas, no capturas del simul
 | [38 · Aumento de datos D6](38-aumento-datos-d6.md) | Copias fijas solo de train, oráculos, trazabilidad y experimentos v6 |
 | [39 · Multisemilla D6](39-comparacion-multisemilla-d6.md) | Datos fijos, parejas reproducibles, dispersión y diferencias por semilla |
 | [40 · Capacidad D6](40-capacidad-y-tamano-d6.md) | Curvas por tamaños anidados, tres arquitecturas y dataset v2 con selección reproducible |
+| [41 · Experimentos D7](41-experimentos-y-validacion-cruzada-d7.md) | A/B, hipótesis, CV sin fuga, grupos, pipeline por fold y dataset v3 |
 
 ## Qué revisar antes de D1
 

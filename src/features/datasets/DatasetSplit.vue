@@ -108,6 +108,12 @@ function divide() {
       <button class="button primary" :disabled="data.busy">{{ t('data.applySplit') }}</button>
     </form>
     <div v-if="data.split" class="panel split-result">
+      <p v-if="data.split.fold">
+        Fold {{ data.split.fold.index + 1 }} de {{ data.split.fold.count }} ·
+        {{ data.split.fold.strategy }} · semilla {{ data.split.fold.seed }}. El test final conserva
+        la división base; train y validación pertenecen a este fold. Los porcentajes configurados
+        son de la división base. Crear una partición nueva sustituye el fold.
+      </p>
       <p v-if="data.split.selection">
         Subconjunto anidado de train: {{ data.split.selection.count }} filas, semilla de selección
         {{ data.split.selection.seed }}. Validación y test conservan la división base. Las filas

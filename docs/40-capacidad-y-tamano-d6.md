@@ -114,4 +114,6 @@ Capturas reproducibles con `scripts/capture-d6-capacity.mjs`:
 
 La primera ejecución de CI detectó desbordamiento móvil en los tres motores de Linux: el selector de ensayos conservaba su ancho mínimo intrínseco. Se corrigió con `min-width: 0` y ancho 100% en el selector y su contenedor. Una reproducción local con fuente ancha pasó de scroll global 574 px a 390 px sobre viewport 390. La prueba amplía semillas a uint32 máximo, anchos 360/390 y métricas tipográficas anchas, sin relajar la comprobación de desbordamiento. CI vuelve a verificar toda la entrega antes de publicar.
 
+La [ejecución corregida de CI](https://github.com/franmatias/neural-atlas/actions/runs/40284103850) completó **213 recorridos en Linux**, despliegue y smoke público sin fallos. La 0.7.6 quedó publicada con el arreglo móvil.
+
 Continúan D7 (comparador libre, validación cruzada, pipelines avanzados, deriva y segmentos), D8–D10 y los talleres posteriores según su plan. Las extensiones X1/X2 siguen siendo propuestas separadas del alcance original.
