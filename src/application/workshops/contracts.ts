@@ -1,7 +1,20 @@
 import { z } from '@/shared/validation';
 import { guardJson } from '@/application/data/json-files';
 import { hashValue, utf8Length } from '@/domain/data/integrity';
-export const workshopIds = ['T01', 'T02', 'T03', 'T04', 'T05'] as const;
+export const workshopIds = [
+  'T01',
+  'T02',
+  'T03',
+  'T04',
+  'T05',
+  'T06',
+  'T07',
+  'T08',
+  'T09',
+  'T10',
+  'T11',
+  'T12',
+] as const;
 export const metricIds = [
   'splitDisjoint',
   'fittedTrain',
@@ -21,8 +34,42 @@ export const metricIds = [
   'runCount',
   'recordedRuns',
   'budgetAccepted',
+  'baselineLoss',
+  'variantLoss',
+  'baselineScore',
+  'variantScore',
+  'trainSupport',
+  'validationSupport',
+  'threshold',
+  'fp',
+  'fn',
+  'cost',
+  'groupRecallGap',
+  'originalUnchanged',
+  'testConsulted',
+  'faultChanged',
+  'repairPreservesSplit',
+  'baselineNorm',
+  'variantNorm',
+  'baselineReferenceLoss',
+  'validationRejected',
+  'illustrativeHoldoutConsulted',
 ] as const;
 const finite = z.number().finite();
+export const advancedWorkshopSchema = z.strictObject({
+  threshold: finite.min(0).max(1),
+  lambda: finite.min(0).max(0.1),
+  noise: finite.min(0).max(0.4),
+  clipNorm: finite.min(0.1).max(100),
+  fault: z.enum(['zero', 'rate', 'units', 'leak', 'output', 'bn', 'labels', 'relu']),
+});
+export const advancedWorkshopDefaults: z.infer<typeof advancedWorkshopSchema> = {
+  threshold: 0.3,
+  lambda: 0.01,
+  noise: 0.2,
+  clipNorm: 1,
+  fault: 'zero',
+};
 export const optionsSchema = z.strictObject({
   seed: z.number().int().min(0).max(0xffffffff),
   bias: finite.min(-2).max(2),
@@ -36,6 +83,7 @@ export const optionsSchema = z.strictObject({
     .refine((v) => v[0] !== v[1]),
   epochs: z.number().int().min(5).max(20),
   budgetAccepted: z.boolean(),
+  advanced: advancedWorkshopSchema.optional(),
 });
 export type WorkshopOptions = z.infer<typeof optionsSchema>;
 export const defaultWorkshopOptions: WorkshopOptions = {
@@ -114,6 +162,8 @@ const point = z.strictObject({
   trainScore: finite,
   validationScore: finite,
   gradientNorm: finite,
+  regularizationPenalty: finite.optional(),
+  trainObjective: finite.optional(),
 });
 export const evidenceSchema = z.strictObject({
   id: z.string().uuid(),
@@ -122,7 +172,11 @@ export const evidenceSchema = z.strictObject({
   capturedAt: z.iso.datetime(),
   options: optionsSchema,
   configHash: z.string().length(64),
-  metrics: z.partialRecord(metric, z.union([finite, z.boolean()])),
+  metrics: z.partialRecord(metric, z.union([finite, z.boolean(), z.null()])),
+  experiment: z
+    .string()
+    .max(8 * 1024 * 1024)
+    .optional(),
   rows: z
     .array(
       z.strictObject({
@@ -135,6 +189,8 @@ export const evidenceSchema = z.strictObject({
   curves: z
     .array(
       z.strictObject({
+        label: z.string().max(150).optional(),
+        scoreKind: z.enum(['accuracy', 'mse']).optional(),
         rate: finite,
         batch: finite,
         outcome: z.enum(['finite', 'divergent']),

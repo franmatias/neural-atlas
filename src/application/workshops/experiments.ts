@@ -1,4 +1,5 @@
 import { generateDataset } from '@/domain/data/generate';
+import { runAdvancedWorkshop } from './advanced-experiments';
 import { defaultGenerator } from '@/domain/data/types';
 import { splitDataset } from '@/domain/data/split';
 import { fitPipeline, transformRow } from '@/domain/data/pipeline';
@@ -202,6 +203,6 @@ export function runWorkshop(
         });
       }
     evidence.metrics = { runCount: 6, recordedRuns: evidence.curves.length, budgetAccepted: true };
-  } else throw new Error('WORKSHOP_CASE');
+  } else Object.assign(evidence, runAdvancedWorkshop(caseId, options));
   return evidenceSchema.parse(evidence);
 }
