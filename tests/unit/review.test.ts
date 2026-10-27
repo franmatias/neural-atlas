@@ -1,0 +1,36 @@
+import { it, expect } from 'vitest';
+import { newReview, gradeReview, reviewSchema } from '@/domain/content/review';
+import { assessAnswer } from '@/domain/content/concept';
+import { coreRecords } from '@/content/core-records';
+import { localDay } from '@/infrastructure/storage/local-day';
+it('Leitner usa días de calendario, error reinicia, conserva cinco respuestas', () => {
+  let r = newReview('C021', 1, '2026-03-28');
+  r = gradeReview(r, true, '2026-03-28');
+  expect(r.due).toBe('2026-03-29');
+  expect(r.box).toBe(1);
+  r = gradeReview(r, true, '2026-03-29');
+  expect(r.due).toBe('2026-04-01');
+  r = gradeReview(r, true, '2026-10-24');
+  expect(r.due).toBe('2026-10-31');
+  r = gradeReview(r, true, '2026-12-25');
+  expect(r.due).toBe('2027-01-08');
+  r = gradeReview(r, true, '2027-01-01');
+  expect(r.due).toBe('2027-01-31');
+  r = gradeReview(r, true, '2027-01-31');
+  expect(r.box).toBe(5);
+  expect(r.responses).toHaveLength(5);
+  r = gradeReview(r, false, '2028-02-28');
+  expect(r.box).toBe(0);
+  expect(r.due).toBe('2028-02-29');
+  expect(() => gradeReview(r, true, '2027-02-29')).toThrow();
+  expect(() => newReview('C021', 1, '2026-13-01')).toThrow();
+  expect(reviewSchema.safeParse({ ...r, box: 6 }).success).toBe(false);
+  expect(localDay(new Date(2026, 9, 25, 0, 30))).toBe('2026-10-25');
+});
+it('corrige conjuntos exactos sin aceptar duplicados ni IDs ajenos', () => {
+  const q = { ...coreRecords[0]!.selfAssessment, correctOptionIds: ['a', 'b'] };
+  expect(assessAnswer(q, ['b', 'a'])).toBe(true);
+  expect(assessAnswer(q, ['a', 'a'])).toBe(false);
+  expect(assessAnswer(q, ['a'])).toBe(false);
+  expect(assessAnswer(q, ['a', 'wrong'])).toBe(false);
+});

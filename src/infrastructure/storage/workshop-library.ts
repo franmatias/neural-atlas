@@ -1,3 +1,4 @@
+import { learningBytes } from './learning-library';
 import {
   definitionSchema,
   definitionHash,
@@ -23,11 +24,12 @@ export class WorkshopLibrary {
       store: IDBObjectStore,
       result: (value: T) => void,
       abort: (error: unknown) => void,
+      reviewStore: IDBObjectStore,
     ) => void,
   ): Promise<T> {
     const db = await openNeuralDatabase(this.factory);
     return new Promise((resolve, reject) => {
-      const tx = db.transaction('learningEvidence', mode);
+      const tx = db.transaction(['learningEvidence', 'learningReview'], mode);
       let value: T, error: unknown;
       tx.oncomplete = () => {
         db.close();
@@ -48,6 +50,7 @@ export class WorkshopLibrary {
             value = result;
           },
           abort,
+          tx.objectStore('learningReview'),
         );
       } catch (failure) {
         abort(failure);
@@ -94,7 +97,7 @@ export class WorkshopLibrary {
       bytes: utf8Length(JSON.stringify(payload)) + 1024,
     };
     if (record.bytes > evidenceBudget) throw new LibraryError('LIMIT');
-    return this.transaction('readwrite', (store, result, abort) => {
+    return this.transaction('readwrite', (store, result, abort, reviewStore) => {
       const request = store.getAll();
       request.onsuccess = () => {
         try {
@@ -104,11 +107,27 @@ export class WorkshopLibrary {
           if (
             records
               .filter((old) => old.id !== record.id)
-              .reduce((sum, old) => sum + old.bytes, record.bytes) > evidenceBudget
+              .reduce((sum, old) => sum + learningBytes(old), record.bytes) > evidenceBudget
           )
             throw new LibraryError('LIMIT');
-          store.put(record);
-          result(record);
+          const reviews = reviewStore.getAll();
+          reviews.onsuccess = () => {
+            try {
+              const reviewBytes = (reviews.result as { bytes: number }[]).reduce(
+                (sum, r) => sum + learningBytes(r),
+                0,
+              );
+              const existingBytes = records
+                .filter((old) => old.id !== record.id)
+                .reduce((sum, r) => sum + learningBytes(r), record.bytes);
+              if (!Number.isFinite(reviewBytes) || reviewBytes + existingBytes > evidenceBudget)
+                throw new LibraryError('LIMIT');
+              store.put(record);
+              result(record);
+            } catch (error) {
+              abort(error);
+            }
+          };
         } catch (error) {
           abort(error);
         }

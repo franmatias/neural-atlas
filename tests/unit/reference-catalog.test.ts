@@ -30,8 +30,8 @@ describe('ampliación editorial de 500 conceptos', () => {
     expect(new Set(concepts.map((c) => c.id)).size).toBe(concepts.length);
   });
   it('mantiene los 69 interactivos y busca en español, inglés e IDs', () => {
-    expect(concepts.filter((c) => !c.reference)).toHaveLength(69);
-    expect(concepts).toHaveLength(569);
+    expect(concepts.filter((c) => !c.reference)).toHaveLength(147);
+    expect(concepts).toHaveLength(652);
     expect(searchConcepts('C652')[0]?.title).toBe('Paridad demográfica');
     expect(searchConcepts('key-value cache')[0]?.id).toBe('C512');
     expect(searchConcepts('entropia diferencial')[0]?.english).toBe('Differential entropy');
