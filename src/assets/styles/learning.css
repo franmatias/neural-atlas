@@ -1,0 +1,81 @@
+.learning-page {
+  overflow-wrap: anywhere;
+}
+.learning-page .panel {
+  padding: 1.5rem;
+  margin-block: 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+.learning-page label {
+  display: block;
+  margin-block: 0.8rem;
+}
+.learning-page select,
+.learning-page input[type='search'] {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+.learning-page .review-option {
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+}
+.learning-page pre,
+.learning-page code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.learning-page .button {
+  margin: 0.25rem;
+}
+.learning-page fieldset {
+  border: 0;
+  padding: 0;
+}
+.learning-page a {
+  overflow-wrap: anywhere;
+}
+
+/* Native file controls and text inputs have different intrinsic sizes across OS fonts. */
+.learning-page select,
+.learning-page input:not([type='checkbox']):not([type='radio']),
+.learning-page textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.65rem;
+}
+.learning-page textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+.learning-page fieldset {
+  min-width: 0;
+  max-width: 100%;
+}
+.learning-page .button {
+  max-width: calc(100% - 0.5rem);
+  white-space: normal;
+}
+.learning-page input[type='checkbox'],
+.learning-page input[type='radio'] {
+  flex: 0 0 auto;
+}
+.learning-page input::file-selector-button {
+  font: inherit;
+  max-width: 100%;
+  color: var(--ink);
+  background: var(--subtle);
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}

@@ -39,6 +39,7 @@ test('paquete docente completo: soluciones omitidas, instalación, recarga, aper
   await expect(page.getByRole('heading', { name: 'Unidad XOR y diagnóstico · 1.0.0' })).toHaveCount(
     0,
   );
+  await expect(page.getByLabel('Archivo docente')).toBeEnabled();
   await page.getByLabel('Archivo docente').setInputFiles((await file.path())!);
   await expect(
     page.getByRole('heading', { name: 'Unidad XOR y diagnóstico · 1.0.0' }),
@@ -57,9 +58,16 @@ test('docencia y disponibilidad local: teclado, temas y 360 px', async ({ page }
       await page.getByLabel('Tema', { exact: true }).selectOption(theme);
       await page.getByRole('button', { name: 'Cerrar ajustes' }).click();
       await page.setViewportSize({ width: 360, height: 1000 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-        true,
-      );
+      const layout = await page.evaluate(() => ({
+        route: location.hash,
+        width: innerWidth,
+        scroll: document.documentElement.scrollWidth,
+        files: [...document.querySelectorAll('input[type=file]')].map((e) => ({
+          width: e.getBoundingClientRect().width,
+          right: e.getBoundingClientRect().right,
+        })),
+      }));
+      expect(layout.scroll, JSON.stringify(layout)).toBeLessThanOrEqual(layout.width);
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     }
   }

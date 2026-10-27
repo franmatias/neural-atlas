@@ -43,13 +43,11 @@ test('paquete local: ejemplo, previsualización, rechazo seguro, confirmación y
   await expect(page.getByRole('status')).toContainText('guardado');
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Ejemplo editable · 1.0.0' })).toBeVisible();
-  await page
-    .getByLabel('Archivo de conceptos')
-    .setInputFiles({
-      name: 'invalido.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from('{"__proto__":{"polluted":true}}'),
-    });
+  await page.getByLabel('Archivo de conceptos').setInputFiles({
+    name: 'invalido.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{"__proto__":{"polluted":true}}'),
+  });
   await expect(page.getByRole('alert')).toContainText('rechazado');
   await page.goto('#/glosario?q=C653');
   await expect(page.locator('.concept-card h2')).toHaveText('Neurona: ejemplo local');
@@ -71,9 +69,16 @@ test('nuevas páginas adaptables y accesibles en ambos temas', async ({ page }) 
       await page.getByLabel('Tema', { exact: true }).selectOption(theme);
       await page.getByRole('button', { name: 'Cerrar ajustes' }).click();
       await page.setViewportSize({ width: 360, height: 1000 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-        true,
-      );
+      const layout = await page.evaluate(() => ({
+        route: location.hash,
+        width: innerWidth,
+        scroll: document.documentElement.scrollWidth,
+        files: [...document.querySelectorAll('input[type=file]')].map((e) => ({
+          width: e.getBoundingClientRect().width,
+          right: e.getBoundingClientRect().right,
+        })),
+      }));
+      expect(layout.scroll, JSON.stringify(layout)).toBeLessThanOrEqual(layout.width);
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     }
   }
@@ -91,5 +96,7 @@ test('error frecuente prepara un nuevo intento T12 tras confirmación explícita
   await expect(
     page.getByRole('heading', { name: 'Preparar: Batch normalization con lote uno' }),
   ).toHaveCount(0);
-  await expect(page.getByRole('heading',{name:'T12 · Reparación que otra persona puede repetir'})).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'T12 · Reparación que otra persona puede repetir' }),
+  ).toBeVisible();
 });
