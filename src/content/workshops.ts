@@ -3,7 +3,8 @@ import {
   type WorkshopDefinition,
   type EvidenceRule,
 } from '@/application/workshops/contracts';
-const specs: {
+import { advancedWorkshopSpecs } from './advanced-workshops';
+export interface WorkshopSpec {
   id: WorkshopDefinition['caseId'];
   title: string;
   question: string;
@@ -14,7 +15,10 @@ const specs: {
   solution: string;
   rules: EvidenceRule[];
   lab: string;
-}[] = [
+  prerequisites?: string[];
+  minutes?: number;
+}
+const specs: WorkshopSpec[] = [
   {
     id: 'T01',
     title: 'Datos honestos',
@@ -120,6 +124,7 @@ const specs: {
     lab: '/lab/entrenamiento',
   },
 ];
+specs.push(...advancedWorkshopSpecs);
 export const workshopLabs = Object.fromEntries(specs.map((spec) => [spec.id, spec.lab]));
 export const workshops: WorkshopDefinition[] = specs.map((spec) =>
   definitionSchema.parse({
@@ -130,8 +135,8 @@ export const workshops: WorkshopDefinition[] = specs.map((spec) =>
     contentVersion: '1.0.0',
     title: { es: spec.title },
     audience: 'FP de especialización y universidad inicial',
-    estimatedMinutes: spec.id === 'T05' ? 30 : 20,
-    prerequisites: [],
+    estimatedMinutes: spec.minutes ?? (spec.id === 'T05' ? 30 : 20),
+    prerequisites: spec.prerequisites ?? [],
     steps: [
       {
         id: 'hipotesis',

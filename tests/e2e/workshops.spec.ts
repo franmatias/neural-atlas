@@ -15,13 +15,28 @@ async function answerAndNext(page: Page) {
     );
   await page.getByRole('button', { name: 'Validar paso y continuar', exact: true }).click();
 }
-for (const id of ['T01', 'T02', 'T03', 'T04', 'T05']) {
+for (const id of [
+  'T01',
+  'T02',
+  'T03',
+  'T04',
+  'T05',
+  'T06',
+  'T07',
+  'T08',
+  'T09',
+  'T10',
+  'T11',
+  'T12',
+]) {
   test(`${id}: POE, evidencia nativa, reflexión y recuperación tras recargar`, async ({ page }) => {
     await open(page, id);
     await expect(page.locator('.workshop-evidence')).toHaveCount(0);
     await answerAndNext(page);
     if (id === 'T05')
       await page.getByLabel('He revisado el presupuesto de seis ensayos.', { exact: true }).check();
+    if (['T06', 'T08', 'T09', 'T12'].includes(id))
+      await page.getByLabel('He revisado el presupuesto del taller.', { exact: true }).check();
     await answerAndNext(page);
     await page.getByRole('button', { name: 'Ejecutar caso con el motor' }).click();
     await expect(
@@ -30,6 +45,17 @@ for (const id of ['T01', 'T02', 'T03', 'T04', 'T05']) {
     await expect(
       page.getByText('Progreso y evidencias guardados en este navegador', { exact: true }),
     ).toBeVisible();
+    if (id === 'T08' || id === 'T12') {
+      const pending = page.waitForEvent('download');
+      await page
+        .getByRole('button', { name: 'Descargar experimento reproducible del taller', exact: true })
+        .click();
+      const experiment = JSON.parse(await readFile((await (await pending).path())!, 'utf8'));
+      expect(experiment.format).toBe('neural-atlas.experiment');
+      expect(experiment.testConsulted).toBe(false);
+      expect(experiment.checkpoint.epoch).toBeLessThan(experiment.config.epochs);
+      expect(experiment.integrity).toHaveLength(64);
+    }
     if (id === 'T02')
       await expect(
         page.getByRole('img', { name: 'Frontera antes y después de cambiar solo el sesgo' }),
@@ -73,6 +99,64 @@ for (const id of ['T01', 'T02', 'T03', 'T04', 'T05']) {
     ).toBeVisible();
   });
 }
+for (const fault of ['leak', 'output', 'bn', 'labels', 'relu', 'rate', 'units']) {
+  test(`T12 ${fault}: diagnóstico nativo, modo seguro y evidencia exportable`, async ({ page }) => {
+    await open(page, 'T12');
+    await answerAndNext(page);
+    await page.getByRole('combobox', { name: 'Fallo plantado', exact: true }).selectOption(fault);
+    await page.getByLabel('Épocas del proyecto', { exact: true }).fill('5');
+    await page.getByLabel('Épocas del proyecto', { exact: true }).press('Enter');
+    await page.getByLabel('He revisado el presupuesto del taller.', { exact: true }).check();
+    await answerAndNext(page);
+    await page.getByRole('button', { name: 'Ejecutar caso con el motor', exact: true }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Evidencia del motor', exact: true }),
+    ).toBeVisible();
+    const pending = page.waitForEvent('download');
+    await page
+      .getByRole('button', { name: 'Exportar cuaderno de evidencias', exact: true })
+      .click();
+    const book = JSON.parse(await readFile((await (await pending).path())!, 'utf8'));
+    const r = book.progress.evidence;
+    expect(r.options.advanced.fault).toBe(fault);
+    expect(r.metrics.testConsulted).toBe(false);
+    expect(r.metrics.repairPreservesSplit).toBe(true);
+    expect(JSON.parse(r.experiment).testConsulted).toBe(false);
+    if (fault === 'output' || fault === 'bn') expect(r.metrics.validationRejected).toBe(true);
+    if (fault === 'leak') {
+      expect(r.metrics.illustrativeHoldoutConsulted).toBe(true);
+      expect(r.rows[1].values[1]).toBe(0.02);
+    }
+    if (fault === 'labels') expect(r.rows[1].values[1]).toBe(15);
+    if (fault === 'relu') expect(r.rows[1].values).toEqual([576, 576]);
+    if (fault === 'rate') expect(r.curves.map((c: { rate: number }) => c.rate)).toEqual([1, 0.01]);
+    if (fault === 'units') expect(r.rows).toHaveLength(2);
+  });
+}
+
+test('T12: controles y evidencia accesibles en móvil y ambos temas', async ({ page }) => {
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await open(page, 'T12');
+  await answerAndNext(page);
+  await page.getByRole('combobox', { name: 'Fallo plantado', exact: true }).selectOption('bn');
+  await page.getByLabel('He revisado el presupuesto del taller.', { exact: true }).check();
+  await answerAndNext(page);
+  await page.getByRole('button', { name: 'Ejecutar caso con el motor', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Evidencia del motor', exact: true }),
+  ).toBeVisible();
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate((t) => (document.documentElement.dataset.theme = t), theme);
+    for (const width of [360, 390, 1440]) {
+      await page.setViewportSize({ width, height: 950 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    }
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  }
+});
+
 test('migración nativa v1→v3 conserva experimentos y sus tensores', async ({ page }) => {
   await page.goto('#/');
   await page.evaluate(async () => {

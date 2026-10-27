@@ -90,3 +90,5 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 [Paisajes de pérdida · D9.1](48-paisajes-perdida.md) abre L07 con funciones ilustrativas y cortes reales. No cierra D9 ni D10.
 
 [Visión y kernels · D9.2](49-vision-kernels.md) implementa L11 con operaciones y productos inspeccionables; quedan los talleres y D10.
+
+[Talleres de investigación · D9.3](50-talleres-investigacion.md) completa las doce secuencias y la biblioteca de diagnóstico. El cierre de D9 exige CI y publicación; D10 permanece pendiente.

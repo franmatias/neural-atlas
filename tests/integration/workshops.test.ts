@@ -69,7 +69,7 @@ async function render(index = 0) {
   return { wrapper, router, session, button, answer, next };
 }
 describe('Taller POE completo', () => {
-  it.each([0, 1, 2, 3, 4])(
+  it.each([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])(
     'registra cinco fases y medidas del caso %i sin modificar los laboratorios',
     async (index) => {
       const { wrapper, session, button, answer, next } = await render(index);
@@ -86,7 +86,7 @@ describe('Taller POE completo', () => {
       await next();
       expect(session.progress.step).toBe(1);
       await answer();
-      if (index === 4) session.progress.options.budgetAccepted = true;
+      if ([4, 5, 7, 8, 11].includes(index)) session.progress.options.budgetAccepted = true;
       await next();
       expect(session.progress.step).toBe(2);
       await button('Ejecutar caso con el motor').trigger('click');
