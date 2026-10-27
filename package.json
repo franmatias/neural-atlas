@@ -1,6 +1,6 @@
 {
   "name": "neural-atlas",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "description": "Laboratorio didáctico visual de aprendizaje automático con Vue y TypeScript",
   "type": "module",
@@ -31,10 +31,12 @@
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.64.1",
     "@tailwindcss/vite": "4.3.3",
+    "@types/d3-contour": "3.0.6",
     "@types/d3-scale": "4.0.9",
     "@types/d3-shape": "3.2.0",
     "@types/node": "26.6.5",
     "@types/papaparse": "5.5.2",
+    "@types/three": "0.186.0",
     "@vitejs/plugin-vue": "6.0.10",
     "@vitest/coverage-v8": "5.0.5",
     "@vue/test-utils": "2.5.1",
@@ -58,10 +60,12 @@
   },
   "dependencies": {
     "@noble/hashes": "2.4.0",
+    "d3-contour": "4.0.2",
     "d3-scale": "4.0.2",
     "d3-shape": "3.2.0",
     "papaparse": "5.7.0",
     "pinia": "3.0.4",
+    "three": "0.186.1",
     "vue": "3.5.44",
     "vue-router": "4.6.4",
     "zod": "4.6.7"

@@ -1,4 +1,9 @@
 import {
+  studyLandscape,
+  type LandscapeRequest,
+  type LandscapeResult,
+} from '@/application/training/landscape';
+import {
   predictionDispersion,
   type DispersionOptions,
   type DispersionResult,
@@ -80,6 +85,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  landscape: LandscapeRequest;
   groupAudit: AuditScenarioOptions;
   functionApproximation: FunctionOptions;
   dispersion: DispersionOptions;
@@ -117,6 +123,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  landscape: LandscapeResult;
   groupAudit: AuditCohort;
   functionApproximation: FunctionResult;
   dispersion: DispersionResult;
@@ -149,6 +156,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'landscape':
+      return studyLandscape(job.payload);
     case 'groupAudit':
       return generateAuditCohort(job.payload);
     case 'functionApproximation':

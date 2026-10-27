@@ -14,7 +14,7 @@ for (const mode of ['binary', 'multiclass'] as const) {
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('#/laboratorios');
     await expect(page.locator('.lab-card')).toHaveCount(14);
-    await expect(page.getByText('12 laboratorios disponibles', { exact: true })).toBeVisible();
+    await expect(page.getByText('13 laboratorios disponibles', { exact: true })).toBeVisible();
     const card = page.locator('.lab-card').filter({
       has: page.getByRole('heading', {
         name: mode === 'binary' ? 'Sandbox de dos clases' : 'Clasificador visual multiclase',
