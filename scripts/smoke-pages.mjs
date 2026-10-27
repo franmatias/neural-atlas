@@ -472,12 +472,27 @@ try {
       assert.equal(estimator.trainingDataset.dataset.rowIds.length,168);assert.equal(estimator.trainingDataset.split,undefined);
       await page.getByLabel('Archivo de estimador kNN/CART').setInputFiles(await estimatorFile.path());
       await expect(page.getByRole('heading',{name:'Archivo válido · KNN'})).toBeVisible();
+      await page.goto(new URL('#/lab/experimentos/rejilla',url).href);
+      await page.getByLabel('Anchuras separadas por comas',{exact:true}).fill('2,4');
+      await page.getByLabel('Tasas separadas por comas',{exact:true}).fill('.01');
+      await page.getByLabel('Épocas comunes de rejilla',{exact:true}).fill('5');
+      await page.getByRole('button',{name:'Preparar plan y presupuesto',exact:true}).click();
+      await expect(page.getByRole('status')).toContainText('Plan preparado');
+      await page.getByLabel('He revisado el presupuesto').check();
+      await page.getByRole('button',{name:'Ejecutar plan confirmado',exact:true}).click();
+      await expect(page.getByRole('status')).toContainText('Búsqueda finalizada');
+      const gridDownload=page.waitForEvent('download');
+      await page.getByRole('button',{name:'Exportar informe de rejilla',exact:true}).click();
+      const grid=JSON.parse(await readFile(await(await gridDownload).path(),'utf8'));
+      assert.equal(grid.appVersion,expectedVersion);assert.equal(grid.format,'neural-atlas.grid-report');
+      assert.equal(grid.attempts.length,2);assert.equal(grid.summary.complete,true);assert.equal(grid.testEvaluated,false);
+      assert.equal(grid.plan.settings.datasetJson,undefined);assert.equal(grid.attempts[0].measurement.model,undefined);
       await page.goto(new URL('#/sin-conexion',url).href);await page.getByRole('button',{name:'Preparar o comprobar actualización'}).click();await expect(page.getByRole('status')).toContainText('Disponible sin conexión',{timeout:30000});
       await page.context().setOffline(true);await page.goto(new URL('#/conceptos/C152',url).href);await expect(page.locator('h1')).toHaveText('Diagnóstico por evidencia');await page.context().setOffline(false);
       await page.goto(new URL('#/lab/entrenamiento',url).href);await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair, open concept import, graph, Leitner review, teaching pack with resumable experiment, classical kNN/CART/MLP comparison with train-only estimator roundtrip, and complete offline precache at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair, open concept import, graph, Leitner review, teaching pack with resumable experiment, classical kNN/CART/MLP comparison with train-only estimator roundtrip, bounded grid selection with complete attempt report, and complete offline precache at ${url}`,
       );
       failure = undefined;
       break;

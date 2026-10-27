@@ -228,7 +228,7 @@ it('ficha, referencia, estado previsto y mapa accesible conservan navegación po
     .trigger('click');
   await flushPromises();
   expect(useReviewStore().current(coreRecords[20]!).explained).toBe(true);
-  await router.push('/conceptos/C145');
+  await router.push('/conceptos/C146');
   await flushPromises();
   expect(wrapper.text()).toContain('fuera de v1.1');
   await router.push('/conceptos/C652');

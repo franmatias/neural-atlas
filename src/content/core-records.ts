@@ -7,10 +7,12 @@ import { conceptSchema, type ConceptRecord } from '@/domain/content/concept';
 const idOf = (n: number) => `C${String(n).padStart(3, '0')}`;
 const clean = (text: string) =>
   text.replace(/([a-záéíóúñ])(?=\d)/gi, '$1 ').replace(/(\d)(?=[a-záéíóúñ])/gi, '$1 ');
-const future = new Set([145, 146, 151]);
+const future = new Set([146]);
 const overrides: Record<number, string> = {
   143: 'experimentos/clasicos',
   144: 'experimentos/clasicos',
+  145: 'experimentos/rejilla',
+  151: 'experimentos/rejilla',
   22: 'arquitectura',
   31: 'activaciones',
   32: 'activaciones',
@@ -87,6 +89,8 @@ const dimensions: Record<string, string> = {
 const controls: Record<number, string> = {
   143: 'classical-k',
   144: 'classical-depth',
+  145: 'grid-plan',
+  151: 'grid-selection',
   1: 'features',
   2: 'features',
   3: 'split',
@@ -237,9 +241,11 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
       'Su regla de aprendizaje llegará con L03.',
       'Su regla de aprendizaje se explora en L03.',
     );
-    const limit = [143, 144].includes(n)
-      ? 'La comparación usa el mismo train y validación con pipeline común; frecuencias y reglas no garantizan generalización ni calibración.'
-      : limits[cat];
+    const limit = [145, 151].includes(n)
+      ? 'El mejor resultado observado selecciona sobre validación; declarar todos los intentos no sustituye una evaluación independiente ni convierte la selección en causalidad.'
+      : [143, 144].includes(n)
+        ? 'La comparación usa el mismo train y validación con pipeline común; frecuencias y reglas no garantizan generalización ni calibración.'
+        : limits[cat];
     let definition = `${base} ${answer} Ejemplo estático: ${example}`;
     if (definition.split(/\s+/).length > 80) definition = `${base} Ejemplo estático: ${example}`;
     if (definition.split(/\s+/).length < 40) definition += ' ' + limit;
@@ -264,7 +270,7 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, ''),
-      contentVersion: [143, 144].includes(n) ? 2 : 1,
+      contentVersion: [143, 144, 145, 151].includes(n) ? 2 : 1,
       title: { es: seed.title, en: seed.english },
       aliases: { es: seed.aliases, en: [] },
       category: cat,
@@ -316,15 +322,16 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
       sources: [
         {
           title: 'Referencia primaria para ampliar el tema',
-          url:
-            n === 143
+          url: [145, 151].includes(n)
+            ? 'https://scikit-learn.org/stable/modules/grid_search.html'
+            : n === 143
               ? 'https://scikit-learn.org/stable/modules/neighbors.html'
               : n === 144
                 ? 'https://scikit-learn.org/stable/modules/tree.html'
                 : (sourceUrls[cat] ?? sourceUrls.workflow),
         },
       ],
-      targetRelease: [143, 144].includes(n) ? '1.2' : active ? '1.1' : '1.2',
+      targetRelease: [143, 144, 145, 151].includes(n) ? '1.2' : active ? '1.1' : '1.2',
       status: active ? 'implemented' : 'specified',
     });
   });
