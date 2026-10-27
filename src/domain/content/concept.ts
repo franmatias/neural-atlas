@@ -48,7 +48,7 @@ export const assessmentSchema = z
       new Set(q.options.map((o) => o.id)).size === q.options.length &&
       new Set(q.correctOptionIds).size === q.correctOptionIds.length &&
       q.correctOptionIds.every((id) => q.options.some((o) => o.id === id)) &&
-      (q.type !== 'true-false' || q.options.length === 2),
+      (q.type !== 'true-false' || (q.options.length === 2 && q.correctOptionIds.length === 1)),
     'QUESTION_OPTIONS',
   );
 const docPaths = [

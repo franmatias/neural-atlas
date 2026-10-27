@@ -58,11 +58,11 @@ El scope es `/neural-atlas/`. Se limpian únicamente cachés con el prefijo de e
 
 ## Evidencia local de la entrega
 
-- 581 pruebas unitarias y de integración, en 70 archivos, superadas.
+- 582 pruebas unitarias y de integración, en 70 archivos, superadas.
 - Cobertura medida: 92,40% líneas, 91,62% sentencias, 90,78% ramas y 86,20% funciones; umbrales de cada capa superados.
 - Catálogo de navegador: 390 casos, 130 por Chromium/Firefox/WebKit, sujeto a la puerta completa de CI antes de publicar.
 - Build: 120 recursos offline, aproximadamente 724 KiB gzip; entrada inicial 62,35 KiB JS y 11,93 KiB CSS gzip, dentro de presupuesto.
-- 55 documentos, 363 enlaces locales, 30 fuentes Mermaid y 73 diagramas incluidos en Markdown validados en el momento de la entrega.
+- 55 documentos, 369 enlaces locales, 30 fuentes Mermaid y 73 diagramas incluidos en Markdown validados en el momento de la entrega.
 - Smoke de producto completo en la subruta local superado, incluido el paquete docente con el experimento activo de dos actualizaciones. El smoke público forma parte obligatoria del despliegue.
 
 Capturas reproducibles con `node scripts/capture-learning.mjs`:

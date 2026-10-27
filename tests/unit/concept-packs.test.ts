@@ -2,6 +2,7 @@ import { it, expect } from 'vitest';
 import fixture from '../../docs/fixtures/concept-example.json';
 import {
   conceptSchema,
+  assessmentSchema,
   topologicalOrder,
   assessAnswer,
   type CatalogNode,
@@ -36,6 +37,17 @@ const pack = () => ({
   title: 'Conceptos del aula',
   categories: [],
   concepts: [structuredClone(concept)],
+});
+it('verdadero/falso exige una sola respuesta correcta y mantiene MCQ multirrespuesta', () => {
+  const q = { ...concept.selfAssessment, type: 'true-false' as const };
+  expect(assessmentSchema.parse(q).correctOptionIds).toHaveLength(1);
+  expect(
+    assessmentSchema.safeParse({ ...q, correctOptionIds: q.options.map((o) => o.id) }).success,
+  ).toBe(false);
+  expect(
+    assessmentSchema.parse({ ...q, type: 'mcq', correctOptionIds: q.options.map((o) => o.id) })
+      .correctOptionIds,
+  ).toHaveLength(2);
 });
 it('el contrato editorial acepta el ejemplo acordado y distingue opciones de respuestas', () => {
   expect(concept.id).toBe('C021');
