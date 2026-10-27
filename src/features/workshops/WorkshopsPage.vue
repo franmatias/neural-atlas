@@ -1,13 +1,36 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { useWorkshopsStore } from '@/stores/workshops';
 import { workshopLabs, workshops } from '@/content/workshops';
-import { definitionHash } from '@/application/workshops/contracts';
+import { advancedWorkshopDefaults, definitionHash } from '@/application/workshops/contracts';
 import { readWorkshopFile, downloadWorkshopText } from '@/infrastructure/files/workshops';
 import WorkshopControls from './WorkshopControls.vue';
 import WorkshopEvidencePanel from './WorkshopEvidence.vue';
+import { failureCases } from '@/content/failure-cases';
+const route = useRoute();
+const requestedFailure = computed(() =>
+  failureCases.find((c) => c.presetId === route.query.failure),
+);
+const preparedFailure = ref(false);
 const session = useWorkshopsStore();
+async function prepareFailure() {
+  if (!requestedFailure.value || busy.value) return;
+  await session.open(workshops.find((w) => w.caseId === 'T12')!);
+  if (session.progress.attempts.length >= 10) {
+    session.error = 'Exporta el cuaderno: ya hay diez intentos archivados.';
+    return;
+  }
+  await session.retry();
+  if (session.progress.step !== 0) return;
+  session.progress.options = {
+    ...session.progress.options,
+    advanced: { ...advancedWorkshopDefaults, fault: requestedFailure.value.id },
+  };
+  session.draft();
+  await session.persist();
+  preparedFailure.value = true;
+}
 const includeSolutions = ref(false),
   confirmRetry = ref(false),
   confirmDelete = ref(false),
@@ -76,7 +99,7 @@ onBeforeRouteLeave(() => {
 <template>
   <div class="page training-page workshops-page">
     <p class="eyebrow">TALLER / PREDECIR · OBSERVAR · EXPLICAR</p>
-    <h1>Investiga antes de concluir.</h1>
+    <h1>Investiga antes de concluir.</h1><RouterLink to="/docencia">Preparar o importar un paquete docente</RouterLink>
     <p class="page-intro">
       Escribe tu hipótesis, ejecuta un caso y contrástala con medidas del motor. No necesitas
       acertar tu predicción para aprender: importa cómo la explicas con evidencia.
@@ -86,6 +109,17 @@ onBeforeRouteLeave(() => {
       sintéticos. Completar pasos registra actividad; la calidad de la explicación requiere revisión
       humana.
     </p>
+    <section v-if="requestedFailure && !preparedFailure" class="panel">
+      <h2>Preparar: {{ requestedFailure.title }}</h2>
+      <p>{{ requestedFailure.symptom }}</p>
+      <p>
+        Se abrirá T12 con este fallo. Su intento actual se archivará antes de empezar otro; la
+        sesión de entrenamiento de los laboratorios se conserva.
+      </p>
+      <button class="button" :disabled="busy" @click="prepareFailure">
+        Archivar intento anterior y preparar este caso
+      </button>
+    </section>
     <nav class="workshop-catalog" aria-label="Talleres disponibles">
       <button
         v-for="definition in session.catalog"

@@ -9,5 +9,6 @@ const { t } = useI18n();
     <h1>{{ t('settings.title') }}</h1>
     <p class="page-intro">{{ t('settings.description') }}</p>
     <SettingsForm />
+    <p><RouterLink to="/sin-conexion">Uso sin conexión y actualizaciones</RouterLink></p>
   </div>
 </template>

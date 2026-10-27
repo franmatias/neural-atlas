@@ -1,6 +1,36 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 export const routes = [
+  {
+    path: '/sin-conexion',
+    name: 'offline',
+    component: () => import('@/features/offline/OfflinePage.vue'),
+  },
+  {
+    path: '/docencia',
+    name: 'teaching',
+    component: () => import('@/features/teaching/TeachingPage.vue'),
+  },
+  {
+    path: '/conceptos/paquetes',
+    name: 'concept-packs',
+    component: () => import('@/features/glossary/CatalogPage.vue'),
+  },
+  {
+    path: '/conceptos/mapa',
+    name: 'concept-map',
+    component: () => import('@/features/glossary/ConceptMapPage.vue'),
+  },
+  {
+    path: '/conceptos/:id',
+    name: 'concept-detail',
+    component: () => import('@/features/glossary/ConceptPage.vue'),
+  },
+  {
+    path: '/repaso',
+    name: 'review',
+    component: () => import('@/features/glossary/ReviewPage.vue'),
+  },
   { path: '/', name: 'home', component: () => import('@/features/home/HomePage.vue') },
   {
     path: '/laboratorios',

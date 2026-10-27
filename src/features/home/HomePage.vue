@@ -17,6 +17,11 @@ const { t } = useI18n();
         <RouterLink to="/lab/neurona" class="button primary"
           >{{ t('home.start') }}<AppIcon name="arrow"
         /></RouterLink>
+        <nav class="learning-shortcuts" aria-label="Aprendizaje y disponibilidad">
+          <RouterLink to="/repaso">Repasar conceptos</RouterLink> ·
+          <RouterLink to="/docencia">Preparar una clase</RouterLink> ·
+          <RouterLink to="/sin-conexion">Trabajar sin conexión</RouterLink>
+        </nav>
         <p class="hero-caption">{{ t('home.guide') }} <span>01 → 02 → 03</span></p>
       </div>
       <div class="hero-art" aria-hidden="true">
