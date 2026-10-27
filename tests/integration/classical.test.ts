@@ -120,6 +120,11 @@ it('compara, explica, anima, exporta y prueba el archivo sin sustituir datos', a
   expect(store.imported?.prediction.path.length).toBeGreaterThan(0);
   expect((queryInput.element as HTMLInputElement).value).toBe('0.25');
   expect(store.imported?.provenance.testPreviouslyConsulted).toBe(false);
+  await file.trigger('change');
+  await flushPromises();
+  expect((queryInput.element as HTMLInputElement).value).toBe(
+    String(Object.values(store.imported!.firstFeatures)[0]),
+  );
   wrapper.unmount();
 });
 it('copia el laboratorio con su pipeline, admite regresión y no deja actuar a una respuesta cancelada', async () => {
