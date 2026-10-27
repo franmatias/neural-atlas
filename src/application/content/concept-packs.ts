@@ -13,6 +13,7 @@ export interface CatalogContext {
   presets: string[];
   packVersions: Record<string, string>;
   packHashes?: Record<string, string>;
+  owners?: Record<string, string>;
   identityHistory?: { id: string; slug: string; contentVersion: number; hash: string }[];
 }
 export function newerVersion(a: string, b: string) {
@@ -52,7 +53,8 @@ export function previewConceptPack(text: string, context: CatalogContext) {
     if (c.misconceptionPresetIds.some((id) => !context.presets.includes(id)))
       throw Error('UNKNOWN_PRESET');
     const old = lookup.get(c.id);
-    if (old && (old.slug !== c.slug || (old.owner && old.owner !== pack.packId)))
+    const owner = context.owners?.[c.id] ?? old?.owner;
+    if ((old && old.slug !== c.slug) || (owner && owner !== pack.packId))
       throw Error('CONCEPT_IDENTITY');
     if (old && c.contentVersion === old.contentVersion && old.hash === hashValue(c)) continue;
     if (old && c.contentVersion <= old.contentVersion) throw Error('CONCEPT_VERSION');

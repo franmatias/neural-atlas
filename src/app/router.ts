@@ -2,6 +2,11 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 export const routes = [
   {
+    path: '/lab/experimentos/clasicos',
+    name: 'classical',
+    component: () => import('@/features/classical/ClassicalPage.vue'),
+  },
+  {
     path: '/sin-conexion',
     name: 'offline',
     component: () => import('@/features/offline/OfflinePage.vue'),

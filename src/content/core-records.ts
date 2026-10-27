@@ -7,8 +7,10 @@ import { conceptSchema, type ConceptRecord } from '@/domain/content/concept';
 const idOf = (n: number) => `C${String(n).padStart(3, '0')}`;
 const clean = (text: string) =>
   text.replace(/([a-záéíóúñ])(?=\d)/gi, '$1 ').replace(/(\d)(?=[a-záéíóúñ])/gi, '$1 ');
-const future = new Set([143, 144, 145, 146, 151]);
+const future = new Set([145, 146, 151]);
 const overrides: Record<number, string> = {
+  143: 'experimentos/clasicos',
+  144: 'experimentos/clasicos',
   22: 'arquitectura',
   31: 'activaciones',
   32: 'activaciones',
@@ -83,6 +85,8 @@ const dimensions: Record<string, string> = {
   L14: 'Dos features y K salidas multiclase; mapa bidimensional.',
 };
 const controls: Record<number, string> = {
+  143: 'classical-k',
+  144: 'classical-depth',
   1: 'features',
   2: 'features',
   3: 'split',
@@ -147,7 +151,10 @@ const controls: Record<number, string> = {
   106: 'split',
   107: 'split',
   108: 'cross-validation',
-  83:'dispersion',84:'capacity',119:'capacity',140:'dispersion',
+  83: 'dispersion',
+  84: 'capacity',
+  119: 'capacity',
+  140: 'dispersion',
   110: 'seed',
   113: 'shift',
   114: 'shift',
@@ -230,9 +237,12 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
       'Su regla de aprendizaje llegará con L03.',
       'Su regla de aprendizaje se explora en L03.',
     );
+    const limit = [143, 144].includes(n)
+      ? 'La comparación usa el mismo train y validación con pipeline común; frecuencias y reglas no garantizan generalización ni calibración.'
+      : limits[cat];
     let definition = `${base} ${answer} Ejemplo estático: ${example}`;
     if (definition.split(/\s+/).length > 80) definition = `${base} Ejemplo estático: ${example}`;
-    if (definition.split(/\s+/).length < 40) definition += ' ' + limits[cat];
+    if (definition.split(/\s+/).length < 40) definition += ' ' + limit;
     const prerequisites = (corePrerequisites[n] ?? []).map(idOf),
       related = [idOf(n === 152 ? 1 : n + 1)].filter(
         (id) => id !== seed.id && !prerequisites.includes(id),
@@ -248,20 +258,19 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
     if (n % 2 === 0) options.reverse();
     return conceptSchema.parse({
       id: seed.id,
-      slug:
-        seed.title
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, ''),
-      contentVersion: 1,
+      slug: seed.title
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, ''),
+      contentVersion: [143, 144].includes(n) ? 2 : 1,
       title: { es: seed.title, en: seed.english },
       aliases: { es: seed.aliases, en: [] },
       category: cat,
       level: n <= 54 ? 'introductory' : n <= 100 ? 'intermediate' : 'advanced',
       definition: { es: definition },
-      intuition: { es: example, analogyLimit: limits[cat] },
+      intuition: { es: example, analogyLimit: limit },
       formal: {
         notation: seed.formula ?? 'Procedimiento y condiciones descritos en la ficha.',
         dimensions: dimensions[control.labId],
@@ -307,10 +316,15 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
       sources: [
         {
           title: 'Referencia primaria para ampliar el tema',
-          url: sourceUrls[cat] ?? sourceUrls.workflow,
+          url:
+            n === 143
+              ? 'https://scikit-learn.org/stable/modules/neighbors.html'
+              : n === 144
+                ? 'https://scikit-learn.org/stable/modules/tree.html'
+                : (sourceUrls[cat] ?? sourceUrls.workflow),
         },
       ],
-      targetRelease: active ? '1.1' : '1.2',
+      targetRelease: [143, 144].includes(n) ? '1.2' : active ? '1.1' : '1.2',
       status: active ? 'implemented' : 'specified',
     });
   });

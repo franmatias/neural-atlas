@@ -118,6 +118,8 @@ const groups: readonly [string, string, readonly [string, string][]][] = [
     'experimentos',
     [
       ['comparison', 'Comparación controlada'],
+      ['classical-k', 'Vecinos k'],
+      ['classical-depth', 'Profundidad CART'],
       ['cross-validation', 'Validación cruzada'],
       ['dispersion', 'Dispersión multisemilla'],
       ['shift', 'Cambio de distribución'],
@@ -156,11 +158,13 @@ export const conceptControls: ConceptControl[] = groups.flatMap(([labId, slug, c
           ? 'clasificacion/etica'
           : labId === 'L08' && controlId === 'capacity'
             ? 'generalizacion/capacidad'
-            : labId === 'L12' && controlId === 'segments'
-              ? 'entrenamiento'
-              : labId === 'L12' && ['cross-validation', 'shift', 'dispersion'].includes(controlId)
-                ? 'experimentos/robustez'
-                : slug),
+            : labId === 'L12' && ['classical-k', 'classical-depth'].includes(controlId)
+              ? 'experimentos/clasicos'
+              : labId === 'L12' && controlId === 'segments'
+                ? 'entrenamiento'
+                : labId === 'L12' && ['cross-validation', 'shift', 'dispersion'].includes(controlId)
+                  ? 'experimentos/robustez'
+                  : slug),
   })),
 );
 export const coreCategories = [
@@ -173,7 +177,7 @@ export const coreCategories = [
   { id: 'regularization', title: 'Generalización' },
   { id: 'evaluation', title: 'Evaluación' },
   { id: 'workflow', title: 'Método y reproducibilidad' },
-  { id: 'methods', title: 'Otros métodos previstos' },
+  { id: 'methods', title: 'Métodos de comparación' },
   { id: 'ethics', title: 'Ética y contexto' },
   { id: 'interpretability', title: 'Representaciones e interpretación' },
 ];

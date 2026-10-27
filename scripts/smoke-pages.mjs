@@ -454,12 +454,30 @@ try {
       await page.goto(new URL('#/glosario?q=C653',url).href);await expect(page.locator('.concept-card h2')).toHaveText('Neurona: ejemplo local');
       await page.goto(new URL('#/docencia',url).href);await page.getByLabel('Incluir experimento detenido actual').check();await page.getByRole('button',{name:'Preparar previsualización'}).click();await expect(page.getByRole('heading',{name:'Mi unidad de aprendizaje · 1.0.0'})).toBeVisible();
       const teachingDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar paquete sin soluciones'}).click();const teaching=JSON.parse(await readFile(await(await teachingDownload).path(),'utf8'));assert.equal(teaching.presets[0].experiment.checkpoint.updates,2);assert.equal(teaching.presets[0].experiment.appVersion,expectedVersion);assert(teaching.workshops.flatMap(w=>w.steps).every(s=>!s.solution));
+      await page.goto(new URL('#/lab/experimentos/clasicos',url).href);
+      await page.getByLabel('Épocas MLP',{exact:true}).fill('5');
+      await page.getByRole('button',{name:'Comparar tres modelos',exact:true}).click();
+      await expect(page.getByRole('status')).toContainText('Comparación completa');
+      await expect(page.getByRole('img',{name:/Corte de predicción/})).toHaveCount(3);
+      await page.getByRole('button',{name:'Predecir con los tres modelos',exact:true}).click();
+      await expect(page.getByRole('button',{name:'Predecir con los tres modelos',exact:true})).toBeEnabled();
+      await page.getByRole('combobox',{name:'Recorrido',exact:true}).selectOption('cart');
+      await expect(page.getByRole('img',{name:'Árbol de decisiones y ruta de la sonda'})).toBeVisible();
+      await page.getByLabel('Entiendo que exportar kNN/CART').check();
+      const estimatorDownload=page.waitForEvent('download');
+      await page.getByRole('button',{name:'Exportar modelo KNN',exact:true}).click();
+      const estimatorFile=await estimatorDownload;
+      const estimator=JSON.parse(await readFile(await estimatorFile.path(),'utf8'));
+      assert.equal(estimator.appVersion,expectedVersion);assert.equal(estimator.format,'neural-atlas.estimator');
+      assert.equal(estimator.trainingDataset.dataset.rowIds.length,168);assert.equal(estimator.trainingDataset.split,undefined);
+      await page.getByLabel('Archivo de estimador kNN/CART').setInputFiles(await estimatorFile.path());
+      await expect(page.getByRole('heading',{name:'Archivo válido · KNN'})).toBeVisible();
       await page.goto(new URL('#/sin-conexion',url).href);await page.getByRole('button',{name:'Preparar o comprobar actualización'}).click();await expect(page.getByRole('status')).toContainText('Disponible sin conexión',{timeout:30000});
       await page.context().setOffline(true);await page.goto(new URL('#/conceptos/C152',url).href);await expect(page.locator('h1')).toHaveText('Diagnóstico por evidencia');await page.context().setOffline(false);
       await page.goto(new URL('#/lab/entrenamiento',url).href);await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair, open concept import, graph, Leitner review, teaching pack with resumable experiment, and complete offline precache at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair, open concept import, graph, Leitner review, teaching pack with resumable experiment, classical kNN/CART/MLP comparison with train-only estimator roundtrip, and complete offline precache at ${url}`,
       );
       failure = undefined;
       break;

@@ -16,7 +16,7 @@ test('500 fichas de consulta: filtros, páginas, foco, búsqueda y enlaces estab
   await expect(page.locator('.concept-grid')).toBeFocused();
   await expect(page.locator('.concept-card')).toHaveCount(24);
   await page.getByLabel('Tipo de ficha').selectOption('reference');
-  await expect(page.getByRole('status')).toContainText('505 conceptos');
+  await expect(page.getByRole('status')).toContainText('503 conceptos');
   await page.getByRole('combobox', { name: 'Tema', exact: true }).selectOption('attention');
   await expect(page.getByRole('status')).toContainText('25 conceptos');
   await page.getByRole('button', { name: 'Página siguiente', exact: true }).first().click();
@@ -38,7 +38,7 @@ test('500 fichas de consulta: filtros, páginas, foco, búsqueda y enlaces estab
   );
   await page.getByRole('searchbox').fill('');
   await page.getByLabel('Tipo de ficha').selectOption('interactive');
-  await expect(page.getByRole('status')).toContainText('147 conceptos');
+  await expect(page.getByRole('status')).toContainText('149 conceptos');
 });
 
 test('glosario adaptable y accesible en ambos temas', async ({ page }) => {

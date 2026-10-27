@@ -74,6 +74,7 @@ onBeforeRouteLeave(() => {
   <div class="page training-page experiments-page">
     <p class="eyebrow">L12 / EXPERIMENTOS</p>
     <h1>Compara con una pregunta.</h1>
+    <p><RouterLink to="/lab/experimentos/clasicos">Comparar kNN, árbol CART y MLP</RouterLink></p>
     <p class="page-intro">
       Define qué cambia, conserva una base común y contrasta resultados reales. Puedes comparar A/B
       o validar una configuración en distintos folds, sin puntuar el test final.
