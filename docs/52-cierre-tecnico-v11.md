@@ -56,12 +56,18 @@ Una versión nueva espera sin `skipWaiting` automático. Activación explícita 
 
 El scope es `/neural-atlas/`. Se limpian únicamente cachés con el prefijo de estáticos de Neural Atlas. IndexedDB permanece separado. Se mantiene la advertencia del diseño: compartir origen en GitHub Pages comparte cuota y acceso potencial; los nombres no proporcionan aislamiento de seguridad.
 
+## Correcciones verificadas durante el cierre
+
+La puerta de CI identificó un desbordamiento de los selectores de archivo con fuentes nativas de Linux, además de una carrera al retirar y volver a importar un paquete. Se corrigen los tamaños intrínsecos con width/max-width/min-width explícitos, controles de texto fluidos y botones ajustables, sin ocultar el desbordamiento de la página. Los estilos compartidos de aprendizaje se separan en `styles/learning.css`.
+
+La retirada mantiene la ficha visible y la importación bloqueada hasta que termina la transacción. La lectura de archivos también bloquea acciones incompatibles; cancelar o navegar invalida las respuestas tardías. Dos pruebas nuevas mantienen una escritura y una lectura pendientes de forma controlada. CI repite tres veces las regresiones críticas en Chromium/WebKit antes de ejecutar toda la batería de tres navegadores; no se reducen los umbrales ni se aceptan casos flaky.
+
 ## Evidencia local de la entrega
 
-- 582 pruebas unitarias y de integración, en 70 archivos, superadas.
-- Cobertura medida: 92,40% líneas, 91,62% sentencias, 90,78% ramas y 86,20% funciones; umbrales de cada capa superados.
+- 584 pruebas unitarias y de integración, en 70 archivos, superadas.
+- Cobertura medida: 92,42% líneas, 91,62% sentencias, 90,78% ramas y 86,21% funciones; umbrales de cada capa superados.
 - Catálogo de navegador: 390 casos, 130 por Chromium/Firefox/WebKit, sujeto a la puerta completa de CI antes de publicar.
-- Build: 120 recursos offline, aproximadamente 724 KiB gzip; entrada inicial 62,35 KiB JS y 11,93 KiB CSS gzip, dentro de presupuesto.
+- Build: 120 recursos offline, aproximadamente 724 KiB gzip; entrada inicial 62,34 KiB JS y 12,06 KiB CSS gzip, dentro de presupuesto.
 - 55 documentos, 369 enlaces locales, 30 fuentes Mermaid y 73 diagramas incluidos en Markdown validados en el momento de la entrega.
 - Smoke de producto completo en la subruta local superado, incluido el paquete docente con el experimento activo de dos actualizaciones. El smoke público forma parte obligatoria del despliegue.
 

@@ -24,6 +24,8 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run check
+      - name: Comprobar regresiones de importación y móvil
+        run: node node_modules/@playwright/test/cli.js test tests/e2e/learning-catalog.spec.ts tests/e2e/teaching.spec.ts --grep "nuevas páginas|docencia y disponibilidad|paquete docente completo" --project=chromium --project=webkit --repeat-each=3 --reporter=list --output=test-results/early
       - run: npm run test:e2e
       - name: Preparar el artefacto verificado para Pages
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
