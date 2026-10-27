@@ -69,7 +69,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué camino sigue cada optimizador?',
     group: 'learning',
     phase: 'D9',
-    available: false,
+    available: true,
   },
   {
     id: 'L08',

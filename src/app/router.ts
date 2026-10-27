@@ -63,6 +63,11 @@ export const routes = [
     component: () => import('@/features/generalization/GeneralizationPage.vue'),
   },
   {
+    path: '/lab/optimizacion',
+    name: 'optimization',
+    component: () => import('@/features/landscape/LandscapePage.vue'),
+  },
+  {
     path: '/lab/:slug',
     name: 'planned-lab',
     component: () => import('@/features/planned/PlannedPage.vue'),

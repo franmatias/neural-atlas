@@ -393,9 +393,27 @@ try {
       assert.equal(absentAudit.analysis.reference.groups.G2.n,0);assert.equal(absentAudit.analysis.reference.groups.G2.accuracy,null);
       await page.goto(new URL('#/lab/entrenamiento',url).href);
       await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
+      await page.goto(new URL('#/lab/optimizacion',url).href);
+      await page.getByRole('button',{name:'Calcular paisaje y trayectorias',exact:true}).click();
+      await page.getByTestId('landscape-result').waitFor();
+      async function landscapeReport() {
+        const pending=page.waitForEvent('download');
+        await page.getByRole('button',{name:'Exportar informe de paisaje',exact:true}).click();
+        return JSON.parse(await readFile(await(await pending).path(),'utf8'));
+      }
+      const landscape=await landscapeReport();
+      assert.equal(landscape.appVersion,expectedVersion);assert.equal(landscape.grid.values.length,625);assert.equal(landscape.paths.length,4);assert.equal(landscape.grid.values[0],16);
+      await page.getByRole('combobox',{name:'Modo de superficie',exact:true}).selectOption('frozen');
+      await page.getByRole('button',{name:'Cargar ejemplo lineal congelado',exact:true}).click();
+      await page.getByRole('button',{name:'Calcular paisaje y trayectorias',exact:true}).click();
+      await expect(page.getByRole('button',{name:'Calcular paisaje y trayectorias',exact:true})).toBeEnabled();
+      const cut=await landscapeReport();
+      assert.equal(cut.sourceHash.length,64);assert(Math.abs(cut.grid.values[312]-11/3)<1e-10);assert.deepEqual(cut.provenance.model.layers[0].weights,[0]);
+      await page.goto(new URL('#/lab/entrenamiento',url).href);
+      await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut at ${url}`,
       );
       failure = undefined;
       break;

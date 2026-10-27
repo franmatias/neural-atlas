@@ -86,3 +86,5 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 [Construir una función · D8.2](46-aproximacion-funciones.md) implementa US-050 / RF-073 en L10; [US-064 (ética por grupos)](47-etica-y-cierre-d8.md) completa su alcance funcional. Las fases D9/D10 y la validación en aula siguen pendientes.
 
 [Ética y cierre de D8 · D8.3](47-etica-y-cierre-d8.md) reúne US-041, US-042, US-050 y US-064 con evidencia de implementación y controles de publicación. La aceptación en aula y las fases D9/D10 siguen pendientes.
+
+[Paisajes de pérdida · D9.1](48-paisajes-perdida.md) abre L07 con funciones ilustrativas y cortes reales. No cierra D9 ni D10.
