@@ -1,5 +1,8 @@
 # Persistencia, offline y despliegue
 
+> Estado de implementación v1.1: [informe de cierre técnico](52-cierre-tecnico-v11.md). D10 incorpora catálogo, mapa/repaso, paquetes docentes y PWA. ADR-009 sustituye la elección inicial de Workbox por precaché generada con verificación SHA-256. La aceptación docente en aula permanece pendiente.
+
+
 ## Responsabilidades de almacenamiento · ADR-004 revisado
 
 Se adopta **IndexedDB para biblioteca, datasets y checkpoints** tras revisar los tamaños reales. LocalStorage conserva solo preferencias y progreso. Esta decisión revisa la propuesta inicial, antes de implementar o generar datos de usuario. Todo almacenamiento es local al navegador; no se añade backend.

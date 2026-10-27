@@ -1,5 +1,8 @@
 # Historias, entregas y plan Git · revisión 0.2
 
+> Estado de implementación v1.1: [informe de cierre técnico](52-cierre-tecnico-v11.md). D10 incorpora catálogo, mapa/repaso, paquetes docentes y PWA. ADR-009 sustituye la elección inicial de Workbox por precaché generada con verificación SHA-256. La aceptación docente en aula permanece pendiente.
+
+
 Las 65 historias definen el alcance completo. US-001–US-005, US-013 y US-065 tienen una primera implementación en D1; [su informe](23-implementacion-d1.md) registra evidencia y límites de aceptación. US-006–US-011 se implementan en D2, con [contratos y evidencia propios](25-implementacion-d2.md). US-014–US-019 y US-049 se implementan en D3, con [motor, laboratorios y pruebas](26-implementacion-d3.md). D4–D6 se implementaron mediante los incrementos documentados en los informes 29–40. El [cierre técnico D7](44-cierre-d7.md) cubre US-012, US-032, US-040, US-043, US-054 y US-062. [D8.1](45-evaluacion-probabilidades.md) implementa evaluación probabilística y costes; D8 se completa con [ética por grupos](47-etica-y-cierre-d8.md); D9–D10 siguen pendientes, al igual que la validación humana en aula; las extensiones X1/X2 permanecen propuestas. Cada una tiene RF, pruebas y entrega de aceptación sin depender de funcionalidades de una entrega posterior. RF → módulo → historia → prueba se publica en [la matriz completa](21-trazabilidad-rf.md). Los sufijos a/b de pruebas separan recorridos básicos y ampliados reales, no permiten cerrar una historia sin su evidencia de la entrega.
 
 ## MVP, alcance completo y extensiones

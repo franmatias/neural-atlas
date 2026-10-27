@@ -1,6 +1,6 @@
 # Ampliación del catálogo · 500 conceptos nuevos
 
-Entrega 0.5.1. Se añaden **C153–C652**, organizados en **20 temas**. El catálogo abierto pasa de 152 a **652 conceptos previstos**. El glosario publica **569 fichas**: las 69 desarrolladas en D1–D3 y estas 500 fichas de consulta. Los 83 conceptos originales restantes conservan sus IDs y su planificación; no se consideran publicados.
+Registro histórico de la entrega 0.5.1. Se añaden **C153–C652**, organizados en **20 temas**. El catálogo abierto pasa de 152 a **652 conceptos previstos**. En aquella entrega el glosario publicaba **569 fichas**: las 69 desarrolladas en D1–D3 y estas 500 fichas de consulta. Los 83 conceptos originales restantes conservan sus IDs y su planificación; no se consideraban publicados entonces. **D10 publica ahora las 152 fichas originales más las 500 de consulta**; cinco comparadores de X1 mantienen su actividad prevista. Véase [cierre técnico v1.1](52-cierre-tecnico-v11.md).
 
 Cada ficha nueva contiene un identificador estable, título en español e inglés, definición propia y alias de búsqueda cuando proceda. Son referencias introductorias: no incluyen todavía la actividad, ejemplo numérico, evaluación ni simulación exigidos para considerar un concepto interactivo completo. El nivel formal no inventa fórmulas para estas fichas. El entrenamiento general D4 conserva su entrega independiente.
 

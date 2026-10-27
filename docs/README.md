@@ -1,6 +1,8 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-Diseño inicial: 22/10/2026; estado de implementación: 26/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 se completa con [ética por grupos](47-etica-y-cierre-d8.md); D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
+**Estado actual:** [cierre técnico v1.1](52-cierre-tecnico-v11.md). D1–D10 implementados; aceptación docente en aula y X1/X2 separados. Las descripciones de fases que siguen conservan el contexto de la especificación histórica.
+
+Diseño inicial: 22/10/2026; estado de implementación: 27/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 se completa con [ética por grupos](47-etica-y-cierre-d8.md); D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
 
 La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
 
@@ -92,3 +94,6 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 [Visión y kernels · D9.2](49-vision-kernels.md) implementa L11 con operaciones y productos inspeccionables; quedan los talleres y D10.
 
 [Talleres de investigación · D9.3](50-talleres-investigacion.md) completa las doce secuencias y la biblioteca de diagnóstico. El cierre de D9 exige CI y publicación; D10 permanece pendiente.
+
+| [51 · Catálogo, repaso, docencia y offline](51-catalogo-repaso-y-paquetes.md) | Diseño D10 y contratos seguros |
+| [52 · Cierre técnico v1.1](52-cierre-tecnico-v11.md) | Evidencia, ADR-009, pruebas y límites de aceptación |
