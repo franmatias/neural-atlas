@@ -1,3 +1,4 @@
+import { correlateImage, type VisionInput, type VisionResult } from '@/domain/network/vision';
 import {
   studyLandscape,
   type LandscapeRequest,
@@ -85,6 +86,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  vision: VisionInput;
   landscape: LandscapeRequest;
   groupAudit: AuditScenarioOptions;
   functionApproximation: FunctionOptions;
@@ -123,6 +125,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  vision: VisionResult;
   landscape: LandscapeResult;
   groupAudit: AuditCohort;
   functionApproximation: FunctionResult;
@@ -156,6 +159,8 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'vision':
+      return correlateImage(job.payload);
     case 'landscape':
       return studyLandscape(job.payload);
     case 'groupAudit':

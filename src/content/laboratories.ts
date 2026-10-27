@@ -105,7 +105,7 @@ export const laboratories: readonly Laboratory[] = [
     question: '¿Qué ve un filtro al recorrer una imagen?',
     group: 'practice',
     phase: 'D9',
-    available: false,
+    available: true,
   },
   {
     id: 'L12',

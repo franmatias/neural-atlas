@@ -88,3 +88,5 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 [Ética y cierre de D8 · D8.3](47-etica-y-cierre-d8.md) reúne US-041, US-042, US-050 y US-064 con evidencia de implementación y controles de publicación. La aceptación en aula y las fases D9/D10 siguen pendientes.
 
 [Paisajes de pérdida · D9.1](48-paisajes-perdida.md) abre L07 con funciones ilustrativas y cortes reales. No cierra D9 ni D10.
+
+[Visión y kernels · D9.2](49-vision-kernels.md) implementa L11 con operaciones y productos inspeccionables; quedan los talleres y D10.

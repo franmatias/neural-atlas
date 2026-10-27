@@ -411,9 +411,21 @@ try {
       assert.equal(cut.sourceHash.length,64);assert(Math.abs(cut.grid.values[312]-11/3)<1e-10);assert.deepEqual(cut.provenance.model.layers[0].weights,[0]);
       await page.goto(new URL('#/lab/entrenamiento',url).href);
       await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
+      await page.goto(new URL('#/lab/vision',url).href);
+      await page.getByRole('button',{name:'Borrar imagen',exact:true}).click();
+      await page.getByRole('button',{name:'Filtro identidad',exact:true}).click();
+      await page.getByRole('button',{name:'Pintar píxel',exact:true}).click();
+      await page.getByRole('button',{name:'Aplicar filtro y registrar mapas',exact:true}).click();
+      await page.getByTestId('vision-result').waitFor();
+      const visionPending=page.waitForEvent('download');
+      await page.getByRole('button',{name:'Exportar informe de visión',exact:true}).click();
+      const vision=JSON.parse(await readFile(await(await visionPending).path(),'utf8'));
+      assert.equal(vision.appVersion,expectedVersion);assert.equal(vision.result.raw.length,100);assert.equal(vision.result.raw[0],1);assert.equal(vision.inspector.sum,1);assert.equal(vision.pooling.winner,0);assert.equal(vision.dataHash.length,64);
+      await page.goto(new URL('#/lab/entrenamiento',url).href);
+      await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling at ${url}`,
       );
       failure = undefined;
       break;

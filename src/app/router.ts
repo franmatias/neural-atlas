@@ -68,6 +68,11 @@ export const routes = [
     component: () => import('@/features/landscape/LandscapePage.vue'),
   },
   {
+    path: '/lab/vision',
+    name: 'vision',
+    component: () => import('@/features/vision/VisionPage.vue'),
+  },
+  {
     path: '/lab/:slug',
     name: 'planned-lab',
     component: () => import('@/features/planned/PlannedPage.vue'),

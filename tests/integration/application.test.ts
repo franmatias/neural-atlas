@@ -35,8 +35,8 @@ describe('navegación y contenido disponible', () => {
     await router.push('/laboratorios');
     await flushPromises();
     expect(wrapper.findAll('.lab-card')).toHaveLength(14);
-    expect(wrapper.findAll('.lab-card.live')).toHaveLength(13);
-    expect(wrapper.get('.topbar .status-pill').text()).toBe('13 laboratorios disponibles');
+    expect(wrapper.findAll('.lab-card.live')).toHaveLength(14);
+    expect(wrapper.get('.topbar .status-pill').text()).toBe('14 laboratorios disponibles');
     expect(wrapper.get('.lab-card[href="/lab/arquitectura/frontera"]').text()).toContain(
       'Sandbox de dos clases',
     );
