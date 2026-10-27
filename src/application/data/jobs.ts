@@ -1,4 +1,11 @@
 import {
+  prepareGrid,
+  runGridTrial,
+  type GridOptions,
+  type GridPlan,
+  type GridMeasurement,
+} from '@/application/training/grid-search';
+import {
   compareClassical,
   type ClassicalOptions,
   type ClassicalResult,
@@ -94,6 +101,8 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  gridPlan: GridOptions;
+  gridTrial: { options: GridOptions; planHash: string; id: number };
   classicalComparison: ClassicalOptions;
   classicalFile: { text: string };
   classicalFilePredict: { text: string; features: Record<string, Cell> };
@@ -140,6 +149,8 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  gridPlan: GridPlan;
+  gridTrial: GridMeasurement;
   classicalComparison: ClassicalResult;
   classicalFile: ReturnType<typeof inspectEstimator>;
   classicalFilePredict: ReturnType<typeof predictEstimatorFile>;
@@ -204,6 +215,10 @@ function probeEstimators(p: JobPayloads['classicalProbe']) {
 }
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'gridPlan':
+      return prepareGrid(job.payload);
+    case 'gridTrial':
+      return runGridTrial(job.payload.options, job.payload.planHash, job.payload.id);
     case 'classicalComparison':
       return compareClassical(job.payload);
     case 'classicalFilePredict':
