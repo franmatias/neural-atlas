@@ -64,7 +64,7 @@ describe('catálogo grande accesible y filtrado', () => {
       .get('.glossary-pagination .pagination-direction:first-child button:last-child')
       .trigger('click');
     await wrapper.get('#concept-kind').setValue('reference');
-    expect(wrapper.get('[role=status]').text()).toContain('503');
+    expect(wrapper.get('[role=status]').text()).toContain('501');
     await wrapper.get('#concept-topic').setValue('attention');
     expect(wrapper.get('[role=status]').text()).toContain('25 conceptos');
     await wrapper
@@ -94,7 +94,7 @@ describe('catálogo grande accesible y filtrado', () => {
     await router.push('/glosario');
     await flushPromises();
     await wrapper.get('#concept-kind').setValue('interactive');
-    expect(wrapper.get('[role=status]').text()).toContain('149');
+    expect(wrapper.get('[role=status]').text()).toContain('151');
     await wrapper.get('#concept-topic').setValue('attention');
     expect(wrapper.find('.empty-state').exists()).toBe(true);
   });

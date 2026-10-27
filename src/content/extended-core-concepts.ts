@@ -840,7 +840,7 @@ export const extendedCoreSeeds: readonly CoreSeed[] = [
     145,
     'Búsqueda de hiperparámetros',
     'Hyperparameter search',
-    'Compara configuraciones bajo un protocolo y un presupuesto explícitos. Seleccionar entre muchos intentos puede adaptar decisiones a validación; una rejilla automática del simulador se mantiene como extensión X1 y no como función implementada.',
+    'Compara configuraciones bajo un protocolo y un presupuesto explícitos. Seleccionar entre muchos intentos puede adaptar decisiones a validación. La rejilla permite cruzar anchuras y tasas con semillas y folds comunes, registrar todos los intentos y mantener test fuera de la elección.',
     'Configuración elegida por métrica de validación',
     'Tres tasas y dos tamaños de lote forman seis combinaciones de una rejilla.',
     'Elegir la configuración con menor error de test conserva una evaluación final independiente.',
@@ -910,7 +910,7 @@ export const extendedCoreSeeds: readonly CoreSeed[] = [
     'Mínimo observado entre múltiples ensayos',
     'Elegir el menor error entre20 intentos utiliza más información de validación que fijar una configuración previamente.',
     'La mejor validación observada es una estimación sin sesgo del resultado final.',
-    'La selección influye en esa medida; esta ficha no activa la búsqueda automática prevista para X1.',
+    'La selección influye en esa medida; la curva del mínimo observado describe adaptación a validación y no demuestra mejor generalización.',
     'experimentos',
   ],
   [

@@ -2,6 +2,11 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 export const routes = [
   {
+    path: '/lab/experimentos/rejilla',
+    name: 'grid-search',
+    component: () => import('@/features/experiments/GridSearchPage.vue'),
+  },
+  {
     path: '/lab/experimentos/clasicos',
     name: 'classical',
     component: () => import('@/features/classical/ClassicalPage.vue'),
