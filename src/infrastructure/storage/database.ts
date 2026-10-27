@@ -22,7 +22,7 @@ export function openNeuralDatabase(
   return new Promise((resolve, reject) => {
     let blocked = false;
     try {
-      const request = factory().open('neural-atlas', 3);
+      const request = factory().open('neural-atlas', 4);
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains('experiments'))
@@ -36,6 +36,8 @@ export function openNeuralDatabase(
           db.createObjectStore('learningEvidence', { keyPath: 'id' });
         if (!db.objectStoreNames.contains('trainingRecovery'))
           db.createObjectStore('trainingRecovery', { keyPath: 'id' });
+        for (const name of ['contentCatalog', 'learningReview', 'teachingPacks'])
+          if (!db.objectStoreNames.contains(name)) db.createObjectStore(name, { keyPath: 'id' });
       };
       request.onerror = () => reject(storageError(request.error));
       request.onblocked = () => {

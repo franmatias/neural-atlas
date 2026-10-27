@@ -1,5 +1,8 @@
 # Arquitectura y responsabilidades
 
+> Estado de implementación v1.1: [informe de cierre técnico](52-cierre-tecnico-v11.md). D10 incorpora catálogo, mapa/repaso, paquetes docentes y PWA. ADR-009 sustituye la elección inicial de Workbox por precaché generada con verificación SHA-256. La aceptación docente en aula permanece pendiente.
+
+
 Arquitectura del alcance completo; D1 ya implementa la SPA, dominio de neurona, preferencias y vistas descritos en [el informe de implementación](23-implementacion-d1.md). Los módulos restantes siguen como diseño objetivo. SPA estática en Vue con Composition API y `<script setup lang="ts">`, TypeScript estricto, Vite, Vue Router y Pinia. Tailwind compilado con tokens CSS semánticos. No se incorpora backend. Ver [diagrama de componentes](diagrams/02-componentes.mmd) y [estructura de paquetes](diagrams/04-paquetes.mmd).
 
 ## Decisiones de tecnología

@@ -1,4 +1,6 @@
+import { previewTeachingPack } from '@/application/content/teaching-packs';
 import { correlateImage, type VisionInput, type VisionResult } from '@/domain/network/vision';
+import { previewConceptPack, type CatalogContext } from '@/application/content/concept-packs';
 import {
   studyLandscape,
   type LandscapeRequest,
@@ -86,6 +88,8 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  teachingPack: { text: string };
+  conceptPack: { text: string; context: CatalogContext };
   vision: VisionInput;
   landscape: LandscapeRequest;
   groupAudit: AuditScenarioOptions;
@@ -125,6 +129,8 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  teachingPack: ReturnType<typeof previewTeachingPack>;
+  conceptPack: ReturnType<typeof previewConceptPack>;
   vision: VisionResult;
   landscape: LandscapeResult;
   groupAudit: AuditCohort;
@@ -159,6 +165,24 @@ export type DataResponse =
   | { id: number; ok: false; code: DataError['code']; detail: string };
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'teachingPack':
+      try {
+        return previewTeachingPack(job.payload.text);
+      } catch (error) {
+        throw new DataError(
+          'SCHEMA',
+          error instanceof Error ? error.message.slice(0, 1000) : 'TEACHING_PACK',
+        );
+      }
+    case 'conceptPack':
+      try {
+        return previewConceptPack(job.payload.text, job.payload.context);
+      } catch (error) {
+        throw new DataError(
+          'SCHEMA',
+          error instanceof Error ? error.message.slice(0, 1000) : 'CONCEPT_PACK',
+        );
+      }
     case 'vision':
       return correlateImage(job.payload);
     case 'landscape':

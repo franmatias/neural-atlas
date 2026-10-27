@@ -5,18 +5,18 @@ test('500 fichas de consulta: filtros, páginas, foco, búsqueda y enlaces estab
   page,
 }) => {
   await page.goto('#/glosario');
-  await expect(page.getByRole('status')).toContainText('569 conceptos');
+  await expect(page.getByRole('status')).toContainText('652 conceptos');
   await expect(page.locator('.concept-card')).toHaveCount(24);
   const pagination = page.getByRole('navigation', { name: 'Paginación superior del glosario' });
   await pagination.getByRole('button', { name: 'Última', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('553–569 de 569');
-  await expect(page.locator('.concept-card')).toHaveCount(17);
+  await expect(page.getByRole('status')).toContainText('649–652 de 652');
+  await expect(page.locator('.concept-card')).toHaveCount(4);
   await pagination.getByRole('button', { name: 'Primera', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('.concept-grid')).toBeFocused();
   await expect(page.locator('.concept-card')).toHaveCount(24);
   await page.getByLabel('Tipo de ficha').selectOption('reference');
-  await expect(page.getByRole('status')).toContainText('500 conceptos');
+  await expect(page.getByRole('status')).toContainText('505 conceptos');
   await page.getByRole('combobox', { name: 'Tema', exact: true }).selectOption('attention');
   await expect(page.getByRole('status')).toContainText('25 conceptos');
   await page.getByRole('button', { name: 'Página siguiente', exact: true }).first().click();
@@ -38,7 +38,7 @@ test('500 fichas de consulta: filtros, páginas, foco, búsqueda y enlaces estab
   );
   await page.getByRole('searchbox').fill('');
   await page.getByLabel('Tipo de ficha').selectOption('interactive');
-  await expect(page.getByRole('status')).toContainText('69 conceptos');
+  await expect(page.getByRole('status')).toContainText('147 conceptos');
 });
 
 test('glosario adaptable y accesible en ambos temas', async ({ page }) => {

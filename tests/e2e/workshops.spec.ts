@@ -157,7 +157,7 @@ test('T12: controles y evidencia accesibles en móvil y ambos temas', async ({ p
   }
 });
 
-test('migración nativa v1→v3 conserva experimentos y sus tensores', async ({ page }) => {
+test('migración nativa v1→v4 conserva experimentos y sus tensores', async ({ page }) => {
   await page.goto('#/');
   await page.evaluate(async () => {
     await new Promise<void>((resolve, reject) => {
@@ -188,7 +188,7 @@ test('migración nativa v1→v3 conserva experimentos y sus tensores', async ({ 
   const result = await page.evaluate(
     async () =>
       new Promise<{ version: number; weights: number[] }>((resolve, reject) => {
-        const request = indexedDB.open('neural-atlas', 3);
+        const request = indexedDB.open('neural-atlas', 4);
         request.onerror = () => reject(request.error);
         request.onsuccess = () => {
           const db = request.result;
@@ -204,7 +204,7 @@ test('migración nativa v1→v3 conserva experimentos y sus tensores', async ({ 
         };
       }),
   );
-  expect(result).toEqual({ version: 3, weights: [0.25, -0.5] });
+  expect(result).toEqual({ version: 4, weights: [0.25, -0.5] });
 });
 test('actividad compartida sin soluciones, archivo inválido y vista accesible', async ({
   page,
