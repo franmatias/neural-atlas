@@ -1,3 +1,4 @@
+import { validateDataset } from './validation';
 import { derivedLabel, derivedValue, validateDerived, type DerivedFeature } from './derived';
 import { hashValue } from './integrity';
 import { mode, numericStatistics, quantile } from './statistics';
@@ -47,6 +48,28 @@ export function fitPipeline(
   options: PipelineOptions,
 ): PipelineState {
   validateSplit(dataset, split);
+  return fitTrainingPipeline(dataset, split.train, options, {
+    dataHash: split.dataHash,
+    splitHash: split.splitHash,
+  });
+}
+/** Fits only the named training rows. Exported estimators use this to reconstruct their pipeline without holdout rows. */
+export function fitTrainingPipeline(
+  dataset: Dataset,
+  trainIds: string[],
+  options: PipelineOptions,
+  provenance: { dataHash: string; splitHash: string },
+): PipelineState {
+  validateDataset(dataset);
+  if (!/^[a-f0-9]{64}$/.test(provenance.dataHash) || !/^[a-f0-9]{64}$/.test(provenance.splitHash))
+    throw new DataError('PIPELINE', 'provenance');
+  const rowIds = new Set(dataset.rows.map((r) => r.id));
+  if (
+    !trainIds.length ||
+    new Set(trainIds).size !== trainIds.length ||
+    trainIds.some((id) => !rowIds.has(id))
+  )
+    throw new DataError('PIPELINE', 'train-ids');
   if (
     !['mean', 'median', 'mode'].includes(options.imputation) ||
     !['none', 'minmax', 'standard', 'robust'].includes(options.scaling) ||
@@ -56,7 +79,7 @@ export function fitPipeline(
   )
     throw new DataError('PIPELINE');
   const lookup = new Map(dataset.rows.map((row) => [row.id, row]));
-  const train = split.train.map((id) => lookup.get(id)!);
+  const train = trainIds.map((id) => lookup.get(id)!);
   if (!train.length) throw new DataError('PIPELINE', 'train');
   const columns: PipelineState['columns'] = [];
   const outputFeatureIds: string[] = [];
@@ -153,9 +176,9 @@ export function fitPipeline(
     inputFeatureIds: [...options.featureIds],
     outputFeatureIds,
     outputLabels,
-    fittedOn: { split: 'train', idsHash: hashValue(split.train) },
-    dataHash: split.dataHash,
-    splitHash: split.splitHash,
+    fittedOn: { split: 'train', idsHash: hashValue(trainIds) },
+    dataHash: provenance.dataHash,
+    splitHash: provenance.splitHash,
     options: {
       ...options,
       featureIds: [...options.featureIds],

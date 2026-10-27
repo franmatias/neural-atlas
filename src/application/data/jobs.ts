@@ -1,3 +1,9 @@
+import {
+  compareClassical,
+  type ClassicalOptions,
+  type ClassicalResult,
+} from '@/application/training/classical-comparison';
+import { importEstimator, predictEstimatorFile } from '@/application/training/classical-files';
 import { previewTeachingPack } from '@/application/content/teaching-packs';
 import { correlateImage, type VisionInput, type VisionResult } from '@/domain/network/vision';
 import { previewConceptPack, type CatalogContext } from '@/application/content/concept-packs';
@@ -88,6 +94,11 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  classicalComparison: ClassicalOptions;
+  classicalFile: { text: string };
+  classicalFilePredict: { text: string; features: Record<string, Cell> };
+  classicalProbe: { artifacts: ClassicalResult['artifacts']; features: Record<string, Cell> };
+
   teachingPack: { text: string };
   conceptPack: { text: string; context: CatalogContext };
   vision: VisionInput;
@@ -129,6 +140,11 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  classicalComparison: ClassicalResult;
+  classicalFile: ReturnType<typeof inspectEstimator>;
+  classicalFilePredict: ReturnType<typeof predictEstimatorFile>;
+  classicalProbe: ReturnType<typeof probeEstimators>;
+
   teachingPack: ReturnType<typeof previewTeachingPack>;
   conceptPack: ReturnType<typeof previewConceptPack>;
   vision: VisionResult;
@@ -163,8 +179,39 @@ export type DataJob = {
 export type DataResponse =
   | { id: number; ok: true; result: JobResults[keyof JobResults] }
   | { id: number; ok: false; code: DataError['code']; detail: string };
+function inspectEstimator(text: string) {
+  const fit = importEstimator(text);
+  const features = fit.trainingDataset.rows[0]!.features;
+  return {
+    family: fit.model.family,
+    task: fit.trainingDataset.task,
+    classes: fit.trainingDataset.classOrder ?? [],
+    features: fit.trainingDataset.features,
+    firstFeatures: features,
+    provenance: fit.provenance,
+    prediction: predictEstimatorFile(text, features),
+  };
+}
+function probeEstimators(p: JobPayloads['classicalProbe']) {
+  const model = importInferenceModel(p.artifacts.mlp),
+    features = Object.fromEntries(model.features.map((f) => [f.id, p.features[f.id]!]));
+  return {
+    knn: predictEstimatorFile(p.artifacts.knn, p.features),
+    cart: predictEstimatorFile(p.artifacts.cart, p.features),
+    mlp: predictWithModel(model, features),
+    features: p.features,
+  };
+}
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'classicalComparison':
+      return compareClassical(job.payload);
+    case 'classicalFilePredict':
+      return predictEstimatorFile(job.payload.text, job.payload.features);
+    case 'classicalFile':
+      return inspectEstimator(job.payload.text);
+    case 'classicalProbe':
+      return probeEstimators(job.payload);
     case 'teachingPack':
       try {
         return previewTeachingPack(job.payload.text);
