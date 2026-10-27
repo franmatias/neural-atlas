@@ -37,7 +37,7 @@ export const es = {
   'nav.label': 'Navegación principal',
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
-  'app.delivery': 'Paisajes de pérdida · D9.1',
+  'app.delivery': 'Visión y kernels · D9.2',
   'app.available': '{count} laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',
