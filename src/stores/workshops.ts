@@ -182,7 +182,7 @@ export const useWorkshopsStore = defineStore('workshops', () => {
     } catch {
       if (token === sequence)
         error.value =
-          'No se ha completado la ejecución. Revisa los controles y, en T05, reconoce el presupuesto de seis ensayos. Se necesita un navegador con Web Workers.';
+          'No se ha completado la ejecución. Revisa los controles y reconoce el presupuesto cuando el caso lo requiere. Se necesita un navegador con Web Workers.';
     } finally {
       if (token === sequence) busy.value = false;
     }

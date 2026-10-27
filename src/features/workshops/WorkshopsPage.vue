@@ -118,6 +118,9 @@ onBeforeRouteLeave(() => {
         {{ session.definition.audience }} · {{ session.definition.estimatedMinutes }} min
         orientativos · versión {{ session.definition.contentVersion }}.
       </p>
+      <p v-if="session.definition.prerequisites.length">
+        Antes de empezar: {{ session.definition.prerequisites.join(' · ') }}.
+      </p>
       <p v-if="imported" class="training-alert">
         Actividad importada o versión distinta del catálogo. Su texto procede del archivo; las
         reglas solo pueden consultar los casos y métricas permitidos.

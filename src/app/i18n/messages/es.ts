@@ -37,7 +37,7 @@ export const es = {
   'nav.label': 'Navegación principal',
   'app.skip': 'Saltar al contenido',
   'app.local': 'Todo ocurre en tu navegador',
-  'app.delivery': 'Visión y kernels · D9.2',
+  'app.delivery': 'Doce talleres y diagnóstico · D9.3',
   'app.available': '{count} laboratorios disponibles',
   'app.title': 'Laboratorio visual de aprendizaje automático',
   'app.explore': 'Explorar el atlas',
@@ -79,7 +79,7 @@ export const es = {
   'planned.back': 'Explorar la neurona disponible',
   'planned.workshopTitle': 'Taller de investigación',
   'planned.workshopText':
-    'Actividades guiadas para predecir, experimentar, observar y explicar. Los cinco primeros talleres llegarán con la entrega D5.',
+    'Actividades guiadas para predecir, experimentar, observar y explicar. Doce talleres disponibles con evidencia y reflexión.',
   'planned.libraryTitle': 'Tu biblioteca de experimentos',
   'planned.libraryText':
     'Guardado local e intercambio de datos y modelos con IndexedDB. Llegará con D5; todavía no se guardan modelos.',

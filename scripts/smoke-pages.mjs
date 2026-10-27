@@ -423,9 +423,32 @@ try {
       assert.equal(vision.appVersion,expectedVersion);assert.equal(vision.result.raw.length,100);assert.equal(vision.result.raw[0],1);assert.equal(vision.inspector.sum,1);assert.equal(vision.pooling.winner,0);assert.equal(vision.dataHash.length,64);
       await page.goto(new URL('#/lab/entrenamiento',url).href);
       await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
+      await page.goto(new URL('#/taller',url).href);
+      async function prepareInvestigation(id) {
+        const activity=page.getByRole('button',{name:new RegExp('^'+id+' ·')});await expect(activity).toBeEnabled();await activity.click();
+        await page.locator('textarea').fill('Predigo un resultado contrastable y explicaré sus límites con evidencia del motor.');
+        await page.getByRole('button',{name:'Validar paso y continuar',exact:true}).click();
+        await page.getByLabel('Épocas del proyecto',{exact:true}).fill('5');await page.getByLabel('Épocas del proyecto',{exact:true}).press('Enter');
+        await page.getByLabel('He revisado el presupuesto del taller.',{exact:true}).check();
+        if(id==='T12')await page.getByRole('combobox',{name:'Fallo plantado',exact:true}).selectOption('bn');
+        await page.locator('textarea').fill('Mantengo datos y split; varío solo el factor propuesto en este caso controlado.');
+        await page.getByRole('button',{name:'Validar paso y continuar',exact:true}).click();
+        await page.getByRole('button',{name:'Ejecutar caso con el motor',exact:true}).click();
+        await expect(page.getByRole('heading',{name:'Evidencia del motor',exact:true})).toBeVisible();
+      }
+      await prepareInvestigation('T08');
+      const projectDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Descargar experimento reproducible del taller',exact:true}).click();
+      const project=JSON.parse(await readFile(await(await projectDownload).path(),'utf8'));
+      assert.equal(project.appVersion,expectedVersion);assert.equal(project.config.spec.task,'regression');assert.equal(project.checkpoint.epoch,5);assert.equal(project.config.epochs,6);assert.equal(project.testConsulted,false);assert.equal(project.integrity.length,64);
+      await prepareInvestigation('T12');
+      const repairDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Exportar cuaderno de evidencias',exact:true}).click();
+      const repair=JSON.parse(await readFile(await(await repairDownload).path(),'utf8'));
+      assert.equal(repair.progress.evidence.options.advanced.fault,'bn');assert.equal(repair.progress.evidence.metrics.validationRejected,true);assert.equal(repair.progress.evidence.metrics.testConsulted,false);assert.equal(repair.progress.evidence.metrics.repairPreservesSplit,true);
+      const repairedProject=JSON.parse(repair.progress.evidence.experiment);assert.equal(repairedProject.config.spec.batchNormalization,true);assert.equal(repairedProject.config.batchSize,12);
+      await page.goto(new URL('#/lab/entrenamiento',url).href);await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair at ${url}`,
       );
       failure = undefined;
       break;
