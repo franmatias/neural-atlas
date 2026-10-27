@@ -98,7 +98,7 @@ async function render() {
   });
   await router.push('/docencia');
   await router.isReady();
-  const wrapper = mount(TeachingPage, { global: { plugins: [pinia, router] } });
+  const wrapper = mount({ template: '<RouterView />' }, { global: { plugins: [pinia, router] } });
   await flushPromises();
   const button = (t: string) => wrapper.findAll('button').find((b) => b.text() === t)!;
   return { wrapper, button, router };
@@ -208,5 +208,61 @@ it('prepara y exporta un preset común, lo restaura explícitamente y rechaza ar
   await input.trigger('change');
   await flushPromises();
   expect(wrapper.text()).toContain('Archivo ilegible');
+  wrapper.unmount();
+});
+it('retirar conserva el paquete visible y el archivo bloqueado hasta confirmar la transacción', async () => {
+  const store = useTeachingStore();
+  await store.load();
+  await store.inspect(JSON.stringify(teachingExample()));
+  await store.install();
+  const { wrapper, button } = await render();
+  await wrapper.get('select').setValue('unidad-test');
+  await button('Retirar paquete…').trigger('click');
+  let complete!: () => void;
+  const remove = vi.spyOn(LearningLibrary.prototype, 'remove').mockImplementation(
+    () =>
+      new Promise<void>((resolve) => {
+        complete = resolve;
+      }),
+  );
+  await button('Confirmar retirada').trigger('click');
+  expect(remove).toHaveBeenCalled();
+  expect(wrapper.findAll('h2').some((h) => h.text() === 'Unidad test · 1.0.0')).toBe(true);
+  expect(wrapper.get('input[type=file]').attributes('disabled')).toBeDefined();
+  expect(store.records).toHaveLength(1);
+  complete();
+  await flushPromises();
+  expect(wrapper.findAll('h2').some((h) => h.text() === 'Unidad test · 1.0.0')).toBe(false);
+  expect(wrapper.get('input[type=file]').attributes('disabled')).toBeUndefined();
+  expect(store.records).toHaveLength(0);
+  wrapper.unmount();
+});
+it('lectura pendiente se cancela y una respuesta tardía no instala ni sustituye la previsualización', async () => {
+  const { wrapper, button, router } = await render();
+  const input = wrapper.get('input[type=file]');
+  let complete!: (bytes: ArrayBuffer) => void;
+  Object.defineProperty(input.element, 'files', {
+    configurable: true,
+    value: [
+      {
+        size: 10,
+        arrayBuffer: () =>
+          new Promise<ArrayBuffer>((resolve) => {
+            complete = resolve;
+          }),
+      },
+    ],
+  });
+  await input.trigger('change');
+  expect(button('Preparar previsualización').attributes('disabled')).toBeDefined();
+  await button('Cancelar validación').trigger('click');
+  complete(new TextEncoder().encode(JSON.stringify(teachingExample())).buffer);
+  await flushPromises();
+  expect(useTeachingStore().preview).toBeUndefined();
+  await input.trigger('change');
+  await router.push('/taller');
+  complete(new TextEncoder().encode(JSON.stringify(teachingExample())).buffer);
+  await flushPromises();
+  expect(useTeachingStore().preview).toBeUndefined();
   wrapper.unmount();
 });

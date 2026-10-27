@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import { useTeachingStore } from '@/stores/teaching';
 import { useDatasetsStore } from '@/stores/datasets';
 import { useTrainingStore } from '@/stores/training';
@@ -32,6 +32,7 @@ const selected = ref(''),
   attribution = ref('Adaptación docente de Neural Atlas. Datos sintéticos.'),
   selectedWorkshops = ref(['T01', 'T12']),
   error = ref(''),
+  reading = ref(false),
   remove = ref('');
 const confirmation = ref<{ kind: 'dataset' | 'preset' | 'workshop'; id: string }>();
 const pack = computed(() =>
@@ -41,6 +42,7 @@ const pack = computed(() =>
 );
 const busy = computed(
   () =>
+    reading.value ||
     library.busy ||
     library.saving ||
     data.busy ||
@@ -53,19 +55,43 @@ const busy = computed(
 onMounted(async () => {
   await library.load();
 });
+let readRevision = 0;
+function cancelRead() {
+  readRevision++;
+  reading.value = false;
+  library.cancel();
+}
+onBeforeRouteLeave(cancelRead);
 async function select(event: Event) {
   const input = event.target as HTMLInputElement,
     file = input.files?.[0];
-  if (!file) return;
+  if (!file || busy.value) return;
+  const token = ++readRevision;
+  reading.value = true;
   error.value = '';
   try {
-    await library.inspect(await readLearning(file, 64));
-    selected.value = 'preview';
-    confirmation.value = undefined;
+    const text = await readLearning(file, 64);
+    if (token !== readRevision) return;
+    await library.inspect(text);
+    if (token === readRevision) {
+      selected.value = 'preview';
+      confirmation.value = undefined;
+    }
   } catch {
-    error.value = 'Archivo ilegible o mayor de 64 MiB.';
+    if (token === readRevision) error.value = 'Archivo ilegible o mayor de 64 MiB.';
   } finally {
     input.value = '';
+    if (token === readRevision) reading.value = false;
+  }
+}
+async function retire() {
+  if (busy.value) return;
+  const id = remove.value;
+  await library.remove(id);
+  if (!library.records.some((r) => r.id === id)) {
+    remove.value = '';
+    selected.value = '';
+    confirmation.value = undefined;
   }
 }
 async function build() {
@@ -210,7 +236,7 @@ async function apply() {
           accept=".json"
           :disabled="busy || !library.loaded"
           @change="select" /></label
-      ><button v-if="library.busy" class="button secondary" @click="library.cancel">
+      ><button v-if="library.busy || reading" class="button secondary" @click="cancelRead">
         Cancelar validación</button
       ><label
         >Paquete a inspeccionar
@@ -267,16 +293,7 @@ async function apply() {
       </button>
       <div v-if="remove === pack.packId">
         <p>Se retirará este paquete, conservando experimentos y cuadernos independientes.</p>
-        <button
-          class="button primary"
-          :disabled="busy"
-          @click="
-            library.remove(remove);
-            remove = '';
-            selected = '';
-          "
-        >
-          Confirmar retirada</button
+        <button class="button primary" :disabled="busy" @click="retire">Confirmar retirada</button
         ><button class="button secondary" @click="remove = ''">Conservar</button>
       </div>
       <h3>Abrir recursos</h3>

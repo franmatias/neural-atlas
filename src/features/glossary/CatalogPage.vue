@@ -1,23 +1,38 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
 import { useCatalogStore } from '@/stores/catalog';
 import { coreRecords } from '@/content/core-records';
 import { readLearning, downloadLearning } from '@/infrastructure/files/learning';
 const catalog = useCatalogStore(),
+  reading = ref(false),
   fileError = ref(''),
   remove = ref('');
+const busy = computed(() => reading.value || catalog.busy || catalog.saving);
+let readRevision = 0;
+function cancelRead() {
+  readRevision++;
+  reading.value = false;
+  catalog.cancel();
+}
+onBeforeRouteLeave(cancelRead);
 onMounted(() => catalog.load());
 async function select(event: Event) {
   const input = event.target as HTMLInputElement,
     file = input.files?.[0];
-  if (!file) return;
+  if (!file || busy.value) return;
+  const token = ++readRevision;
+  reading.value = true;
   fileError.value = '';
   try {
-    await catalog.inspect(await readLearning(file, 4));
+    const text = await readLearning(file, 4);
+    if (token === readRevision) await catalog.inspect(text);
   } catch (e) {
-    fileError.value = e instanceof Error ? e.message : 'Archivo ilegible.';
+    if (token === readRevision)
+      fileError.value = e instanceof Error ? e.message : 'Archivo ilegible.';
   } finally {
     input.value = '';
+    if (token === readRevision) reading.value = false;
   }
 }
 function example() {
@@ -61,11 +76,11 @@ function example() {
         <input
           type="file"
           accept=".json,application/json"
-          :disabled="catalog.busy || catalog.saving || !catalog.loaded"
+          :disabled="busy || !catalog.loaded"
           @change="select"
       /></label>
       <button class="button secondary" @click="example">Descargar ejemplo editable</button>
-      <button v-if="catalog.busy" class="button secondary" @click="catalog.cancel">
+      <button v-if="catalog.busy || reading" class="button secondary" @click="cancelRead">
         Cancelar validación
       </button>
       <p role="alert">{{ fileError || catalog.error }}</p>
@@ -88,14 +103,14 @@ function example() {
         </details>
         <button
           class="button primary"
-          :disabled="catalog.saving || catalog.preview.unchanged"
+          :disabled="busy || catalog.preview.unchanged"
           @click="catalog.confirm"
         >
           Confirmar y guardar
         </button>
         <button
           class="button secondary"
-          :disabled="catalog.saving || catalog.preview.unchanged"
+          :disabled="busy || catalog.preview.unchanged"
           @click="catalog.useMemory"
         >
           Usar solo en memoria
@@ -127,7 +142,7 @@ function example() {
           </p>
           <button
             class="button primary"
-            :disabled="catalog.saving"
+            :disabled="busy"
             @click="
               catalog.remove(p.packId);
               remove = '';
@@ -137,11 +152,7 @@ function example() {
           ><button class="button secondary" @click="remove = ''">Conservar</button>
         </div>
       </article>
-      <button
-        class="button secondary"
-        :disabled="catalog.busy || catalog.saving"
-        @click="catalog.refresh"
-      >
+      <button class="button secondary" :disabled="busy" @click="catalog.refresh">
         Recargar catálogo guardado
       </button>
     </section>
