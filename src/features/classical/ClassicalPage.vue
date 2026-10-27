@@ -74,9 +74,9 @@ watch(
   },
 );
 watch(
-  () => study.importedText,
-  () => {
-    if (study.imported) fileFeatures.value = { ...study.imported.firstFeatures };
+  () => study.imported?.firstFeatures,
+  (initialFeatures) => {
+    if (initialFeatures) fileFeatures.value = { ...initialFeatures };
   },
 );
 async function run() {
