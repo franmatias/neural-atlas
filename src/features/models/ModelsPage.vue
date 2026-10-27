@@ -62,6 +62,11 @@ onBeforeRouteLeave(() => {
   <div class="page training-page models-page">
     <p class="eyebrow">BIBLIOTECA / INFERENCIA</p>
     <h1>Un modelo, nuevas muestras.</h1>
+    <p>
+      <RouterLink to="/lab/experimentos/clasicos"
+        >Probar archivos de estimadores kNN/CART en el comparador</RouterLink
+      >
+    </p>
     <p class="page-intro">
       Exporta lo aprendido y prueba datos nuevos sin transportar las filas del entrenamiento. El
       archivo conserva la preparación original y el orden de las clases.

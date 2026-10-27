@@ -44,8 +44,21 @@ export function validateCatalogState(value: unknown): CatalogState {
       owned.add(c.id);
     }
   const context = buildCatalog(state).context;
-  for (const pack of state.packs)
-    previewConceptPack(JSON.stringify(pack), { ...context, packVersions: {}, packHashes: {} });
+  for (const pack of state.packs) {
+    if (pack.concepts.some((c) => context.nodes.find((n) => n.id === c.id)?.slug !== c.slug))
+      throw Error('CONCEPT_IDENTITY');
+    // A newer bundled revision can shadow a local revision. Retain the file for export,
+    // validate the active graph, and never reactivate the superseded text silently.
+    const active = pack.concepts.filter(
+      (c) => context.nodes.find((n) => n.id === c.id)?.owner === pack.packId,
+    );
+    if (active.length)
+      previewConceptPack(JSON.stringify({ ...pack, concepts: active }), {
+        ...context,
+        packVersions: {},
+        packHashes: {},
+      });
+  }
   return state;
 }
 export function buildCatalog(state: CatalogState) {
@@ -127,6 +140,7 @@ export function buildCatalog(state: CatalogState) {
     presets: failureCases.map((c) => c.presetId),
     packVersions: Object.fromEntries(state.packs.map((p) => [p.packId, p.version])),
     packHashes: Object.fromEntries(state.packs.map((p) => [p.packId, hashValue(p)])),
+    owners: Object.fromEntries(state.packs.flatMap((p) => p.concepts.map((c) => [c.id, p.packId]))),
     identityHistory: state.identityHistory,
   };
   return {

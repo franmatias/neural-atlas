@@ -6,6 +6,8 @@ import { useCatalogStore } from '@/stores/catalog';
 import { useReviewStore } from '@/stores/review';
 import { coreRecords } from '@/content/core-records';
 import { buildCatalog, emptyCatalogState } from '@/application/content/catalog';
+import { validateCatalogState } from '@/application/content/catalog';
+import { previewConceptPack } from '@/application/content/concept-packs';
 import { handleDataJob, type DataJob } from '@/application/data/jobs';
 import { LearningLibrary } from '@/infrastructure/storage/learning-library';
 import { libraryPort } from '../fixtures/library-port';
@@ -89,6 +91,30 @@ it('confirma tras transacción, restaura, actualiza, retira y no cambia IDs hist
   await store.confirm();
   expect(store.registry.records.has('C653')).toBe(true);
   expect(buildCatalog(emptyCatalogState()).summaries).toHaveLength(652);
+});
+it('una actualización incluida conserva exportable el paquete local anterior y su propiedad', () => {
+  const c = structuredClone(coreRecords.find((c) => c.id === 'C143')!);
+  c.contentVersion = 1;
+  c.activity = 'Actividad local anterior.';
+  const local = { ...pack(), concepts: [c] },
+    state = { ...emptyCatalogState(), packs: [local] };
+  expect(validateCatalogState(state).packs[0]!.concepts[0]!.activity).toBe(
+    'Actividad local anterior.',
+  );
+  const registry = buildCatalog(state);
+  expect(registry.records.get('C143')!.contentVersion).toBe(2);
+  expect(registry.nodes.find((n) => n.id === 'C143')!.owner).toBeUndefined();
+  const candidate = {
+    ...local,
+    packId: 'otro',
+    version: '2.0.0',
+    concepts: [{ ...c, contentVersion: 3 }],
+  };
+  expect(() => previewConceptPack(JSON.stringify(candidate), registry.context)).toThrow(
+    'CONCEPT_IDENTITY',
+  );
+  candidate.packId = local.packId;
+  expect(previewConceptPack(JSON.stringify(candidate), registry.context).changes[0]!.to).toBe(3);
 });
 it('rechazo, cancelación, cuota, conflicto y aplicación explícita en memoria conservan lo confirmado', async () => {
   const store = useCatalogStore();
@@ -202,7 +228,7 @@ it('ficha, referencia, estado previsto y mapa accesible conservan navegación po
     .trigger('click');
   await flushPromises();
   expect(useReviewStore().current(coreRecords[20]!).explained).toBe(true);
-  await router.push('/conceptos/C143');
+  await router.push('/conceptos/C145');
   await flushPromises();
   expect(wrapper.text()).toContain('fuera de v1.1');
   await router.push('/conceptos/C652');

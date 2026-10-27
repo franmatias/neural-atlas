@@ -132,6 +132,17 @@ function example() {
       <article v-for="p in catalog.state.packs" :key="p.packId">
         <h3>{{ p.title }} · {{ p.version }}</h3>
         <p>{{ p.packId }} · {{ p.concepts.length }} fichas · local / no revisado</p>
+        <p
+          v-if="
+            p.concepts.some(
+              (c) => catalog.registry.nodes.find((n) => n.id === c.id)?.owner !== p.packId,
+            )
+          "
+        >
+          Algunas fichas tienen contenido incluido igual o más reciente y están inactivas. El
+          paquete completo sigue disponible para exportar; publica una versión de contenido superior
+          si deseas volver a activarlas.
+        </p>
         <button class="button secondary" @click="downloadLearning(p, p.packId + '.json')">
           Exportar paquete</button
         ><button class="button secondary" @click="remove = p.packId">Retirar…</button>
