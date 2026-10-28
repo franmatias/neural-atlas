@@ -1,26 +1,33 @@
 <script setup lang="ts">
 import { computed, ref, watch, onScopeDispose } from 'vue';
-import { Sonification, toneFor, type ToneKind } from '@/infrastructure/audio/sonification';
+import {
+  Sonification,
+  toneFor,
+  type ToneKind,
+  type ToneRegister,
+} from '@/infrastructure/audio/sonification';
 const props = defineProps<{ value?: number; kind: ToneKind; label: string }>();
 const engine = new Sonification(),
   enabled = ref(false),
   starting = ref(false),
   volume = ref(0.1),
+  register = ref<ToneRegister>('normal'),
   error = ref('');
 let revision = 0;
 const tone = computed(() =>
-  props.value === undefined ? undefined : toneFor(props.value, props.kind),
+  props.value === undefined ? undefined : toneFor(props.value, props.kind, register.value),
 );
 async function start() {
   if (props.value === undefined) return;
   const id = ++revision;
   starting.value = true;
   error.value = '';
-  const done = await engine.start(props.value, props.kind, volume.value);
+  const done = await engine.start(props.value, props.kind, volume.value, register.value);
   if (id !== revision) return;
   starting.value = false;
   enabled.value = done;
-  if (done && props.value !== undefined) engine.update(props.value, props.kind, volume.value);
+  if (done && props.value !== undefined)
+    engine.update(props.value, props.kind, volume.value, register.value);
   else
     error.value =
       'Audio no disponible o pestaña no visible. La simulación y sus datos siguen disponibles.';
@@ -31,10 +38,10 @@ function stop() {
   enabled.value = false;
   starting.value = false;
 }
-watch([() => props.value, volume], () => {
+watch([() => props.value, volume, register], () => {
   if (enabled.value) {
     if (props.value === undefined || !tone.value) stop();
-    else engine.update(props.value, props.kind, volume.value);
+    else engine.update(props.value, props.kind, volume.value, register.value);
   }
 });
 const hidden = () => {
@@ -57,7 +64,8 @@ onScopeDispose(() => {
           ? 'Escala fija de salida [0,1]'
           : 'Escala logarítmica de pérdida [0,0001;10]'
       }}
-      → [220;880] Hz. Los valores fuera del rango saturan el tono y conservan su valor real.
+      → [220;880] Hz en registro normal. Grave divide la frecuencia por dos; agudo la duplica. Los
+      valores fuera del rango saturan el tono y conservan su valor real.
     </p>
     <p>
       Valor: {{ value === undefined ? 'aún no disponible' : value.toPrecision(6) }} · frecuencia
@@ -65,6 +73,13 @@ onScopeDispose(() => {
         tone?.clamped ? ' · rango sonoro saturado' : ''
       }}.
     </p>
+    <label
+      >Registro del tono<select v-model="register" aria-label="Registro del tono">
+        <option value="grave">Grave · 110–440 Hz</option>
+        <option value="normal">Normal · 220–880 Hz</option>
+        <option value="agudo">Agudo · 440–1760 Hz</option>
+      </select></label
+    >
     <label
       >Volumen de sonificación (máximo 20 %)<input
         v-model.number="volume"

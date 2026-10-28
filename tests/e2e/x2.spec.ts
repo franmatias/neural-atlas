@@ -44,6 +44,10 @@ test('Iris y Wine opcionales, explicación y sonido apagado por defecto', async 
   ).toBeVisible();
   await page.goto('#/lab/neurona');
   await page.getByText('Sonificación opcional · salida de la neurona', { exact: true }).click();
+  await page
+    .getByRole('combobox', { name: 'Registro del tono', exact: true })
+    .selectOption('grave');
+  await expect(page.locator('.sonification')).toContainText('310.7');
   await expect(
     page.getByRole('button', { name: 'Silenciar inmediatamente', exact: true }),
   ).toBeDisabled();

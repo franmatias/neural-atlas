@@ -1,12 +1,19 @@
 export type ToneKind = 'output' | 'loss';
-export function toneFor(value: number, kind: ToneKind) {
-  if (!Number.isFinite(value) || !['output', 'loss'].includes(kind)) return undefined;
+export type ToneRegister = 'grave' | 'normal' | 'agudo';
+const registers = { grave: 0.5, normal: 1, agudo: 2 } as const;
+export function toneFor(value: number, kind: ToneKind, register: ToneRegister = 'normal') {
+  if (
+    !Number.isFinite(value) ||
+    !['output', 'loss'].includes(kind) ||
+    !Object.hasOwn(registers, register)
+  )
+    return undefined;
   const unit =
     kind === 'output'
       ? Math.max(0, Math.min(1, value))
       : (Math.log10(Math.max(1e-4, Math.min(10, value))) + 4) / 5;
   return {
-    frequency: 220 + 660 * unit,
+    frequency: (220 + 660 * unit) * registers[register],
     clamped: kind === 'output' ? value < 0 || value > 1 : value < 1e-4 || value > 10,
   };
 }
@@ -21,9 +28,9 @@ export class Sonification {
     private factory: () => AudioContext = () => new AudioContext(),
     private visible = () => !document.hidden,
   ) {}
-  async start(value: number, kind: ToneKind, volume: number) {
+  async start(value: number, kind: ToneKind, volume: number, register: ToneRegister = 'normal') {
     this.stop();
-    const tone = toneFor(value, kind);
+    const tone = toneFor(value, kind, register);
     if (!tone || !this.visible() || !Number.isFinite(volume)) return false;
     const id = ++this.revision;
     try {
@@ -43,16 +50,16 @@ export class Sonification {
       }
       this.oscillator!.start();
       this.active = true;
-      this.update(value, kind, volume);
+      this.update(value, kind, volume, register);
       return true;
     } catch {
       if (id === this.revision) this.stop();
       return false;
     }
   }
-  update(value: number, kind: ToneKind, volume: number) {
+  update(value: number, kind: ToneKind, volume: number, register: ToneRegister = 'normal') {
     if (!this.active || !this.context || !this.gain || !this.oscillator) return;
-    const tone = toneFor(value, kind);
+    const tone = toneFor(value, kind, register);
     if (!tone || !Number.isFinite(volume) || !this.visible()) {
       this.stop();
       return;
