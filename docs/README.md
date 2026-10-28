@@ -1,6 +1,8 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-**Estado actual:** [Descenso simultáneo, guías y cierre X2 · v1.4.0](57-cierre-x2-y-descenso-guiado.md). D1–D10, X1 y X2 implementados; aceptación docente en aula pendiente. [Cierre X1](55-importancia-permutacion-x1.md), [100 conceptos nuevos](56-cien-conceptos-ia.md), [rejilla X1.2](54-rejilla-acotada-x1.md), [comparadores X1.1](53-comparadores-clasicos-x1.md) y [cierre v1.1](52-cierre-tecnico-v11.md) conservan evidencia histórica.
+**Última entrega:** [Taller resuelto y experiencia semiguiada · v1.5.0](60-taller-resuelto-y-acompanamiento.md). La [revisión exploratoria de teclado](59-pendientes-y-revision-teclado.md) conserva su alcance de v1.4.0; lector real, dispositivos del aula, piloto y aceptación docente siguen pendientes.
+
+**Base técnica:** [Descenso simultáneo, guías y cierre X2 · v1.4.0](57-cierre-x2-y-descenso-guiado.md). D1–D10, X1 y X2 implementados; aceptación docente en aula pendiente. [Cierre X1](55-importancia-permutacion-x1.md), [100 conceptos nuevos](56-cien-conceptos-ia.md), [rejilla X1.2](54-rejilla-acotada-x1.md), [comparadores X1.1](53-comparadores-clasicos-x1.md) y [cierre v1.1](52-cierre-tecnico-v11.md) conservan evidencia histórica.
 
 La [validación docente](58-validacion-docente.md) dispone de protocolo, doce actividades, cuestionarios A/B, rúbrica, acta y registros vacíos descargables. Su ejecución y aceptación siguen pendientes de evidencia humana.
 
@@ -107,3 +109,4 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 | [57 · Cierre X2 y descenso guiado](57-cierre-x2-y-descenso-guiado.md) | Diseño simultáneo 2D/3D, guías, historial, audio y datos licenciados |
 | [58 · Validación docente](58-validacion-docente.md) | Protocolo de aula, actividades, pre/post, rúbrica y registros vacíos |
 | [59 · Pendientes y revisión de teclado](59-pendientes-y-revision-teclado.md) | Estado de aceptación y observaciones exploratorias en la interfaz publicada |
+| [60 · Taller introductorio](60-taller-resuelto-y-acompanamiento.md) | Ejemplo completo resuelto, práctica semiguiada, evidencia real y exportación |
