@@ -1,6 +1,8 @@
 # Neural Atlas
 
-**v1.3.0 · X1 completo y 100 conceptos nuevos de IA.** [Importancia por permutación](docs/55-importancia-permutacion-x1.md): analiza validación con una red y pipeline congelados, inspecciona valores barajados y exporta evidencia. [C1001–C1100](docs/56-cien-conceptos-ia.md) amplían el catálogo a **752 fichas: 152 actividades y 600 referencias**. Se conservan los comparadores y la rejilla de X1. La aceptación docente y X2 permanecen pendientes.
+**v1.4.0 · Descenso simultáneo y cierre técnico de X2.** [Diseño y evidencia](docs/57-cierre-x2-y-descenso-guiado.md): contornos 2D y malla 3D sincronizados, cinco ejemplos de descenso con cálculo del paso, guías contextualizadas en los laboratorios, historial de configuración de entrenamiento (50 estados), datasets UCI Iris/Wine con atribución y sonificación voluntaria en Neurona, Entrenamiento y Paisajes. D1–D10, X1 y X2 están implementados; la aceptación docente con alumnado permanece abierta.
+
+El catálogo conserva **752 fichas: 152 actividades y 600 referencias**, incluidas [C1001–C1100](docs/56-cien-conceptos-ia.md). Los párrafos de entregas que siguen documentan sus estados históricos; el informe actual es el de v1.4.0.
 
 [Aplicación](https://franmatias.github.io/neural-atlas/) · [Repaso](https://franmatias.github.io/neural-atlas/#/repaso) · [Docencia](https://franmatias.github.io/neural-atlas/#/docencia) · [Sin conexión](https://franmatias.github.io/neural-atlas/#/sin-conexion)
 
