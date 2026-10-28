@@ -1,5 +1,24 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+
+test('activación de audio sin respuesta se cancela y permite volver a intentarlo', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    if (globalThis.AudioContext) AudioContext.prototype.resume = () => new Promise<void>(() => {});
+  });
+  await page.goto('#/lab/neurona');
+  await page.getByText('Sonificación opcional · salida de la neurona', { exact: true }).click();
+  await page.getByRole('button', { name: 'Activar sonido de este proceso', exact: true }).click();
+  await expect(page.getByRole('alert').filter({ hasText: 'Audio no disponible' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Silenciar inmediatamente', exact: true }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole('button', { name: 'Activar sonido de este proceso', exact: true }),
+  ).toBeEnabled();
+  await expect(page.locator('.sonification')).toContainText('Sonido desactivado');
+});
 test('descenso simultáneo, cálculo explicado, guías y diseño adaptable', async ({ page }) => {
   await page.goto('#/lab/optimizacion');
   await page
