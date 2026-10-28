@@ -2,6 +2,8 @@
 
 Entrega 1.5.0; diseño redactado antes de implementar. Historia H-GUIA-01: como alumno que abre Talleres por primera vez, quiero ver un ejemplo completo y recorrer sus cinco fases con ayuda para entender qué se espera de mí.
 
+Actualización posterior de materiales: el [paquete de aula 1.5.0-r1](61-paquete-aula-v15.md) incorpora esta acogida y los procedimientos del piloto, análisis y aceptación. La evidencia local de este documento conserva el contexto de la entrega de la aplicación.
+
 ## Diseño y criterios
 
 - Entrada visible desde Talleres y ruta propia `/taller/ejemplo`. El catálogo conserva T01–T12.

@@ -2,6 +2,8 @@
 
 Código: ______ · Sesión: ______ · Versión observada: ______
 
+Paquete 1.5.0-r1, preparado para Neural Atlas 1.5.0. Antes de A01, después del cuestionario inicial, realiza [G00 · aprender a usar los talleres](09-acogida-talleres.md). Es una práctica acompañada de diez minutos; no se suma a las doce actividades ni completa T02 por ti.
+
 En cada actividad escribe **predicción → observación → explicación**. Indica si consultaste la guía o recibiste ayuda. Exporta el trabajo que quieras conservar antes de cargar otro ejemplo. No uses datos personales. Puedes pedir movimiento reducido, teclado, otro tema o más tiempo.
 
 ## A01 · Datos antes que modelos · L01

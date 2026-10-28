@@ -1,6 +1,6 @@
 # Registros vacíos y análisis
 
-Los cuatro CSV de [registros/participantes.csv](registros/participantes.csv), [registros/observaciones.csv](registros/observaciones.csv), [registros/respuestas.csv](registros/respuestas.csv) e [incidencias](registros/incidencias.csv) contienen solo cabeceras. No incluyen datos de demostración que puedan confundirse con resultados reales.
+Los cinco CSV de [participantes](registros/participantes.csv), [observaciones](registros/observaciones.csv), [respuestas](registros/respuestas.csv), [incidencias](registros/incidencias.csv) e [introducción](registros/introduccion.csv) contienen solo cabeceras. No incluyen datos de demostración que puedan confundirse con resultados reales. En 1.5.0-r1 se añade el último; las cuatro cabeceras originales se conservan.
 
 Formato: UTF-8, separador coma, una fila por registro; entrecomillar campos con comas o saltos de línea y duplicar las comillas interiores. Se pueden importar con un asistente de texto si la hoja de cálculo del equipo usa punto y coma. No introducir fórmulas de hoja de cálculo en texto libre. Revisar capturas y exportaciones antes de compartirlas.
 
@@ -30,10 +30,16 @@ Una fila por incidencia. `issue_id` único dentro de la sesión; `task_id` o tra
 
 Cerrar una incidencia exige verificación del comportamiento corregido en versión y dispositivo identificados. Una corrección técnica no demuestra automáticamente comprensión del concepto.
 
+### introduccion.csv
+
+Una fila por sesión/unidad para G00, usando las claves de participantes. `resolved_viewed` y `own_execution`: si, no o no_observado. `guided_status`: completo, parcial, no_iniciado, ausente o no_observado. `help_max`: 0–3 o vacío si no se observó; `active_minutes`: no negativo o vacío. `evidence_ref` enlaza notas o una exportación revisada; `notes` describe las dudas/barreras sin datos identificativos. No deducir finalización, lectura o comprensión a partir de visitar la página o descargar el JSON.
+
+G00 se programa para todas las unidades del piloto; documentar cualquier excepción en la planificación. Mantener ausencias y no observados, y desglosarlos en el informe. Sus filas no son intentos A01–A12, no se añaden a `assigned_tasks` y no entran en los umbrales C2 ni en la puntuación de cuestionarios.
+
 ## Cálculos y revisión
 
 1. Revisar claves, duplicados y asignaciones; no convertir celdas vacías en ceros.
-2. Por tarea prioritaria: éxitos = primer intento completo con ayuda ≤1; denominador = todas las unidades asignadas, incluidas ausencias. Aplicar `éxitos ≥ ceil(0.80 × asignadas)` y mínimo seis unidades. Informar fracción y porcentaje.
+2. Por tarea prioritaria: éxitos = primer intento completo con ayuda observada ≤1; denominador = todas las unidades asignadas, incluidas ausencias. Aplicar `éxitos ≥ ceil(0.80 × asignadas)` y mínimo seis asignadas y seis observadas. Informar fracción, porcentaje y n observado. Ayuda vacía no equivale a 0.
 3. Por ítem esencial de post: éxitos = respuestas con 2 puntos; denominador = todos los post asignados. Aplicar `éxitos ≥ ceil(0.75 × asignados)` y mínimo seis. No excluir NC para mejorar la tasa.
 4. Para pares completos calcular total post menos total pre y mediana de cambios. Conservar cada par; separar orden A-B/B-A y describir conocimientos previos, ayudas y techo. Es un análisis exploratorio, no una prueba causal.
 5. Informar por tarea tiempos medidos y número de observaciones. No inventar tiempos para ausentes ni tratarlos como cero. Las medidas de aula no certifican por sí solas un requisito de latencia en milisegundos.

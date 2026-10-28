@@ -1,23 +1,25 @@
 # Protocolo de validación docente
 
-**Versión evaluada:** Neural Atlas 1.4.0. **Estado:** preparado, no ejecutado.
+**Aplicación objetivo:** Neural Atlas 1.5.0. **Paquete:** 1.5.0-r1. **Estado:** preparado, no ejecutado. Registrar siempre la versión efectivamente utilizada.
+
+Guías operativas: [paso 2 · ejecutar el piloto](06-ejecucion-piloto.md), [paso 3 · analizar](07-analisis-resultados.md) y [paso 4 · decidir la aceptación](08-aceptacion-docente.md). La [acogida G00](09-acogida-talleres.md) introduce el taller resuelto y la práctica semiguiada.
 
 ## Objetivo y participantes
 
 Observar si alumnado de FP de especialización puede interpretar los gráficos, operar los controles y explicar decisiones básicas de ML. Comprobar en particular split sin fuga, descenso del gradiente, configuración frente a pesos y fronteras de decisión.
 
-Primer piloto propuesto: 6–12 participantes. Registrar conocimientos previos por categorías amplias: inicial, básico o experiencia previa. La participación y el tratamiento de resultados se organizan conforme al procedimiento del centro. Usar códigos locales como P01; no pedir nombres, correos, calificaciones oficiales ni datos personales en los datasets. Los códigos son seudónimos, no una garantía de anonimato. El centro decide acceso, conservación y eliminación; si conserva una correspondencia con personas, debe separarla de estos registros.
+Primer piloto propuesto: 6–12 unidades de observación, individuales o parejas según el acuerdo previo. Registrar conocimientos previos por categorías amplias: inicial, básico o experiencia previa. La participación y el tratamiento de resultados se organizan conforme al procedimiento del centro. Usar códigos locales como P01; no pedir nombres, correos, calificaciones oficiales ni datos personales en los datasets. Los códigos son seudónimos, no una garantía de anonimato. El centro decide acceso, conservación y eliminación; si conserva una correspondencia con personas, debe separarla de estos registros.
 
 Un docente facilita y otra persona observa si está disponible. Si hay un único responsable, observar grupos por turnos y declarar las tareas no observadas. La modalidad recomendada para medir autonomía es individual; si se trabaja por parejas, registrar la pareja como unidad de observación y no convertir sus resultados en dos respuestas independientes.
 
 ## Preparación
 
-1. Anotar fecha, versión, navegador real, sistema, ancho de pantalla y dispositivos de entrada. El pie muestra v1.4; una exportación de experimento identifica `appVersion: 1.4.0`. Mantener la versión durante cada sesión y separar resultados de versiones distintas.
+1. Anotar fecha, versión, navegador real, sistema, ancho de pantalla y dispositivos de entrada. El pie de esta entrega muestra v1.5; una exportación identifica `appVersion: 1.5.0`. Mantener la versión durante cada sesión y separar resultados de versiones distintas; una pestaña con una versión anterior debe identificarse como tal.
 2. Abrir [la aplicación](https://franmatias.github.io/neural-atlas/#/laboratorios). Revisar las guías y practicar los controles antes de convocar al grupo.
 3. Usar únicamente ejemplos sintéticos o Iris/Wine incluidos. Cargar datos o un ejemplo sustituye la sesión: exportar primero el trabajo que se quiera conservar.
 4. Para trabajo offline, preparar la caché con conexión, comprobar el estado disponible y ensayar después sin red. Las fuentes externas enlazadas requieren conexión.
 5. Una actualización de la PWA es explícita: guardar/exportar, detener cálculos y cerrar otras pestañas siguiendo el panel de actualización. No actualizar a mitad de una actividad ni asumir que la RAM quedó guardada.
-6. Preparar [cuaderno](01-cuaderno-alumnado.md), [cuestionarios](02-cuestionarios.md), [rúbrica](03-solucionario-rubrica.md), [acta](04-acta.md) y [registros](05-registros.md). Los registros empiezan vacíos.
+6. Preparar [cuaderno](01-cuaderno-alumnado.md), [cuestionarios](02-cuestionarios.md), [rúbrica](03-solucionario-rubrica.md), [acta](04-acta.md) y [registros](05-registros.md). Los cinco registros empiezan vacíos. Preparar G00 sin mostrar sus respuestas hasta después del pre.
 7. Mantener sonido apagado inicialmente. Ofrecer teclado, movimiento reducido, contraste/tema y más tiempo cuando corresponda; anotar la adaptación sin registrar diagnósticos personales.
 
 ## Secuencia propuesta
@@ -28,12 +30,13 @@ Las duraciones son orientativas; un desvío es evidencia de carga o dificultad, 
 | ---------------------------------------------------------- | ------: |
 | Encuadre, código y consentimiento/procedimiento del centro |       5 |
 | Cuestionario inicial                                       |      10 |
+| G00 · ejemplo resuelto y recorrido semiguiado                |      10 |
 | A01 · datos                                                |      15 |
 | A02 · neurona                                              |      12 |
 | A03 · arquitectura y activaciones                          |      15 |
 | A04 · propagación                                          |      13 |
 | A05 · descenso simultáneo                                  |      20 |
-| Total                                                      |      90 |
+| Total                                                      |     100 |
 
 | Sesión 2                                    | Minutos |
 | ------------------------------------------- | ------: |
@@ -49,7 +52,7 @@ Las duraciones son orientativas; un desvío es evidencia de carga o dificultad, 
 | Entrevista y cierre                         |      10 |
 | Total                                       |      90 |
 
-Para un piloto focal de 90 minutos, elegir A01, A05, A06 y A09 con pre/post y entrevista, ajustar tiempos y marcar las restantes como no asignadas. No declarar cubiertos los catorce laboratorios con ese recorrido parcial.
+Son 100 minutos en la primera sesión y 90 en la segunda. Para un piloto focal de 100 minutos: encuadre 5, pre 10, G00 10, A01/A05/A06/A09 15 cada una, post 10 y cierre 5. Si solo se dispone de 90 minutos, reducir tareas o distribuir la acogida en otra sesión, siempre después del pre; registrar el protocolo usado y marcar las restantes como no asignadas. No declarar cubiertos los catorce laboratorios con ese recorrido parcial.
 
 ## Observación y asistencia
 
@@ -72,12 +75,12 @@ Revisar y aprobar estos criterios antes del piloto. No cambiarlos después para 
 | Criterio                  | Evidencia y regla propuesta                                                                                                                                       |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | C1 · funcionamiento       | Ninguna incidencia crítica/bloqueante abierta en el alcance evaluado                                                                                              |
-| C2 · autonomía            | En cada tarea prioritaria A01/A05/A06/A09, al menos 80 % completa con ayuda máxima 1; al menos seis unidades observadas por tarea                                 |
+| C2 · autonomía            | En cada tarea prioritaria A01/A05/A06/A09, al menos 80 % de las asignadas completa con ayuda máxima 1; mínimo seis asignadas y seis observadas por tarea           |
 | C3 · comprensión esencial | En cada ítem 4/5/6 del post, al menos 75 % obtiene 2 puntos; al menos seis cuestionarios finales asignados                                                        |
 | C4 · acceso               | Responsable verifica una tarea completa con teclado y una con lector de pantalla, y los dispositivos reales previstos; documenta barreras, adaptaciones y límites |
 | C5 · análisis responsable | Se informa asignación, ausencias, ayudas, pre/post emparejado y limitaciones; se conserva un acta docente motivada                                                |
 
-En C2, el denominador son todas las unidades asignadas a esa tarea: incompletas o ausentes no cuentan como éxito. Si se asigna a seis, 80 % requiere al menos cinco éxitos. En C3, el denominador incluye todos los post asignados: NC no demuestra comprensión. Con seis asignados, 75 % requiere al menos cinco respuestas de 2 puntos. Un número menor de observaciones no permite declarar cumplido el criterio: usar «evidencia insuficiente».
+En C2, el denominador son todas las unidades asignadas a esa tarea: incompletas, ausentes o no observadas no cuentan como éxito. Se exige ayuda observada ≤1 y al menos seis unidades realmente observadas; asignar seis no basta si una falta. Si se asigna a seis, 80 % requiere al menos cinco éxitos, además del mínimo observado. En C3, el denominador incluye todos los post asignados: NC no demuestra comprensión. Con seis asignados, 75 % requiere al menos cinco respuestas de 2 puntos. Un número menor que los mínimos del criterio obliga a usar «evidencia insuficiente». G00 se registra aparte y no entra en C2.
 
 Decisiones: **aceptar en el alcance observado**, **aceptar con condiciones y responsables**, **no aceptar hasta corregir** o **evidencia insuficiente**. Una incidencia bloqueante impide aceptar las tareas afectadas. No aceptar el conjunto si un criterio esencial queda sin evidencia; delimitar un alcance menor si procede. Registrar toda excepción y su justificación. La decisión final corresponde al responsable docente, no a un cálculo automático.
 
