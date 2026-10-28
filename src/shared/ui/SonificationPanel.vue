@@ -25,10 +25,14 @@ async function start() {
   const done = await engine.start(props.value, props.kind, volume.value, register.value);
   if (id !== revision) return;
   starting.value = false;
-  enabled.value = done;
-  if (done && props.value !== undefined)
+  if (done && props.value !== undefined && tone.value) {
     engine.update(props.value, props.kind, volume.value, register.value);
-  else
+    enabled.value = engine.active;
+  } else {
+    engine.stop();
+    enabled.value = false;
+  }
+  if (!done)
     error.value =
       'Audio no disponible o pestaña no visible. La simulación y sus datos siguen disponibles.';
 }
@@ -39,6 +43,7 @@ function stop() {
   starting.value = false;
 }
 watch([() => props.value, volume, register], () => {
+  if (starting.value && (props.value === undefined || !tone.value)) stop();
   if (enabled.value) {
     if (props.value === undefined || !tone.value) stop();
     else engine.update(props.value, props.kind, volume.value, register.value);
