@@ -2,6 +2,8 @@
 
 **Estado actual:** [Descenso simultáneo, guías y cierre X2 · v1.4.0](57-cierre-x2-y-descenso-guiado.md). D1–D10, X1 y X2 implementados; aceptación docente en aula pendiente. [Cierre X1](55-importancia-permutacion-x1.md), [100 conceptos nuevos](56-cien-conceptos-ia.md), [rejilla X1.2](54-rejilla-acotada-x1.md), [comparadores X1.1](53-comparadores-clasicos-x1.md) y [cierre v1.1](52-cierre-tecnico-v11.md) conservan evidencia histórica.
 
+La [validación docente](58-validacion-docente.md) dispone de protocolo, doce actividades, cuestionarios A/B, rúbrica, acta y registros vacíos descargables. Su ejecución y aceptación siguen pendientes de evidencia humana.
+
 Diseño inicial: 22/10/2026; estado de implementación: 27/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 se completa con [ética por grupos](47-etica-y-cierre-d8.md); D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
 
 La publicación continua de la versión estable se describe en [GitHub Pages](24-despliegue-pages.md); el hosting se adelanta por petición del usuario y mantiene la validación previa de CI.
@@ -103,3 +105,4 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 | [55 · Importancia por permutación](55-importancia-permutacion-x1.md) | Modelo congelado, inspector y cierre X1 |
 | [56 · Cien conceptos de IA](56-cien-conceptos-ia.md) | C1001–C1100, fuentes y revisión de duplicados |
 | [57 · Cierre X2 y descenso guiado](57-cierre-x2-y-descenso-guiado.md) | Diseño simultáneo 2D/3D, guías, historial, audio y datos licenciados |
+| [58 · Validación docente](58-validacion-docente.md) | Protocolo de aula, actividades, pre/post, rúbrica y registros vacíos |

@@ -1,0 +1,49 @@
+{
+  "format": "neural-atlas.classroom-kit",
+  "schemaVersion": 1,
+  "appVersion": "1.4.0",
+  "revision": "2026-10-28",
+  "status": "prepared_not_executed",
+  "files": [
+    {
+      "path": "00-protocolo.md",
+      "sha256": "31a9f8462b08ee5b823073ccb68f277e833e3ddb481dd588037e5f9ac8e05b81"
+    },
+    {
+      "path": "01-cuaderno-alumnado.md",
+      "sha256": "0883acc9d0b0df6fb515b37af6caea0105463fca13737a294e70d4a54114cf0b"
+    },
+    {
+      "path": "02-cuestionarios.md",
+      "sha256": "14825e2794237a4efae0d0f479a93320a89a84d9b50d8e15470c72a2cdd111bb"
+    },
+    {
+      "path": "03-solucionario-rubrica.md",
+      "sha256": "d26d986d94c5e5947a574b52b59bb2cb16ce141bf02539cb68f79ebb0df5de96"
+    },
+    {
+      "path": "04-acta.md",
+      "sha256": "52674d58b5a488e985a25e549d65f94100f588ff32b00603f12e5cd577316dca"
+    },
+    {
+      "path": "05-registros.md",
+      "sha256": "06e85b98703c08d8b6cc58eac5ffb4d31f86132d61e9839820ce027bcadd1962"
+    },
+    {
+      "path": "registros/incidencias.csv",
+      "sha256": "8a2767570ed62c6974628b15da9f3a393e0351882b00efeb655e3e7459338b70"
+    },
+    {
+      "path": "registros/observaciones.csv",
+      "sha256": "4af0c951672267839eb7516b59f0e5a084b79f70b121d22a73dbff5e159a640d"
+    },
+    {
+      "path": "registros/participantes.csv",
+      "sha256": "9cb2c40093fb7aac520e7e70b5cf6c6353c9e1791c5400f45c1ebc071b458920"
+    },
+    {
+      "path": "registros/respuestas.csv",
+      "sha256": "825278cc2ab7ca84b635ae1a128f47bb88df1c44dda6d3c074a04301c65fa5f9"
+    }
+  ]
+}

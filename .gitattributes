@@ -11,3 +11,4 @@
 *.yml text eol=lf
 # UCI source files are checked by byte-level SHA-256 on Windows and Linux.
 src/content/datasets/raw/* -text
+docs/classroom/registros/*.csv text eol=lf
