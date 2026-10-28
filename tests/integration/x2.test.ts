@@ -166,3 +166,40 @@ it('audio activo responde al dato, se apaga al ocultar y no vuelve solo', async 
   expect(panel.text()).toContain('Sonido desactivado');
   panel.unmount();
 });
+it('descartar el resultado mientras se activa el audio cancela también la promesa pendiente', async () => {
+  let resume!: () => void;
+  const close = vi.fn(async () => {}),
+    start = vi.fn();
+  const param = {
+    setValueAtTime: vi.fn(),
+    setTargetAtTime: vi.fn(),
+    cancelScheduledValues: vi.fn(),
+  };
+  vi.stubGlobal('AudioContext', function () {
+    return {
+      currentTime: 0,
+      destination: {},
+      close,
+      resume: () =>
+        new Promise<void>((resolve) => {
+          resume = resolve;
+        }),
+      createOscillator: () => ({ frequency: param, start, stop: vi.fn(), connect: vi.fn() }),
+      createGain: () => ({ gain: param, connect: vi.fn() }),
+    };
+  });
+  for (const invalid of [undefined, NaN]) {
+    const panel = mount(SonificationPanel, {
+      props: { value: 0.5, kind: 'output', label: 'salida' },
+    });
+    await panel.find('button').trigger('click');
+    expect(panel.text()).toContain('Activando sonido');
+    await panel.setProps({ value: invalid });
+    resume();
+    await flushPromises();
+    expect(panel.text()).toContain('Sonido desactivado');
+    expect(start).not.toHaveBeenCalled();
+    panel.unmount();
+  }
+  expect(close).toHaveBeenCalledTimes(2);
+});
