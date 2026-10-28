@@ -4,7 +4,7 @@
 
 **Base técnica:** [Descenso simultáneo, guías y cierre X2 · v1.4.0](57-cierre-x2-y-descenso-guiado.md). D1–D10, X1 y X2 implementados; aceptación docente en aula pendiente. [Cierre X1](55-importancia-permutacion-x1.md), [100 conceptos nuevos](56-cien-conceptos-ia.md), [rejilla X1.2](54-rejilla-acotada-x1.md), [comparadores X1.1](53-comparadores-clasicos-x1.md) y [cierre v1.1](52-cierre-tecnico-v11.md) conservan evidencia histórica.
 
-La [validación docente](58-validacion-docente.md) dispone de protocolo, doce actividades, cuestionarios A/B, rúbrica, acta y registros vacíos descargables. Su ejecución y aceptación siguen pendientes de evidencia humana.
+La [validación docente](58-validacion-docente.md) dispone del [paquete 1.5.0-r1](61-paquete-aula-v15.md): acogida con ejemplo resuelto, protocolo, doce actividades, cuestionarios A/B, rúbrica, acta, cinco registros vacíos y procedimientos para los pasos 2–4. Su ejecución y aceptación siguen pendientes de evidencia humana.
 
 Diseño inicial: 22/10/2026; estado de implementación: 27/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 se completa con [ética por grupos](47-etica-y-cierre-d8.md); D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
 
@@ -110,3 +110,4 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 | [58 · Validación docente](58-validacion-docente.md) | Protocolo de aula, actividades, pre/post, rúbrica y registros vacíos |
 | [59 · Pendientes y revisión de teclado](59-pendientes-y-revision-teclado.md) | Estado de aceptación y observaciones exploratorias en la interfaz publicada |
 | [60 · Taller introductorio](60-taller-resuelto-y-acompanamiento.md) | Ejemplo completo resuelto, práctica semiguiada, evidencia real y exportación |
+| [61 · Paquete de aula 1.5.0-r1](61-paquete-aula-v15.md) | Piloto, análisis, aceptación y acogida semiguiada; ZIP actualizado |

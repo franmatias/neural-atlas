@@ -1,17 +1,18 @@
 {
   "format": "neural-atlas.classroom-kit",
   "schemaVersion": 1,
-  "appVersion": "1.4.0",
+  "appVersion": "1.5.0",
+  "kitVersion": "1.5.0-r1",
   "revision": "2026-10-28",
   "status": "prepared_not_executed",
   "files": [
     {
       "path": "00-protocolo.md",
-      "sha256": "31a9f8462b08ee5b823073ccb68f277e833e3ddb481dd588037e5f9ac8e05b81"
+      "sha256": "c43972abdda418a6a9d789ba4bce44585b58ef7f96d530edf12fdd4d24594592"
     },
     {
       "path": "01-cuaderno-alumnado.md",
-      "sha256": "0883acc9d0b0df6fb515b37af6caea0105463fca13737a294e70d4a54114cf0b"
+      "sha256": "ba36a79a93cab12eeef16668a6b2d73ff683ee3dd4ebbb372d4fbc2a111a4041"
     },
     {
       "path": "02-cuestionarios.md",
@@ -23,15 +24,39 @@
     },
     {
       "path": "04-acta.md",
-      "sha256": "52674d58b5a488e985a25e549d65f94100f588ff32b00603f12e5cd577316dca"
+      "sha256": "d6962954235e4149dedf06a0675c987af0056111a70dfb364c9e9a5eacf0f6bb"
     },
     {
       "path": "05-registros.md",
-      "sha256": "06e85b98703c08d8b6cc58eac5ffb4d31f86132d61e9839820ce027bcadd1962"
+      "sha256": "09b892cafb385d94cb7525cbc43565864f6279ee196e2257e5af25a043bc5b3c"
+    },
+    {
+      "path": "06-ejecucion-piloto.md",
+      "sha256": "1cd47a22953f878652db29d3a8e71a3d089135fbc4f4ba95945d73f8db401f36"
+    },
+    {
+      "path": "07-analisis-resultados.md",
+      "sha256": "d7f862d5e2b20cc8f4355b863297ffb53252ddd9bf9b8cc4e12d9e949efccf10"
+    },
+    {
+      "path": "08-aceptacion-docente.md",
+      "sha256": "f7af2a7c11bd09f0558fcad89673e88702d1f2b31df98caffed25708fa6b1a9f"
+    },
+    {
+      "path": "09-acogida-talleres.md",
+      "sha256": "dc7261fbb38fce40549a7eaefa6f6c4ff85093c2fdd4462835f62e49a8b8e8bd"
+    },
+    {
+      "path": "LEEME.md",
+      "sha256": "cd45ece726045fb6da7ca672a0d1afef32d6f473b636f6a7fae58f9b54297604"
     },
     {
       "path": "registros/incidencias.csv",
       "sha256": "8a2767570ed62c6974628b15da9f3a393e0351882b00efeb655e3e7459338b70"
+    },
+    {
+      "path": "registros/introduccion.csv",
+      "sha256": "492d012c16b32e48b62dd353949519782fe39e6425166356c6fe513199d08dbf"
     },
     {
       "path": "registros/observaciones.csv",

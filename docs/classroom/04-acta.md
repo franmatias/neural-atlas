@@ -2,6 +2,8 @@
 
 **Estado inicial: SIN EJECUTAR.** Completar solo con observaciones reales. Preparar documentos no equivale a superar el piloto.
 
+Plantilla del paquete 1.5.0-r1 para aplicación objetivo 1.5.0. Seguir el [procedimiento de aceptación](08-aceptacion-docente.md) y adjuntar el [informe de análisis](07-analisis-resultados.md).
+
 ## Identificación
 
 - Sesión/cohorte: ______
@@ -11,6 +13,7 @@
 - Personas convocadas / presentes / unidades observadas: ______
 - Conocimientos previos y criterio de selección: ______
 - Forma y orden de cuestionarios: ______
+- Acogida G00 realizada después del pre, exposición/ayudas y adaptaciones: ______
 - Adaptaciones y tiempo efectivo, sin diagnósticos personales: ______
 - Acceso/conservación/eliminación de registros acordados por el centro: ______
 
@@ -53,6 +56,10 @@ Realizar con el navegador/dispositivo real previsto. Registrar tarea, pasos, her
 | Ítem 6 post con 2 puntos  | ___ / ___ post asignados | Pendiente | ______                  |
 
 Pares pre/post completos: ___; incompletos: ___; mediana de cambio (sobre 16): ___; casos próximos al techo: ___. No calcular cambio si no hay par completo. Describir reparto A→B/B→A, ayudas y límites de interpretación: ______.
+
+Unidades efectivamente observadas por A01/A05/A06/A09: ______. Comprobar el mínimo de seis observadas en cada una, además del denominador de asignación. Ayuda no observada no acredita autonomía.
+
+G00: asignadas ___; ejemplo resuelto observado ___; recorrido propio completo ___; ejecución propia observada ___; parciales/no observadas ___; barreras y referencias ___. Resultado descriptivo, separado de C2 y del pre/post.
 
 ## Incidencias y decisión
 

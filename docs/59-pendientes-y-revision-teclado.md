@@ -2,6 +2,8 @@
 
 Fecha: 28/10/2026. Publicación objetivo: Neural Atlas 1.4.0. Se mantienen D1–D10, X1 y X2 implementados y el [paquete de aula preparado](58-validacion-docente.md).
 
+Actualización documental: el [paquete 1.5.0-r1](61-paquete-aula-v15.md) incorpora la introducción semiguiada y procedimientos completos para los pendientes 2–4. Están preparados, sin ejecutar; esta revisión de teclado conserva su alcance observado de 1.4.0.
+
 ## Lista actual de pendientes
 
 | Orden | Pendiente real                                   | Estado y siguiente acción                                                                                                                                                                                                     |
