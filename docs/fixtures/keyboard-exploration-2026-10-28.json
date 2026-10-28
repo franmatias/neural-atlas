@@ -1,0 +1,108 @@
+{
+  "kind": "agent-assisted-ui-observation",
+  "application": "Neural Atlas 1.4.0",
+  "observedAt": "2026-10-28T20:07:35.888Z",
+  "surface": "ChatGPT in-app browser",
+  "scope": "catalogue tab order, main focus, guide open and close",
+  "notAssessed": ["screen reader speech", "physical classroom devices", "learning outcomes"],
+  "checks": [
+    {
+      "lab": "L01",
+      "route": "datos",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L02",
+      "route": "neurona",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L03",
+      "route": "arquitectura",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L04",
+      "route": "activaciones",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L05",
+      "route": "propagacion",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L06",
+      "route": "entrenamiento",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L07",
+      "route": "optimizacion",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L08",
+      "route": "generalizacion",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L09",
+      "route": "clasificacion",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L10",
+      "route": "regresion",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L11",
+      "route": "vision",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L12",
+      "route": "experimentos",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L13",
+      "route": "arquitectura/frontera",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    },
+    {
+      "lab": "L14",
+      "route": "clasificacion/visual",
+      "catalogueTabOrder": true,
+      "mainFocused": true,
+      "guideKeyboard": true
+    }
+  ]
+}

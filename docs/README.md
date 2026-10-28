@@ -106,3 +106,4 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 | [56 · Cien conceptos de IA](56-cien-conceptos-ia.md) | C1001–C1100, fuentes y revisión de duplicados |
 | [57 · Cierre X2 y descenso guiado](57-cierre-x2-y-descenso-guiado.md) | Diseño simultáneo 2D/3D, guías, historial, audio y datos licenciados |
 | [58 · Validación docente](58-validacion-docente.md) | Protocolo de aula, actividades, pre/post, rúbrica y registros vacíos |
+| [59 · Pendientes y revisión de teclado](59-pendientes-y-revision-teclado.md) | Estado de aceptación y observaciones exploratorias en la interfaz publicada |
