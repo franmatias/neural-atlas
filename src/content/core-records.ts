@@ -7,8 +7,9 @@ import { conceptSchema, type ConceptRecord } from '@/domain/content/concept';
 const idOf = (n: number) => `C${String(n).padStart(3, '0')}`;
 const clean = (text: string) =>
   text.replace(/([a-záéíóúñ])(?=\d)/gi, '$1 ').replace(/(\d)(?=[a-záéíóúñ])/gi, '$1 ');
-const future = new Set([146]);
+const future = new Set<number>();
 const overrides: Record<number, string> = {
+  146: 'experimentos/importancia',
   143: 'experimentos/clasicos',
   144: 'experimentos/clasicos',
   145: 'experimentos/rejilla',
@@ -87,6 +88,7 @@ const dimensions: Record<string, string> = {
   L14: 'Dos features y K salidas multiclase; mapa bidimensional.',
 };
 const controls: Record<number, string> = {
+  146: 'permutation',
   143: 'classical-k',
   144: 'classical-depth',
   145: 'grid-plan',
@@ -270,7 +272,7 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, ''),
-      contentVersion: [143, 144, 145, 151].includes(n) ? 2 : 1,
+      contentVersion: [143, 144, 145, 146, 151].includes(n) ? 2 : 1,
       title: { es: seed.title, en: seed.english },
       aliases: { es: seed.aliases, en: [] },
       category: cat,
@@ -324,14 +326,17 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
           title: 'Referencia primaria para ampliar el tema',
           url: [145, 151].includes(n)
             ? 'https://scikit-learn.org/stable/modules/grid_search.html'
-            : n === 143
-              ? 'https://scikit-learn.org/stable/modules/neighbors.html'
-              : n === 144
-                ? 'https://scikit-learn.org/stable/modules/tree.html'
-                : (sourceUrls[cat] ?? sourceUrls.workflow),
+            : n === 146
+              ? 'https://scikit-learn.org/stable/modules/permutation_importance.html'
+              : n === 143
+                ? 'https://scikit-learn.org/stable/modules/neighbors.html'
+                : n === 144
+                  ? 'https://scikit-learn.org/stable/modules/tree.html'
+                  : (sourceUrls[cat] ?? sourceUrls.workflow),
         },
       ],
-      targetRelease: [143, 144, 145, 151].includes(n) ? '1.2' : active ? '1.1' : '1.2',
+      targetRelease:
+        n === 146 ? '1.3' : [143, 144, 145, 146, 151].includes(n) ? '1.2' : active ? '1.1' : '1.2',
       status: active ? 'implemented' : 'specified',
     });
   });

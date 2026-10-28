@@ -74,6 +74,7 @@ onBeforeRouteLeave(() => {
   <div class="page training-page experiments-page">
     <p class="eyebrow">L12 / EXPERIMENTOS</p>
     <h1>Compara con una pregunta.</h1>
+    <p><RouterLink to="/lab/experimentos/importancia">Importancia por permutación</RouterLink></p>
     <p><RouterLink to="/lab/experimentos/clasicos">Comparar kNN, árbol CART y MLP</RouterLink></p>
     <p><RouterLink to="/lab/experimentos/rejilla">Búsqueda en rejilla con presupuesto</RouterLink></p>
     <p class="page-intro">

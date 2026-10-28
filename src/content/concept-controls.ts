@@ -118,6 +118,7 @@ const groups: readonly [string, string, readonly [string, string][]][] = [
     'experimentos',
     [
       ['comparison', 'Comparación controlada'],
+      ['permutation', 'Importancia por permutación'],
       ['classical-k', 'Vecinos k'],
       ['classical-depth', 'Profundidad CART'],
       ['grid-plan', 'Plan y presupuesto de rejilla'],
@@ -154,22 +155,24 @@ export const conceptControls: ConceptControl[] = groups.flatMap(([labId, slug, c
     label,
     path:
       '/lab/' +
-      (labId === 'L10' && controlId === 'function-width'
-        ? 'regresion/funciones'
-        : labId === 'L09' && controlId === 'costs'
-          ? 'clasificacion/etica'
-          : labId === 'L08' && controlId === 'capacity'
-            ? 'generalizacion/capacidad'
-            : labId === 'L12' && ['grid-plan', 'grid-selection'].includes(controlId)
-              ? 'experimentos/rejilla'
-              : labId === 'L12' && ['classical-k', 'classical-depth'].includes(controlId)
-                ? 'experimentos/clasicos'
-                : labId === 'L12' && controlId === 'segments'
-                  ? 'entrenamiento'
-                  : labId === 'L12' &&
-                      ['cross-validation', 'shift', 'dispersion'].includes(controlId)
-                    ? 'experimentos/robustez'
-                    : slug),
+      (labId === 'L12' && controlId === 'permutation'
+        ? 'experimentos/importancia'
+        : labId === 'L10' && controlId === 'function-width'
+          ? 'regresion/funciones'
+          : labId === 'L09' && controlId === 'costs'
+            ? 'clasificacion/etica'
+            : labId === 'L08' && controlId === 'capacity'
+              ? 'generalizacion/capacidad'
+              : labId === 'L12' && ['grid-plan', 'grid-selection'].includes(controlId)
+                ? 'experimentos/rejilla'
+                : labId === 'L12' && ['classical-k', 'classical-depth'].includes(controlId)
+                  ? 'experimentos/clasicos'
+                  : labId === 'L12' && controlId === 'segments'
+                    ? 'entrenamiento'
+                    : labId === 'L12' &&
+                        ['cross-validation', 'shift', 'dispersion'].includes(controlId)
+                      ? 'experimentos/robustez'
+                      : slug),
   })),
 );
 export const coreCategories = [

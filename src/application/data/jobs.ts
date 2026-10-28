@@ -1,4 +1,9 @@
 import {
+  permutationStudy,
+  type PermutationOptions,
+  type PermutationResult,
+} from '@/application/training/permutation';
+import {
   prepareGrid,
   runGridTrial,
   type GridOptions,
@@ -101,6 +106,7 @@ import {
   type CsvPreview,
 } from './csv-files';
 export interface JobPayloads {
+  permutation: PermutationOptions;
   gridPlan: GridOptions;
   gridTrial: { options: GridOptions; planHash: string; id: number };
   classicalComparison: ClassicalOptions;
@@ -149,6 +155,7 @@ export interface JobPayloads {
   export: { dataset: Dataset; split?: DataSplit; format: 'csv' | 'json'; delimiter: string };
 }
 export interface JobResults {
+  permutation: PermutationResult;
   gridPlan: GridPlan;
   gridTrial: GridMeasurement;
   classicalComparison: ClassicalResult;
@@ -215,6 +222,8 @@ function probeEstimators(p: JobPayloads['classicalProbe']) {
 }
 export function executeDataJob(job: DataJob): JobResults[keyof JobResults] {
   switch (job.kind) {
+    case 'permutation':
+      return permutationStudy(job.payload);
     case 'gridPlan':
       return prepareGrid(job.payload);
     case 'gridTrial':
