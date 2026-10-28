@@ -10,6 +10,9 @@ import InputPlane from './InputPlane.vue';
 import ActivationCurve from './ActivationCurve.vue';
 import NeuronInspector from './NeuronInspector.vue';
 import AppIcon from '@/shared/ui/AppIcon.vue';
+import SonificationPanel from '@/shared/ui/SonificationPanel.vue';
+import { useNeuronStore } from '@/stores/neuron';
+const neuron = useNeuronStore();
 const { t } = useI18n();
 const prefs = usePreferencesStore();
 const { state, play, move, reset } = usePlayback();
@@ -38,6 +41,7 @@ function changeTab(event: KeyboardEvent, index: number) {
       </div>
       <span class="live-label"><span class="local-dot" />{{ t('neuron.live') }}</span>
     </div>
+    <SonificationPanel :value="neuron.result.a" kind="output" label="salida de la neurona" />
     <div class="mobile-tabs" role="tablist" :aria-label="t('neuron.title')">
       <button
         v-for="(item, index) in tabs"

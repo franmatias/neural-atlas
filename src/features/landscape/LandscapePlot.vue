@@ -33,6 +33,24 @@ function x(v: number) {
 function y(v: number) {
   return 550 - ((v - grid.value.bounds[2]) / (grid.value.bounds[3] - grid.value.bounds[2])) * 500;
 }
+const direction = computed(() => {
+  const p = props.result.paths.find((p) => p.kind === 'sgd'),
+    v = p?.points[Math.min(props.index, p.points.length - 1)];
+  if (!v || v.norm < 1e-6) return undefined;
+  const scale =
+    (0.12 *
+      Math.min(
+        grid.value.bounds[1] - grid.value.bounds[0],
+        grid.value.bounds[3] - grid.value.bounds[2],
+      )) /
+    v.norm;
+  return {
+    x1: x(v.x),
+    y1: y(v.y),
+    x2: x(v.x - v.gradient[0] * scale),
+    y2: y(v.y - v.gradient[1] * scale),
+  };
+});
 function pick(event: MouseEvent) {
   const s = event.currentTarget as SVGSVGElement,
     p = s.createSVGPoint();
@@ -53,13 +71,33 @@ function pick(event: MouseEvent) {
       viewBox="0 0 620 610"
       role="img"
       aria-label="Contornos de pérdida y trayectorias de cuatro optimizadores"
+      :data-step="index"
       @click="pick"
     >
       <defs>
+        <marker
+          id="negative-gradient-tip"
+          markerWidth="7"
+          markerHeight="7"
+          refX="6"
+          refY="3.5"
+          orient="auto"
+        >
+          <path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)" />
+        </marker>
         <clipPath id="landscape-domain"><rect x="50" y="50" width="500" height="500" /></clipPath>
       </defs>
       <rect x="50" y="50" width="500" height="500" fill="var(--surface)" stroke="var(--ink)" />
       <g clip-path="url(#landscape-domain)">
+        <line
+          v-if="direction"
+          v-bind="direction"
+          stroke="var(--ink)"
+          stroke-width="2"
+          marker-end="url(#negative-gradient-tip)"
+        >
+          <title>Dirección del gradiente negativo SGD, longitud normalizada</title>
+        </line>
         <path
           v-for="c in lines"
           :key="c.value"
