@@ -4,6 +4,8 @@
 
 El catálogo conserva **752 fichas: 152 actividades y 600 referencias**, incluidas [C1001–C1100](docs/56-cien-conceptos-ia.md). Los párrafos de entregas que siguen documentan sus estados históricos; el informe actual es el de v1.4.0.
 
+Preparado el [paquete de validación docente](docs/58-validacion-docente.md): protocolo, doce actividades para los catorce laboratorios, cuestionarios antes/después, rúbrica y registros vacíos. [Descargar materiales](docs/downloads/neural-atlas-aula-v1.4.0.zip). La observación con alumnado y el acta de aceptación deben realizarse con resultados reales.
+
 [Aplicación](https://franmatias.github.io/neural-atlas/) · [Repaso](https://franmatias.github.io/neural-atlas/#/repaso) · [Docencia](https://franmatias.github.io/neural-atlas/#/docencia) · [Sin conexión](https://franmatias.github.io/neural-atlas/#/sin-conexion)
 
 Las notas de entregas siguientes conservan su contexto histórico. Para el estado actual, consultar la entrega de importancia X1.3, la ampliación de cien fichas y el cierre v1.1.

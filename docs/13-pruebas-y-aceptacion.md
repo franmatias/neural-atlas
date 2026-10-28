@@ -1,6 +1,6 @@
 # Estrategia de pruebas y aceptación
 
-**Estado:** estrategia del alcance completo. D1 ya cuenta con unidad, integración, cobertura y E2E de producto; [su informe](23-implementacion-d1.md) distingue resultados ejecutados y límites. Las pruebas de funcionalidades posteriores siguen siendo un plan. La ejecución de las 11 pruebas del original se registra en [auditoría](01-auditoria.md).
+**Estado actual:** el [cierre técnico v1.4.0](57-cierre-x2-y-descenso-guiado.md) tiene CI, despliegue y comprobación pública superados. La aceptación humana se prepara en [el protocolo de aula](58-validacion-docente.md), con ejecución pendiente. Las tablas siguientes conservan la estrategia y decisiones originales; los informes de entrega identifican las herramientas y pruebas realmente implementadas. La ejecución de las 11 pruebas del original se registra en [auditoría](01-auditoria.md).
 
 ## Capas y herramientas
 
