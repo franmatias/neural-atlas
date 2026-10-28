@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { useCatalogStore } from '@/stores/catalog';
 import { coreRecords } from '@/content/core-records';
+import { referenceConcepts } from '@/content/reference-concepts';
 import { readLearning, downloadLearning } from '@/infrastructure/files/learning';
 const catalog = useCatalogStore(),
   reading = ref(false),
@@ -61,8 +62,8 @@ function example() {
     <p class="eyebrow">CATÁLOGO ABIERTO</p>
     <h1>Amplía los conceptos.</h1>
     <p class="page-intro">
-      152 fichas fundamentales y 500 términos de consulta. Importa nuevas fichas con IDs estables,
-      preguntas y relaciones comprobadas.
+      {{ coreRecords.length }} fichas fundamentales y {{ referenceConcepts.length }} términos de
+      consulta. Importa nuevas fichas con IDs estables, preguntas y relaciones comprobadas.
     </p>
     <RouterLink to="/glosario">Volver al glosario</RouterLink>
     <section class="panel">
