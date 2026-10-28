@@ -230,7 +230,7 @@ it('ficha, referencia, estado previsto y mapa accesible conservan navegación po
   expect(useReviewStore().current(coreRecords[20]!).explained).toBe(true);
   await router.push('/conceptos/C146');
   await flushPromises();
-  expect(wrapper.text()).toContain('fuera de v1.1');
+  expect(wrapper.find('a[href*="importancia"]').exists()).toBe(true);
   await router.push('/conceptos/C652');
   await flushPromises();
   expect(wrapper.text()).toContain('Término de consulta');

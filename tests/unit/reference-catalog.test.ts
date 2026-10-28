@@ -30,7 +30,7 @@ describe('ampliación editorial de 500 conceptos', () => {
     expect(new Set(concepts.map((c) => c.id)).size).toBe(concepts.length);
   });
   it('mantiene los 69 interactivos y busca en español, inglés e IDs', () => {
-    expect(concepts.filter((c) => !c.reference)).toHaveLength(151);
+    expect(concepts.filter((c) => !c.reference)).toHaveLength(152);
     expect(concepts).toHaveLength(652);
     expect(searchConcepts('C652')[0]?.title).toBe('Paridad demográfica');
     expect(searchConcepts('key-value cache')[0]?.id).toBe('C512');

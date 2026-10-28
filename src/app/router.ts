@@ -2,6 +2,11 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 export const routes = [
   {
+    path: '/lab/experimentos/importancia',
+    name: 'permutation',
+    component: () => import('@/features/experiments/PermutationPage.vue'),
+  },
+  {
     path: '/lab/experimentos/rejilla',
     name: 'grid-search',
     component: () => import('@/features/experiments/GridSearchPage.vue'),

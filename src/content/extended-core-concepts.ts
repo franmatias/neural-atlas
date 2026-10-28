@@ -851,7 +851,7 @@ export const extendedCoreSeeds: readonly CoreSeed[] = [
     146,
     'Importancia por permutación',
     'Permutation importance',
-    'Mide deterioro de una métrica al alterar una feature de evaluación según un procedimiento. Correlaciones y cambios de distribución dificultan interpretarla; no demuestra causalidad y su comparador automático pertenece a la extensión X1.',
+    'Mide deterioro de una métrica al alterar una feature de evaluación según un procedimiento. Correlaciones y cambios de distribución dificultan interpretarla; no demuestra causalidad. El laboratorio baraja columnas crudas de validación con red y pipeline congelados, y muestra la variabilidad entre repeticiones.',
     'Importancia=error_permutado−error_original',
     'Si el error pasa de0,2 a0,35 tras permutar una columna, el deterioro observado es0,15.',
     'La mayor importancia predictiva identifica necesariamente la causa más fuerte.',
