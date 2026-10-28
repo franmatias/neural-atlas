@@ -71,7 +71,7 @@ it('confirma tras transacción, restaura, actualiza, retira y no cambia IDs hist
   expect(store.preview?.changes).toHaveLength(1);
   await store.confirm();
   expect(store.revision).toBe(1);
-  expect(store.registry.summaries).toHaveLength(653);
+  expect(store.registry.summaries).toHaveLength(753);
   expect(store.registry.order.indexOf('C021')).toBeLessThan(store.registry.order.indexOf('C653'));
   await store.inspect(JSON.stringify(p));
   expect(store.preview?.unchanged).toBe(true);
@@ -90,7 +90,7 @@ it('confirma tras transacción, restaura, actualiza, retira y no cambia IDs hist
   await store.inspect(JSON.stringify(p));
   await store.confirm();
   expect(store.registry.records.has('C653')).toBe(true);
-  expect(buildCatalog(emptyCatalogState()).summaries).toHaveLength(652);
+  expect(buildCatalog(emptyCatalogState()).summaries).toHaveLength(752);
 });
 it('una actualización incluida conserva exportable el paquete local anterior y su propiedad', () => {
   const c = structuredClone(coreRecords.find((c) => c.id === 'C143')!);

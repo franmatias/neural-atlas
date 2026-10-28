@@ -1,22 +1,44 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+test('cien referencias de IA nuevas, acrónimos, diez temas y enlaces de cuatro cifras', async ({
+  page,
+}) => {
+  await page.goto('#/glosario?q=RAG');
+  await expect(page.locator('.concept-card h2').first()).toHaveText(
+    'Generación aumentada por recuperación',
+  );
+  await page.getByRole('searchbox').fill('');
+  await page.getByRole('combobox', { name: 'Tema', exact: true }).selectOption('logic-symbolic');
+  await expect(page.getByRole('status')).toContainText('10 conceptos');
+  await expect(page.locator('.concept-card')).toHaveCount(10);
+  await page.getByRole('combobox', { name: 'Tema', exact: true }).selectOption('all');
+  await page.getByRole('searchbox').fill('C1100');
+  await page.getByRole('link', { name: 'Enlace al concepto C1100' }).click();
+  await page.reload();
+  await expect(page.locator('.concept-card h2')).toHaveText('Interpretabilidad mecanicista');
+  await expect(page.locator('.concept-card a[href*="/lab/"]')).toHaveCount(0);
+  await page.getByRole('searchbox').fill('DPO');
+  await expect(page.locator('.concept-card h2').first()).toHaveText(
+    'Optimización directa de preferencias',
+  );
+});
 
-test('500 fichas de consulta: filtros, páginas, foco, búsqueda y enlaces estables', async ({
+test('600 fichas de consulta: filtros, páginas, foco, búsqueda y enlaces estables', async ({
   page,
 }) => {
   await page.goto('#/glosario');
-  await expect(page.getByRole('status')).toContainText('652 conceptos');
+  await expect(page.getByRole('status')).toContainText('752 conceptos');
   await expect(page.locator('.concept-card')).toHaveCount(24);
   const pagination = page.getByRole('navigation', { name: 'Paginación superior del glosario' });
   await pagination.getByRole('button', { name: 'Última', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('649–652 de 652');
-  await expect(page.locator('.concept-card')).toHaveCount(4);
+  await expect(page.getByRole('status')).toContainText('745–752 de 752');
+  await expect(page.locator('.concept-card')).toHaveCount(8);
   await pagination.getByRole('button', { name: 'Primera', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('.concept-grid')).toBeFocused();
   await expect(page.locator('.concept-card')).toHaveCount(24);
   await page.getByLabel('Tipo de ficha').selectOption('reference');
-  await expect(page.getByRole('status')).toContainText('500 conceptos');
+  await expect(page.getByRole('status')).toContainText('600 conceptos');
   await page.getByRole('combobox', { name: 'Tema', exact: true }).selectOption('attention');
   await expect(page.getByRole('status')).toContainText('25 conceptos');
   await page.getByRole('button', { name: 'Página siguiente', exact: true }).first().click();

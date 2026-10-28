@@ -10,9 +10,9 @@ describe('ampliación editorial de 500 conceptos', () => {
   it('conserva 500 IDs nuevos estables y 20 temas sin duplicados', () => {
     const entries = catalog.groups.flatMap((g) => g.entries);
     expect(entries).toHaveLength(500);
-    expect(referenceTopics).toHaveLength(20);
-    expect(referenceConcepts).toHaveLength(500);
-    expect(catalogPlannedCount).toBe(652);
+    expect(referenceTopics).toHaveLength(30);
+    expect(referenceConcepts).toHaveLength(600);
+    expect(catalogPlannedCount).toBe(752);
     expect(new Set(entries.map((e) => e.id)).size).toBe(500);
     for (let i = 153; i <= 652; i++) expect(entries.some((e) => e.id === `C${i}`)).toBe(true);
     expect(catalog.groups.every((g) => g.entries.length === 25)).toBe(true);
@@ -29,9 +29,9 @@ describe('ampliación editorial de 500 conceptos', () => {
     }
     expect(new Set(concepts.map((c) => c.id)).size).toBe(concepts.length);
   });
-  it('mantiene los 69 interactivos y busca en español, inglés e IDs', () => {
+  it('mantiene las 152 actividades y busca en español, inglés e IDs', () => {
     expect(concepts.filter((c) => !c.reference)).toHaveLength(152);
-    expect(concepts).toHaveLength(652);
+    expect(concepts).toHaveLength(752);
     expect(searchConcepts('C652')[0]?.title).toBe('Paridad demográfica');
     expect(searchConcepts('key-value cache')[0]?.id).toBe('C512');
     expect(searchConcepts('entropia diferencial')[0]?.english).toBe('Differential entropy');

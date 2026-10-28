@@ -487,12 +487,23 @@ try {
       assert.equal(grid.appVersion,expectedVersion);assert.equal(grid.format,'neural-atlas.grid-report');
       assert.equal(grid.attempts.length,2);assert.equal(grid.summary.complete,true);assert.equal(grid.testEvaluated,false);
       assert.equal(grid.plan.settings.datasetJson,undefined);assert.equal(grid.attempts[0].measurement.model,undefined);
+      await page.goto(new URL('#/lab/experimentos/importancia',url).href);
+      await page.getByRole('combobox',{name:'Fuente del análisis',exact:true}).selectOption('checkpoint');
+      await page.getByRole('button',{name:'Calcular importancia',exact:true}).click();
+      await expect(page.getByRole('status')).toContainText('Análisis completo');
+      const permutationDownload=page.waitForEvent('download');
+      await page.getByRole('button',{name:'Exportar informe de importancia',exact:true}).click();
+      const importance=JSON.parse(await readFile(await(await permutationDownload).path(),'utf8'));
+      assert.equal(importance.format,'neural-atlas.permutation-report');assert.equal(importance.appVersion,expectedVersion);
+      assert.equal(importance.source,'checkpoint');assert.equal(importance.testEvaluated,false);assert.equal(importance.rows,undefined);assert.equal(importance.provenance.networkHash.length,64);
+      await page.goto(new URL('#/glosario?q=C1001',url).href);await expect(page.locator('.concept-card h2')).toHaveText('Unificación');
+      await page.getByRole('searchbox').fill('RAG');await expect(page.locator('.concept-card h2').first()).toHaveText('Generación aumentada por recuperación');
       await page.goto(new URL('#/sin-conexion',url).href);await page.getByRole('button',{name:'Preparar o comprobar actualización'}).click();await expect(page.getByRole('status')).toContainText('Disponible sin conexión',{timeout:30000});
-      await page.context().setOffline(true);await page.goto(new URL('#/conceptos/C152',url).href);await expect(page.locator('h1')).toHaveText('Diagnóstico por evidencia');await page.context().setOffline(false);
+      await page.context().setOffline(true);await page.goto(new URL('#/conceptos/C152',url).href);await expect(page.locator('h1')).toHaveText('Diagnóstico por evidencia');await page.goto(new URL('#/conceptos/C1100',url).href);await expect(page.locator('h1')).toHaveText('Interpretabilidad mecanicista');await page.context().setOffline(false);
       await page.goto(new URL('#/lab/entrenamiento',url).href);await page.locator('.training-status').filter({hasText:'Actualizaciones 2'}).waitFor();
       assert.deepEqual(errors, []);
       console.log(
-        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair, open concept import, graph, Leitner review, teaching pack with resumable experiment, classical kNN/CART/MLP comparison with train-only estimator roundtrip, bounded grid selection with complete attempt report, and complete offline precache at ${url}`,
+        `Pages smoke passed: HTTP 200, assets/CSP, neuron, theme, glossary, pipeline, XOR, softmax, gradients, training, evaluation, persistent experiment reload, independent model roundtrip, POE workshop recovery, automatic disk recovery, matched L2 experiment v2, early stopping selection v3, reproducible dropout experiment v4, batch normalization experiment v5, train-only augmentation experiment v6 paired multiseed report nested capacity study, A/B evidence, robust experiment v7, fold dataset v3 two visual decision laboratories, derived v8, seed dispersion, concept drift, synchronized projection segment recovery v9, Brier/ROC/PR validation cost report resumable function approximation and immutable group ethics audit and loss landscapes with frozen model cut and inspectable image correlation/pooling and twelve investigation workshops with validated repair, open concept import, graph, Leitner review, teaching pack with resumable experiment, classical kNN/CART/MLP comparison with train-only estimator roundtrip, bounded grid selection with complete attempt report, frozen-checkpoint raw permutation importance, one hundred new AI references with offline access, and complete offline precache at ${url}`,
       );
       failure = undefined;
       break;

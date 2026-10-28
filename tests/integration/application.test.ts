@@ -81,7 +81,7 @@ describe('navegación y contenido disponible', () => {
     expect(wrapper.find('code').exists()).toBe(true);
     await wrapper.get('input[type=search]').setValue('clasificación inexistente');
     expect(wrapper.find('.empty-state').exists()).toBe(true);
-    expect(wrapper.get('.catalog-note').text()).toContain('652');
+    expect(wrapper.get('.catalog-note').text()).toContain('752');
   });
 });
 describe('ajustes compartidos y persistencia', () => {
