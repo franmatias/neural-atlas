@@ -2,6 +2,11 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 export const routes = [
   {
+    path: '/taller/ejemplo',
+    name: 'workshop-introduction',
+    component: () => import('@/features/workshops/WorkshopIntroductionPage.vue'),
+  },
+  {
     path: '/lab/experimentos/importancia',
     name: 'permutation',
     component: () => import('@/features/experiments/PermutationPage.vue'),

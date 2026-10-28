@@ -99,7 +99,8 @@ onBeforeRouteLeave(() => {
 <template>
   <div class="page training-page workshops-page">
     <p class="eyebrow">TALLER / PREDECIR · OBSERVAR · EXPLICAR</p>
-    <h1>Investiga antes de concluir.</h1><RouterLink to="/docencia">Preparar o importar un paquete docente</RouterLink>
+    <h1>Investiga antes de concluir.</h1>
+    <RouterLink to="/docencia">Preparar o importar un paquete docente</RouterLink>
     <p class="page-intro">
       Escribe tu hipótesis, ejecuta un caso y contrástala con medidas del motor. No necesitas
       acertar tu predicción para aprender: importa cómo la explicas con evidencia.
@@ -119,6 +120,17 @@ onBeforeRouteLeave(() => {
       <button class="button" :disabled="busy" @click="prepareFailure">
         Archivar intento anterior y preparar este caso
       </button>
+    </section>
+    <section class="training-panel" aria-labelledby="intro-workshop-title">
+      <h2 id="intro-workshop-title">¿Es tu primer taller?</h2>
+      <p>
+        Aprende el recorrido con un caso resuelto y una práctica semiguiada: predicción,
+        configuración, ejecución, observación y explicación. Conserva el trabajo de tus talleres
+        actuales.
+      </p>
+      <RouterLink class="button primary" to="/taller/ejemplo"
+        >Ver ejemplo resuelto y guía paso a paso</RouterLink
+      >
     </section>
     <nav class="workshop-catalog" aria-label="Talleres disponibles">
       <button

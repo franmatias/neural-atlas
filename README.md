@@ -1,5 +1,7 @@
 # Neural Atlas
 
+**v1.5.0 · Aprende a usar los talleres.** [Tu primer taller, acompañado](https://franmatias.github.io/neural-atlas/#/taller/ejemplo): un caso completo resuelto y un recorrido semiguiado de cinco fases, con evidencia real del motor y cuaderno descargable. [Diseño y verificación](docs/60-taller-resuelto-y-acompanamiento.md). La introducción conserva los cuadernos de T01–T12 y la sesión de los laboratorios.
+
 **v1.4.0 · Descenso simultáneo y cierre técnico de X2.** [Diseño y evidencia](docs/57-cierre-x2-y-descenso-guiado.md): contornos 2D y malla 3D sincronizados, cinco ejemplos de descenso con cálculo del paso, guías contextualizadas en los laboratorios, historial de configuración de entrenamiento (50 estados), datasets UCI Iris/Wine con atribución y sonificación voluntaria en Neurona, Entrenamiento y Paisajes. D1–D10, X1 y X2 están implementados; la aceptación docente con alumnado permanece abierta.
 
 El catálogo conserva **752 fichas: 152 actividades y 600 referencias**, incluidas [C1001–C1100](docs/56-cien-conceptos-ia.md). Los párrafos de entregas que siguen documentan sus estados históricos; el informe actual es el de v1.4.0.
@@ -8,7 +10,7 @@ Preparado el [paquete de validación docente](docs/58-validacion-docente.md): pr
 
 [Aplicación](https://franmatias.github.io/neural-atlas/) · [Repaso](https://franmatias.github.io/neural-atlas/#/repaso) · [Docencia](https://franmatias.github.io/neural-atlas/#/docencia) · [Sin conexión](https://franmatias.github.io/neural-atlas/#/sin-conexion)
 
-Las notas de entregas siguientes conservan su contexto histórico. Para el estado actual, consultar la entrega de importancia X1.3, la ampliación de cien fichas y el cierre v1.1.
+Las notas de entregas siguientes conservan su contexto histórico. El estado actual se describe en el taller introductorio v1.5.0 y la lista de pendientes de aceptación.
 
 
 Laboratorio visual de aprendizaje automático para FP de especialización y universidad. Vue 3 Composition API, TypeScript, Tailwind, Pinia, Vue Router, D3 y Three.js.
