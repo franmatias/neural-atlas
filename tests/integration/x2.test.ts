@@ -143,6 +143,9 @@ it('audio activo responde al dato, se apaga al ocultar y no vuelve solo', async 
   expect(panel.text()).toContain('Sonido activo');
   await panel.setProps({ value: 0.8 });
   expect(param.setTargetAtTime).toHaveBeenCalledWith(748, 0, 0.015);
+  await panel.get('select').setValue('grave');
+  expect(param.setTargetAtTime).toHaveBeenCalledWith(374, 0, 0.015);
+  expect(panel.text()).toContain('374.0');
   vi.spyOn(document, 'hidden', 'get').mockReturnValue(true);
   document.dispatchEvent(new Event('visibilitychange'));
   await flushPromises();

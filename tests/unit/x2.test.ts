@@ -102,6 +102,9 @@ it('mapas de sonido acotados con escala logarítmica explícita', () => {
   expect(toneFor(0, 'output')!.frequency).toBe(220);
   expect(toneFor(1, 'output')!.frequency).toBe(880);
   expect(toneFor(0.5, 'output')!.frequency).toBe(550);
+  expect(toneFor(0.5, 'output', 'grave')!.frequency).toBe(275);
+  expect(toneFor(0.5, 'output', 'agudo')!.frequency).toBe(1100);
+  expect(toneFor(1, 'loss', 'invalid' as never)).toBeUndefined();
   expect(toneFor(-1, 'output')!.clamped).toBe(true);
   expect(toneFor(2, 'output')!.clamped).toBe(true);
   expect(toneFor(0.001, 'loss')!.frequency).toBeCloseTo(352);

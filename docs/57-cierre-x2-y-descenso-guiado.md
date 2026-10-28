@@ -22,6 +22,8 @@ Copias locales pequeñas de UCI Iris (150×4) y Wine (178×13), tres clases. Fue
 
 Panel explícito de audio en L02, L06 y L07. Desactivado en cada apertura, creación de AudioContext únicamente tras gesto. Volumen inicial 0,1 y tope 0,2, silencio inmediato, desactivación al ocultar pestaña y al salir del componente; nunca reanudación automática. Mapeo visible: salida normalizada [0,1] o logaritmo de pérdida [10⁻⁴,10] a [220,880] Hz, con saturación declarada fuera del rango. En L07 representa la pérdida SGD del punto inspeccionado. Son datos redundantes con texto/tablas, sin alarmas ni diagnósticos sonoros. Fallo de audio deja intacta la simulación.
 
+El registro sonoro también es ajustable: grave [110,440] Hz, normal [220,880] Hz y agudo [440,1760] Hz. Solo transpone la escala por 1/2, 1 o 2; no cambia los valores matemáticos ni el volumen máximo. La frecuencia propuesta se muestra antes de activar y se actualiza con cada dato.
+
 ## Explicaciones
 
 Guía contextual accesible antes de cada laboratorio: objetivo, cómo leer el gráfico, ejemplo calculado, fórmula con dimensiones, error frecuente y actividad de predicción-observación-explicación con solución desplegable. Cobertura de las 14 tarjetas y guías propias para estudios avanzados. Se distinguen datos y parámetros, pérdida y exactitud, actualización y reproducción, asociación y causalidad. Se mantienen nombres de controles para conservar enlaces y accesibilidad.
