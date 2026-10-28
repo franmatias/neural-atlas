@@ -59,7 +59,11 @@ watch(
         :key="link.to"
         :to="link.to"
         :exact-active-class="'active'"
-        :class="{ active: link.to === '/laboratorios' && route.path.startsWith('/lab/') }"
+        :class="{
+          active:
+            (link.to === '/laboratorios' && route.path.startsWith('/lab/')) ||
+            (link.to === '/taller' && route.path.startsWith('/taller/')),
+        }"
         ><AppIcon :name="link.icon" /><span>{{ t(link.label) }}</span></RouterLink
       >
     </nav>

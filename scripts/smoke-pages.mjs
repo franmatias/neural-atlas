@@ -95,6 +95,25 @@ try {
         await extra.goto(new URL('#/lab/neurona',url).href);
         await extra.getByText('Sonificación opcional · salida de la neurona',{exact:true}).click();
         await expect(extra.getByRole('button',{name:'Silenciar inmediatamente',exact:true})).toBeDisabled();
+        await extra.goto(new URL('#/taller/ejemplo',url).href);
+        await extra.getByRole('button',{name:'Ver ejemplo completo resuelto',exact:true}).click();
+        await expect(extra.locator('.worked-list li')).toHaveCount(5);
+        await expect(extra.locator('.workshop-evidence')).toBeVisible();
+        await extra.getByRole('button',{name:'Probarlo con ayuda paso a paso',exact:true}).click();
+        await extra.getByRole('radio',{name:'La recta se desplazará sin girar',exact:true}).check();
+        await extra.getByRole('button',{name:'Continuar ejemplo',exact:true}).click();
+        await extra.getByRole('button',{name:'Continuar ejemplo',exact:true}).click();
+        await extra.getByRole('button',{name:'Ejecutar mi ejemplo con el motor',exact:true}).click();
+        await expect(extra.getByRole('status').filter({hasText:'Caso ejecutado'})).toBeVisible();
+        await extra.getByRole('button',{name:'Continuar ejemplo',exact:true}).click();
+        await expect(extra.getByRole('img',{name:'Frontera antes y después de cambiar solo el sesgo',exact:true})).toBeVisible();
+        await extra.getByRole('button',{name:'Continuar ejemplo',exact:true}).click();
+        await extra.getByLabel('Mi conclusión (opcional, sin calificación automática)',{exact:true}).fill('Los pesos fijan la normal; el cambio de sesgo desplaza sin girar y no demuestra mayor accuracy.');
+        await extra.getByRole('button',{name:'Terminar recorrido de ejemplo',exact:true}).click();
+        await expect(extra.getByRole('heading',{name:'Recorrido de ejemplo terminado',exact:true})).toBeVisible();
+        const introDownload=extra.waitForEvent('download');await extra.getByRole('button',{name:'Descargar cuaderno del ejemplo',exact:true}).click();
+        const intro=JSON.parse(await readFile(await(await introDownload).path(),'utf8'));
+        assert.equal(intro.appVersion,expectedVersion);assert.equal(intro.format,'neural-atlas.workshop-demo');assert.equal(intro.completed,true);assert.equal(intro.evidence.caseId,'T02');assert(Math.abs(intro.evidence.metrics.distance-1/Math.sqrt(5))<1e-12);
       } finally {await extra.close();}
       console.log('X2 public check: synchronized gradient views, numerical step, UCI Iris, configuration undo/redo, opt-in audio.');
       assert.deepEqual(errors, []);
