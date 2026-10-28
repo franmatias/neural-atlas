@@ -2,6 +2,8 @@
 
 La implementación técnica está publicada y verificada. La aceptación pedagógica sigue **pendiente de ejecución con personas**. Este paquete prepara ese trabajo; no contiene participantes, respuestas ni resultados simulados.
 
+La [lista actual de pendientes y revisión exploratoria de teclado](59-pendientes-y-revision-teclado.md) registra el primer avance de acceso. El lector de pantalla y los dispositivos reales del aula siguen pendientes; esta revisión del agente no sustituye la aceptación humana.
+
 ## Material preparado
 
 | Documento                                                      | Uso                                                              |
