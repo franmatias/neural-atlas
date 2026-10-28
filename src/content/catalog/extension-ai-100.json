@@ -1,0 +1,810 @@
+{
+  "format": "neural-atlas.reference-catalog",
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "logic-symbolic",
+      "title": "Lógica simbólica y conocimiento",
+      "entries": [
+        {
+          "id": "C1001",
+          "title": "Unificación",
+          "english": "Unification",
+          "definition": "Encuentra una sustitución de variables que hace coincidir expresiones simbólicas. Es una operación central en demostración automática y programación lógica; no equivale a medir similitud entre embeddings.",
+          "aliases": [
+            "unificación de términos"
+          ]
+        },
+        {
+          "id": "C1002",
+          "title": "Resolución lógica",
+          "english": "Resolution",
+          "definition": "Regla de inferencia que combina cláusulas con literales complementarios para obtener una consecuencia. En demostración por refutación se busca derivar la cláusula vacía.",
+          "aliases": []
+        },
+        {
+          "id": "C1003",
+          "title": "Encadenamiento hacia delante",
+          "english": "Forward chaining",
+          "definition": "Aplica reglas a hechos conocidos para producir nuevos hechos hasta alcanzar un objetivo o un punto fijo. El orden de ejecución y la terminación dependen del lenguaje de reglas.",
+          "aliases": []
+        },
+        {
+          "id": "C1004",
+          "title": "Encadenamiento hacia atrás",
+          "english": "Backward chaining",
+          "definition": "Parte de una consulta y busca reglas capaces de demostrarla, convirtiendo sus premisas en subobjetivos. Requiere controlar alternativas y ciclos durante la búsqueda.",
+          "aliases": []
+        },
+        {
+          "id": "C1005",
+          "title": "Cláusula de Horn",
+          "english": "Horn clause",
+          "definition": "Cláusula lógica con como máximo un literal positivo. Las cláusulas definidas permiten representar reglas útiles para inferencia eficiente y programación lógica.",
+          "aliases": []
+        },
+        {
+          "id": "C1006",
+          "title": "Universo de Herbrand",
+          "english": "Herbrand universe",
+          "definition": "Conjunto de términos cerrados construidos con las constantes y funciones de un lenguaje lógico. Proporciona un dominio sintáctico para estudiar satisfacibilidad y modelos.",
+          "aliases": []
+        },
+        {
+          "id": "C1007",
+          "title": "Lógica descriptiva",
+          "english": "Description logic",
+          "definition": "Familia de formalismos para representar conceptos, relaciones e individuos con semántica precisa. Permite razonar sobre subsunción y consistencia de ontologías bajo restricciones de expresividad.",
+          "aliases": []
+        },
+        {
+          "id": "C1008",
+          "title": "Alineamiento de ontologías",
+          "english": "Ontology alignment",
+          "definition": "Identifica correspondencias entre entidades de ontologías distintas para facilitar interoperabilidad. Una coincidencia léxica no demuestra que dos conceptos tengan el mismo significado.",
+          "aliases": []
+        },
+        {
+          "id": "C1009",
+          "title": "Supuesto de mundo cerrado",
+          "english": "Closed-world assumption",
+          "definition": "Trata como falsas las afirmaciones que no pueden derivarse del conocimiento disponible. Es una decisión semántica útil en ciertos sistemas, no una garantía de completitud de sus datos.",
+          "aliases": []
+        },
+        {
+          "id": "C1010",
+          "title": "Supuesto de mundo abierto",
+          "english": "Open-world assumption",
+          "definition": "La ausencia de una afirmación no permite concluir que sea falsa. Facilita representar conocimiento incompleto, distinguiendo lo desconocido de lo refutado.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "planning-ai",
+      "title": "Planificación automática",
+      "entries": [
+        {
+          "id": "C1011",
+          "title": "Representación STRIPS",
+          "english": "STRIPS",
+          "definition": "Describe acciones mediante precondiciones y efectos de adición o eliminación sobre hechos. Es una base de planificación clásica con supuestos restrictivos sobre estados y acciones.",
+          "aliases": [
+            "Stanford Research Institute Problem Solver"
+          ]
+        },
+        {
+          "id": "C1012",
+          "title": "Lenguaje PDDL",
+          "english": "Planning Domain Definition Language",
+          "definition": "Lenguaje para especificar dominios y problemas de planificación mediante acciones, condiciones y objetivos. Sus extensiones incorporan expresividad adicional y no todos los planificadores admiten las mismas variantes.",
+          "aliases": [
+            "PDDL"
+          ]
+        },
+        {
+          "id": "C1013",
+          "title": "Planificación de orden parcial",
+          "english": "Partial-order planning",
+          "definition": "Construye planes imponiendo únicamente las precedencias necesarias entre acciones. Mantiene compromisos de orden abiertos mientras resuelve condiciones y conflictos del plan.",
+          "aliases": []
+        },
+        {
+          "id": "C1014",
+          "title": "Red jerárquica de tareas",
+          "english": "Hierarchical task network",
+          "definition": "Representa tareas compuestas que se descomponen mediante métodos hasta obtener acciones ejecutables. El conocimiento de descomposición guía la búsqueda y limita los planes considerados.",
+          "aliases": [
+            "HTN"
+          ]
+        },
+        {
+          "id": "C1015",
+          "title": "Grafo de planificación relajado",
+          "english": "Relaxed planning graph",
+          "definition": "Organiza hechos y acciones alcanzables por niveles en una versión simplificada del problema. Su estructura puede apoyar heurísticas sin resolver exactamente el problema original.",
+          "aliases": []
+        },
+        {
+          "id": "C1016",
+          "title": "Relajación de efectos de borrado",
+          "english": "Delete relaxation",
+          "definition": "Simplifica un problema de planificación ignorando efectos que eliminan hechos. Facilita estimaciones heurísticas, pero puede producir soluciones que no son ejecutables en el dominio completo.",
+          "aliases": []
+        },
+        {
+          "id": "C1017",
+          "title": "Hito de planificación",
+          "english": "Planning landmark",
+          "definition": "Hecho o acción que debe alcanzarse en todo plan válido bajo la definición considerada. Los hitos ayudan a estimar progreso y orientar la búsqueda.",
+          "aliases": []
+        },
+        {
+          "id": "C1018",
+          "title": "Reparación de planes",
+          "english": "Plan repair",
+          "definition": "Modifica un plan existente cuando cambian el estado, las restricciones o las acciones disponibles. Busca recuperar viabilidad aprovechando estructura previa, sin garantizar cambios mínimos.",
+          "aliases": []
+        },
+        {
+          "id": "C1019",
+          "title": "Planificación contingente",
+          "english": "Contingent planning",
+          "definition": "Construye planes con ramas dependientes de observaciones durante la ejecución. Permite actuar bajo información incompleta cuando futuras observaciones pueden resolver incertidumbre relevante.",
+          "aliases": []
+        },
+        {
+          "id": "C1020",
+          "title": "Planificación temporal",
+          "english": "Temporal planning",
+          "definition": "Considera duración, solapamiento y restricciones temporales de acciones. La validez requiere satisfacer tanto condiciones lógicas como relaciones temporales entre eventos.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "automated-reasoning",
+      "title": "Razonamiento y satisfacibilidad",
+      "entries": [
+        {
+          "id": "C1021",
+          "title": "Razonamiento abductivo",
+          "english": "Abductive reasoning",
+          "definition": "Busca hipótesis que explicarían observaciones dadas junto con conocimiento de fondo. Una explicación compatible no queda demostrada y puede competir con otras hipótesis.",
+          "aliases": []
+        },
+        {
+          "id": "C1022",
+          "title": "Razonamiento no monótono",
+          "english": "Nonmonotonic reasoning",
+          "definition": "Permite retirar conclusiones al incorporar información nueva. Resulta útil para conocimiento revisable y excepciones, a diferencia de la acumulación monótona de consecuencias clásicas.",
+          "aliases": []
+        },
+        {
+          "id": "C1023",
+          "title": "Lógica por defecto",
+          "english": "Default logic",
+          "definition": "Formaliza inferencias plausibles que se aceptan mientras ciertas condiciones sean compatibles con el conocimiento. Puede admitir distintas extensiones y exige especificar cómo se tratan los conflictos.",
+          "aliases": []
+        },
+        {
+          "id": "C1024",
+          "title": "Circunscripción lógica",
+          "english": "Circumscription",
+          "definition": "Expresa supuestos de minimalidad sobre la extensión de predicados para formalizar razonamiento por defecto. La elección de qué minimizar afecta a las conclusiones obtenidas.",
+          "aliases": []
+        },
+        {
+          "id": "C1025",
+          "title": "Programación de conjuntos de respuesta",
+          "english": "Answer set programming",
+          "definition": "Paradigma declarativo que codifica problemas mediante reglas y busca modelos estables. Es útil para problemas combinatorios, con semántica distinta de ejecutar reglas en cualquier orden.",
+          "aliases": [
+            "ASP"
+          ]
+        },
+        {
+          "id": "C1026",
+          "title": "Sistema de mantenimiento de verdad",
+          "english": "Truth maintenance system",
+          "definition": "Registra dependencias y justificaciones de creencias para revisarlas cuando cambian sus apoyos. No garantiza que los hechos iniciales describan correctamente el mundo.",
+          "aliases": []
+        },
+        {
+          "id": "C1027",
+          "title": "Algoritmo DPLL",
+          "english": "Davis–Putnam–Logemann–Loveland algorithm",
+          "definition": "Procedimiento de búsqueda para satisfacibilidad proposicional que combina decisiones, propagación y retroceso. Explora asignaciones sin enumerarlas necesariamente todas de forma explícita.",
+          "aliases": [
+            "DPLL"
+          ]
+        },
+        {
+          "id": "C1028",
+          "title": "Aprendizaje de cláusulas por conflicto",
+          "english": "Conflict-driven clause learning",
+          "definition": "Mejora la búsqueda SAT analizando conflictos para aprender cláusulas y evitar repetir regiones incompatibles. Suele combinarse con retroceso no cronológico y propagación eficiente.",
+          "aliases": [
+            "CDCL"
+          ]
+        },
+        {
+          "id": "C1029",
+          "title": "Satisfacibilidad módulo teorías",
+          "english": "Satisfiability modulo theories",
+          "definition": "Comprueba fórmulas lógicas interpretadas sobre teorías como aritmética o estructuras de datos. Integra razonamiento proposicional con procedimientos específicos de esas teorías.",
+          "aliases": [
+            "SMT"
+          ]
+        },
+        {
+          "id": "C1030",
+          "title": "Máxima satisfacibilidad",
+          "english": "Maximum satisfiability",
+          "definition": "Busca satisfacer el mayor número o peso de cláusulas, posiblemente junto a restricciones obligatorias. Convierte una cuestión de existencia de modelo en un problema de optimización.",
+          "aliases": [
+            "MaxSAT"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "causal-design",
+      "title": "Identificación y estimación causal",
+      "entries": [
+        {
+          "id": "C1031",
+          "title": "Cálculo de intervenciones",
+          "english": "Do-calculus",
+          "definition": "Conjunto de reglas para transformar expresiones probabilísticas que incluyen intervenciones bajo un modelo causal. Permite estudiar identificación, pero depende de supuestos estructurales adecuados.",
+          "aliases": []
+        },
+        {
+          "id": "C1032",
+          "title": "Modelo causal estructural",
+          "english": "Structural causal model",
+          "definition": "Representa variables mediante ecuaciones y factores exógenos para describir mecanismos causales. Permite definir intervenciones y contrafactuales sin confundirlos con condicionamiento observacional.",
+          "aliases": [
+            "SCM"
+          ]
+        },
+        {
+          "id": "C1033",
+          "title": "Resultados potenciales",
+          "english": "Potential outcomes",
+          "definition": "Describe el resultado que una unidad tendría bajo cada tratamiento posible. La imposibilidad de observar simultáneamente alternativas motiva supuestos y diseños para estimar efectos causales.",
+          "aliases": []
+        },
+        {
+          "id": "C1034",
+          "title": "Puntuación de propensión",
+          "english": "Propensity score",
+          "definition": "Probabilidad de recibir un tratamiento condicionada a covariables observadas. Puede apoyar ajustes causales bajo supuestos de ausencia de confusión no medida y positividad.",
+          "aliases": []
+        },
+        {
+          "id": "C1035",
+          "title": "Ponderación por probabilidad inversa",
+          "english": "Inverse probability weighting",
+          "definition": "Repondera observaciones según probabilidades estimadas de tratamiento o selección para construir una población objetivo. Pesos extremos pueden aumentar varianza y revelar problemas de soporte.",
+          "aliases": [
+            "IPW"
+          ]
+        },
+        {
+          "id": "C1036",
+          "title": "Estimación doblemente robusta",
+          "english": "Doubly robust estimation",
+          "definition": "Combina modelos de resultado y tratamiento para conservar consistencia si uno de ellos está correctamente especificado, bajo los demás supuestos. No protege frente a cualquier sesgo.",
+          "aliases": []
+        },
+        {
+          "id": "C1037",
+          "title": "Discontinuidad en regresión",
+          "english": "Regression discontinuity",
+          "definition": "Aprovecha un umbral de asignación para estimar efectos locales comparando unidades cercanas al corte. La interpretación causal requiere condiciones de continuidad y ausencia de manipulación relevante.",
+          "aliases": []
+        },
+        {
+          "id": "C1038",
+          "title": "Diferencias en diferencias",
+          "english": "Difference-in-differences",
+          "definition": "Compara cambios temporales entre grupos tratados y de comparación. La identificación depende de supuestos como tendencias paralelas, que no se justifican solo por una regresión ajustada.",
+          "aliases": []
+        },
+        {
+          "id": "C1039",
+          "title": "Control sintético",
+          "english": "Synthetic control",
+          "definition": "Construye una combinación de unidades de comparación para aproximar la trayectoria previa de una unidad tratada. El ajuste previo y la disponibilidad de donantes limitan la inferencia.",
+          "aliases": []
+        },
+        {
+          "id": "C1040",
+          "title": "Descubrimiento causal",
+          "english": "Causal discovery",
+          "definition": "Intenta inferir estructuras causales a partir de datos y supuestos explícitos. Dependencias estadísticas pueden ser compatibles con múltiples grafos, sin identificar una dirección causal única.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "robotics-beliefs",
+      "title": "Robótica y decisiones parcialmente observables",
+      "entries": [
+        {
+          "id": "C1041",
+          "title": "Estado de creencia",
+          "english": "Belief state",
+          "definition": "Representa una distribución sobre estados posibles cuando el estado real no se observa directamente. Se actualiza con acciones y observaciones dentro de un modelo de incertidumbre.",
+          "aliases": []
+        },
+        {
+          "id": "C1042",
+          "title": "Proceso parcialmente observable de decisión",
+          "english": "Partially observable Markov decision process",
+          "definition": "Extiende el modelo de decisión de Markov con observaciones incompletas del estado. Las políticas pueden actuar sobre creencias o historial en lugar de conocer el estado real.",
+          "aliases": [
+            "POMDP"
+          ]
+        },
+        {
+          "id": "C1043",
+          "title": "Propagación de creencias",
+          "english": "Belief propagation",
+          "definition": "Intercambia mensajes en un grafo probabilístico para calcular marginales o inferencias relacionadas. Es exacta en ciertas estructuras sin ciclos; con ciclos no siempre converge ni es exacta.",
+          "aliases": []
+        },
+        {
+          "id": "C1044",
+          "title": "Filtro de partículas",
+          "english": "Particle filter",
+          "definition": "Aproxima una distribución de estados mediante muestras ponderadas que se propagan y actualizan con observaciones. El remuestreo controla degeneración, pero puede perder diversidad.",
+          "aliases": []
+        },
+        {
+          "id": "C1045",
+          "title": "Filtro de Kalman extendido",
+          "english": "Extended Kalman filter",
+          "definition": "Aproxima modelos no lineales mediante linealizaciones locales para estimar estado y covarianza. Su precisión depende de la no linealidad y de la calidad de esas aproximaciones.",
+          "aliases": [
+            "EKF"
+          ]
+        },
+        {
+          "id": "C1046",
+          "title": "Filtro de Kalman unscented",
+          "english": "Unscented Kalman filter",
+          "definition": "Propaga puntos sigma deterministas para aproximar cómo una transformación no lineal afecta a media y covarianza. No representa de forma exacta cualquier distribución posterior.",
+          "aliases": [
+            "UKF"
+          ]
+        },
+        {
+          "id": "C1047",
+          "title": "Localización y mapeado simultáneos",
+          "english": "Simultaneous localization and mapping",
+          "definition": "Estima conjuntamente la trayectoria de un agente y un mapa del entorno a partir de observaciones. La asociación de datos, la incertidumbre y los cierres de bucle son dificultades importantes.",
+          "aliases": [
+            "SLAM"
+          ]
+        },
+        {
+          "id": "C1048",
+          "title": "Mapa de ocupación",
+          "english": "Occupancy grid",
+          "definition": "Divide el espacio en celdas que representan información sobre ocupación. La resolución y el modelo de observación condicionan el detalle y la incertidumbre del mapa.",
+          "aliases": []
+        },
+        {
+          "id": "C1049",
+          "title": "Clonación de comportamiento",
+          "english": "Behavior cloning",
+          "definition": "Aprende una política mediante supervisión de pares observación–acción obtenidos de demostraciones. Los errores pueden acumularse cuando la política visita situaciones distintas de las demostradas.",
+          "aliases": []
+        },
+        {
+          "id": "C1050",
+          "title": "Aprendizaje por refuerzo inverso",
+          "english": "Inverse reinforcement learning",
+          "definition": "Intenta inferir una función de recompensa compatible con el comportamiento observado de un experto. Distintas recompensas pueden explicar la misma política, por lo que se requieren restricciones adicionales.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "learning-dynamics",
+      "title": "Dinámica y teoría de redes profundas",
+      "entries": [
+        {
+          "id": "C1051",
+          "title": "Kernel tangente neuronal",
+          "english": "Neural tangent kernel",
+          "definition": "Kernel construido a partir de gradientes de las salidas respecto a parámetros. Bajo ciertos límites de anchura permite aproximar la dinámica de entrenamiento mediante métodos de kernels.",
+          "aliases": [
+            "NTK"
+          ]
+        },
+        {
+          "id": "C1052",
+          "title": "Programa tensorial",
+          "english": "Tensor program",
+          "definition": "Formalismo para describir cálculos con vectores y matrices aleatorias y estudiar límites de redes anchas. Sus resultados requieren hipótesis concretas sobre arquitectura y escalado.",
+          "aliases": []
+        },
+        {
+          "id": "C1053",
+          "title": "Límite de campo medio",
+          "english": "Mean-field limit",
+          "definition": "Describe colectivos grandes mediante una evolución agregada, por ejemplo una distribución de parámetros. En redes neuronales el límite depende del escalado y no coincide siempre con el régimen de kernel.",
+          "aliases": []
+        },
+        {
+          "id": "C1054",
+          "title": "Colapso neuronal",
+          "english": "Neural collapse",
+          "definition": "Patrón geométrico observado al final del entrenamiento de ciertos clasificadores: las representaciones intraclase se concentran y las medias de clase adquieren estructura regular. No es el colapso general de representaciones.",
+          "aliases": []
+        },
+        {
+          "id": "C1055",
+          "title": "Generalización tardía",
+          "english": "Grokking",
+          "definition": "Fenómeno en el que la generalización mejora mucho después de alcanzar buen ajuste de entrenamiento. Se ha estudiado en tareas algorítmicas y no es una propiedad garantizada de toda red.",
+          "aliases": []
+        },
+        {
+          "id": "C1056",
+          "title": "Conectividad entre modos",
+          "english": "Mode connectivity",
+          "definition": "Estudia caminos entre soluciones entrenadas a lo largo de los cuales la pérdida permanece baja. Depende del espacio de parámetros, el camino permitido y la función evaluada.",
+          "aliases": []
+        },
+        {
+          "id": "C1057",
+          "title": "Barrera de pérdida",
+          "english": "Loss barrier",
+          "definition": "Incremento de pérdida encontrado a lo largo de un camino entre soluciones, respecto a una referencia declarada. Una barrera en interpolación lineal no descarta otro camino de baja pérdida.",
+          "aliases": []
+        },
+        {
+          "id": "C1058",
+          "title": "Borde de estabilidad",
+          "english": "Edge of stability",
+          "definition": "Régimen estudiado de descenso del gradiente en el que la curvatura dominante se sitúa cerca del límite de estabilidad del paso. La pérdida puede oscilar a corto plazo y mejorar a largo plazo.",
+          "aliases": []
+        },
+        {
+          "id": "C1059",
+          "title": "Escala de ruido del gradiente",
+          "english": "Gradient noise scale",
+          "definition": "Relaciona la variabilidad estocástica del gradiente con la magnitud de su señal media bajo una definición concreta. Ayuda a analizar el rendimiento de aumentar el lote.",
+          "aliases": []
+        },
+        {
+          "id": "C1060",
+          "title": "Tamaño crítico de lote",
+          "english": "Critical batch size",
+          "definition": "Escala a partir de la cual aumentar el lote ofrece rendimientos decrecientes de paralelización bajo un modelo de eficiencia. Depende de la tarea, el entrenamiento y el criterio utilizado.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "llm-serving",
+      "title": "Inferencia eficiente de modelos de lenguaje",
+      "entries": [
+        {
+          "id": "C1061",
+          "title": "Decodificación especulativa",
+          "english": "Speculative decoding",
+          "definition": "Usa propuestas de tokens de un mecanismo rápido y las verifica con el modelo objetivo. Determinados protocolos preservan su distribución; una aceptación heurística cualquiera no ofrece esa garantía.",
+          "aliases": []
+        },
+        {
+          "id": "C1062",
+          "title": "Agrupación continua de solicitudes",
+          "english": "Continuous batching",
+          "definition": "Actualiza dinámicamente el lote de inferencia incorporando solicitudes nuevas cuando otras terminan. Mejora aprovechamiento del servicio, pero requiere controlar memoria, prioridades y latencia.",
+          "aliases": []
+        },
+        {
+          "id": "C1063",
+          "title": "Caché de prefijos compartidos",
+          "english": "Prefix caching",
+          "definition": "Reutiliza estados de inferencia ya calculados para prefijos compatibles entre solicitudes. Se distingue de conservar la caché de una sola conversación y depende de criterios correctos de reutilización.",
+          "aliases": []
+        },
+        {
+          "id": "C1064",
+          "title": "Atención paginada",
+          "english": "PagedAttention",
+          "definition": "Organiza la caché de claves y valores en bloques gestionables para reducir desperdicio y facilitar su uso durante inferencia. Es una técnica de gestión de memoria, no una nueva semántica de atención.",
+          "aliases": []
+        },
+        {
+          "id": "C1065",
+          "title": "FlashAttention",
+          "english": "FlashAttention",
+          "definition": "Familia de algoritmos que organiza el cálculo de atención para reducir transferencias de memoria y uso de almacenamiento intermedio. Conserva la operación matemática bajo sus convenciones numéricas.",
+          "aliases": []
+        },
+        {
+          "id": "C1066",
+          "title": "Procesamiento inicial por fragmentos",
+          "english": "Chunked prefill",
+          "definition": "Divide el procesamiento de un contexto de entrada en fragmentos para organizar mejor el servicio de inferencia. Su planificación afecta al equilibrio entre rendimiento y latencia de otras solicitudes.",
+          "aliases": []
+        },
+        {
+          "id": "C1067",
+          "title": "Atención de ventana deslizante",
+          "english": "Sliding-window attention",
+          "definition": "Restringe cada posición a una región local de contexto, según el patrón de la arquitectura. Reduce conexiones de atención, aunque la propagación entre capas puede ampliar el alcance efectivo.",
+          "aliases": []
+        },
+        {
+          "id": "C1068",
+          "title": "Sumidero de atención",
+          "english": "Attention sink",
+          "definition": "Posición que recibe atención apreciable incluso cuando su contenido no es la información relevante para la tarea. Se estudia su papel al gestionar contextos y generación prolongada.",
+          "aliases": []
+        },
+        {
+          "id": "C1069",
+          "title": "Predicción de múltiples tokens",
+          "english": "Multi-token prediction",
+          "definition": "Objetivo o mecanismo que predice varios tokens futuros por posición o paso. No implica que esos tokens puedan aceptarse sin verificación en cualquier esquema de generación.",
+          "aliases": []
+        },
+        {
+          "id": "C1070",
+          "title": "Muestreo por rechazo",
+          "english": "Rejection sampling",
+          "definition": "Genera candidatos con una distribución propuesta y acepta algunos mediante una regla que busca una distribución objetivo. La corrección exige condiciones y cotas apropiadas para esa regla.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "retrieval-agents",
+      "title": "Recuperación y herramientas de IA",
+      "entries": [
+        {
+          "id": "C1071",
+          "title": "Generación aumentada por recuperación",
+          "english": "Retrieval-augmented generation",
+          "definition": "Combina recuperación de información con un modelo generativo para condicionar respuestas en material externo. La recuperación no garantiza exactitud, actualidad ni fidelidad a las fuentes.",
+          "aliases": [
+            "RAG"
+          ]
+        },
+        {
+          "id": "C1072",
+          "title": "Invocación de herramientas",
+          "english": "Tool calling",
+          "definition": "Permite que un sistema produzca solicitudes estructuradas a funciones o servicios externos y utilice sus resultados. Proponer una llamada no garantiza que sea válida ni autoriza cualquier efecto.",
+          "aliases": []
+        },
+        {
+          "id": "C1073",
+          "title": "Inyección de instrucciones",
+          "english": "Prompt injection",
+          "definition": "Intento de introducir instrucciones adversarias para desviar un sistema que procesa lenguaje. Su impacto depende de cómo se separan las instrucciones confiables, los datos y las capacidades disponibles.",
+          "aliases": []
+        },
+        {
+          "id": "C1074",
+          "title": "Inyección indirecta de instrucciones",
+          "english": "Indirect prompt injection",
+          "definition": "Introduce instrucciones adversarias en documentos, páginas u otras fuentes que el sistema consulta. El contenido recuperado no adquiere autoridad por aparecer dentro del contexto del modelo.",
+          "aliases": []
+        },
+        {
+          "id": "C1075",
+          "title": "Envenenamiento de la recuperación",
+          "english": "Retrieval poisoning",
+          "definition": "Altera un corpus o su indexación para influir en los documentos recuperados y en respuestas posteriores. Puede afectar relevancia, integridad o seguridad sin modificar los pesos del generador.",
+          "aliases": []
+        },
+        {
+          "id": "C1076",
+          "title": "Recuperación híbrida",
+          "english": "Hybrid retrieval",
+          "definition": "Combina señales de recuperación léxica y semántica dentro de un procedimiento declarado. La forma de fusionar resultados y sus escalas influye en relevancia y coste.",
+          "aliases": []
+        },
+        {
+          "id": "C1077",
+          "title": "Fusión recíproca de rangos",
+          "english": "Reciprocal rank fusion",
+          "definition": "Combina listas ordenadas sumando aportaciones que decrecen con la posición de cada documento. Evita exigir que las puntuaciones originales sean directamente comparables.",
+          "aliases": [
+            "RRF"
+          ]
+        },
+        {
+          "id": "C1078",
+          "title": "Relevancia marginal máxima",
+          "english": "Maximal marginal relevance",
+          "definition": "Selecciona resultados equilibrando relevancia respecto a la consulta y redundancia con elementos ya elegidos. El equilibrio depende de una medida de similitud y un parámetro de compromiso.",
+          "aliases": [
+            "MMR"
+          ]
+        },
+        {
+          "id": "C1079",
+          "title": "Reescritura de consultas",
+          "english": "Query rewriting",
+          "definition": "Transforma una consulta para facilitar la recuperación o aclarar su contexto. Una reformulación puede mejorar cobertura o introducir cambios de intención que deben evaluarse.",
+          "aliases": []
+        },
+        {
+          "id": "C1080",
+          "title": "Recuperación con interacción tardía",
+          "english": "Late-interaction retrieval",
+          "definition": "Representa consultas y documentos con múltiples vectores y los compara en una fase de interacción posterior. Ofrece un equilibrio distinto entre expresividad, almacenamiento y coste que un único vector.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "formal-ai",
+      "title": "Verificación y sistemas neurosimbólicos",
+      "entries": [
+        {
+          "id": "C1081",
+          "title": "Refinamiento guiado por contraejemplos",
+          "english": "Counterexample-guided abstraction refinement",
+          "definition": "Refina una abstracción cuando un contraejemplo aparente resulta espurio en el sistema concreto. Alterna análisis y refinamiento sin garantizar por sí solo terminación en cualquier dominio.",
+          "aliases": [
+            "CEGAR"
+          ]
+        },
+        {
+          "id": "C1082",
+          "title": "Verificación acotada de modelos",
+          "english": "Bounded model checking",
+          "definition": "Busca violaciones de una propiedad en ejecuciones de longitud limitada mediante una codificación lógica. No encontrar fallos dentro de la cota no prueba automáticamente corrección ilimitada.",
+          "aliases": []
+        },
+        {
+          "id": "C1083",
+          "title": "Interpretación abstracta",
+          "english": "Abstract interpretation",
+          "definition": "Analiza propiedades de programas mediante dominios abstractos y transformaciones que aproximan su semántica. Una aproximación conservadora puede garantizar solidez y producir falsos positivos.",
+          "aliases": []
+        },
+        {
+          "id": "C1084",
+          "title": "Lógica temporal",
+          "english": "Temporal logic",
+          "definition": "Formaliza propiedades sobre evolución y secuencias de estados, como que una condición ocurra eventualmente o se mantenga siempre. Existen lenguajes con distintas interpretaciones del tiempo y las trayectorias.",
+          "aliases": []
+        },
+        {
+          "id": "C1085",
+          "title": "Bisimulación",
+          "english": "Bisimulation",
+          "definition": "Relación que compara sistemas mediante la correspondencia de sus transiciones y observaciones. Puede justificar equivalencia de comportamiento bajo una semántica específica.",
+          "aliases": []
+        },
+        {
+          "id": "C1086",
+          "title": "Escudo de seguridad para políticas",
+          "english": "Policy shielding",
+          "definition": "Restringe o sustituye acciones propuestas por una política usando condiciones de seguridad declaradas. Las garantías dependen de la especificación, el modelo y la intervención permitida.",
+          "aliases": []
+        },
+        {
+          "id": "C1087",
+          "title": "Aseguramiento en ejecución",
+          "english": "Runtime assurance",
+          "definition": "Supervisa un sistema durante su funcionamiento y activa mecanismos de respaldo ante condiciones definidas. La cobertura y los supuestos del monitor delimitan la protección que ofrece.",
+          "aliases": []
+        },
+        {
+          "id": "C1088",
+          "title": "Integración neurosimbólica",
+          "english": "Neuro-symbolic integration",
+          "definition": "Combina componentes de aprendizaje neuronal y representación o razonamiento simbólico. La integración puede adoptar formas distintas y no garantiza interpretabilidad o corrección por sí misma.",
+          "aliases": []
+        },
+        {
+          "id": "C1089",
+          "title": "Síntesis de programas",
+          "english": "Program synthesis",
+          "definition": "Busca programas que satisfagan ejemplos, restricciones o especificaciones formales. La validez observada depende de la cobertura de ejemplos o de las garantías del procedimiento de verificación.",
+          "aliases": []
+        },
+        {
+          "id": "C1090",
+          "title": "Programación lógica inductiva",
+          "english": "Inductive logic programming",
+          "definition": "Aprende hipótesis expresadas mediante reglas lógicas a partir de ejemplos y conocimiento de fondo. La elección del lenguaje de hipótesis condiciona expresividad, búsqueda y generalización.",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "alignment-ai",
+      "title": "Preferencias, supervisión y alineamiento",
+      "entries": [
+        {
+          "id": "C1091",
+          "title": "Aprendizaje por refuerzo con preferencias humanas",
+          "english": "Reinforcement learning from human feedback",
+          "definition": "Usa información humana para construir una señal de preferencia o recompensa y mejorar una política. La calidad del proceso depende de los datos, evaluadores, objetivos y método de optimización.",
+          "aliases": [
+            "RLHF"
+          ]
+        },
+        {
+          "id": "C1092",
+          "title": "Optimización directa de preferencias",
+          "english": "Direct preference optimization",
+          "definition": "Ajusta una política a pares de respuestas preferidas bajo un objetivo que evita entrenar explícitamente un modelo separado de recompensa en el esquema original. No elimina sesgos de las preferencias.",
+          "aliases": [
+            "DPO"
+          ]
+        },
+        {
+          "id": "C1093",
+          "title": "Ajuste supervisado por rechazo",
+          "english": "Rejection sampling fine-tuning",
+          "definition": "Selecciona respuestas candidatas mediante un criterio y entrena supervisadamente con las aceptadas. La distribución seleccionada depende del generador y del procedimiento de filtrado.",
+          "aliases": []
+        },
+        {
+          "id": "C1094",
+          "title": "Selección de la mejor de N respuestas",
+          "english": "Best-of-N sampling",
+          "definition": "Genera varios candidatos y elige el mejor según un evaluador declarado. Aumentar el número puede elevar coste y explotar defectos del evaluador, sin garantizar mayor calidad real.",
+          "aliases": []
+        },
+        {
+          "id": "C1095",
+          "title": "Modelo de recompensa",
+          "english": "Reward model",
+          "definition": "Asigna puntuaciones aprendidas a resultados o comportamientos para representar una señal de preferencia. Optimizar su puntuación puede aprovechar errores de generalización del propio evaluador.",
+          "aliases": []
+        },
+        {
+          "id": "C1096",
+          "title": "Explotación de la recompensa",
+          "english": "Reward hacking",
+          "definition": "Ocurre cuando un sistema logra una puntuación elevada aprovechando una señal imperfecta mientras incumple la intención buscada. No requiere que el sistema posea intenciones humanas.",
+          "aliases": []
+        },
+        {
+          "id": "C1097",
+          "title": "Supervisión escalable",
+          "english": "Scalable oversight",
+          "definition": "Estudia cómo extender evaluación y orientación humanas a tareas difíciles de juzgar directamente. La asistencia de otros modelos también necesita validación y supuestos explícitos.",
+          "aliases": []
+        },
+        {
+          "id": "C1098",
+          "title": "Debate para supervisión",
+          "english": "AI debate for oversight",
+          "definition": "Procedimiento en el que agentes presentan o cuestionan argumentos para facilitar una evaluación. Su utilidad depende de incentivos, reglas y capacidad de detectar argumentos engañosos.",
+          "aliases": []
+        },
+        {
+          "id": "C1099",
+          "title": "Extracción de conocimiento latente",
+          "english": "Eliciting latent knowledge",
+          "definition": "Problema de obtener información que un modelo pueda representar internamente aunque sus respuestas habituales no la revelen fielmente. No presupone acceso directo a una verdad interna verificable.",
+          "aliases": []
+        },
+        {
+          "id": "C1100",
+          "title": "Interpretabilidad mecanicista",
+          "english": "Mechanistic interpretability",
+          "definition": "Investiga mecanismos internos, representaciones y circuitos que explican comportamientos de modelos. Las intervenciones y explicaciones obtenidas suelen ser parciales y dependientes del contexto.",
+          "aliases": []
+        }
+      ]
+    }
+  ]
+}

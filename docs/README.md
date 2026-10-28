@@ -1,6 +1,6 @@
 # Especificación para revisión · Neural Atlas 0.2
 
-**Estado actual:** [rejilla X1.2 · v1.2.1](54-rejilla-acotada-x1.md); [comparadores X1.1 · v1.2.0](53-comparadores-clasicos-x1.md); [cierre técnico v1.1](52-cierre-tecnico-v11.md). D1–D10 y US-056/057 implementados; aceptación docente en aula, US-058 y X2 pendientes. Las descripciones de fases que siguen conservan el contexto de la especificación histórica.
+**Estado actual:** [X1.3 y cierre X1 · v1.3.0](55-importancia-permutacion-x1.md), [100 conceptos nuevos](56-cien-conceptos-ia.md); [rejilla X1.2 · v1.2.1](54-rejilla-acotada-x1.md); [comparadores X1.1 · v1.2.0](53-comparadores-clasicos-x1.md); [cierre técnico v1.1](52-cierre-tecnico-v11.md). D1–D10 y X1 implementados; aceptación docente en aula y X2 pendientes. Las descripciones de fases que siguen conservan el contexto de la especificación histórica.
 
 Diseño inicial: 22/10/2026; estado de implementación: 27/10/2026. La especificación 0.2 se conserva como contrato histórico. Las entregas D1–D6 tienen informes de implementación y evidencia propios; el [cierre técnico D7](44-cierre-d7.md) reúne comparación/CV, transformaciones, dispersión, deriva, proyección y segmentos. [D8.1](45-evaluacion-probabilidades.md) añade evaluación probabilística y costes. D8 se completa con [ética por grupos](47-etica-y-cierre-d8.md); D9–D10 y la validación humana en aula siguen abiertos. Público: FP de especialización y universidad. Proyecto independiente: `simulator-neural-networks`.
 
@@ -99,3 +99,6 @@ La revisión inicial cubrió identidad, secuencia didáctica, prioridades, CNN, 
 | [52 · Cierre técnico v1.1](52-cierre-tecnico-v11.md) | Evidencia, ADR-009, pruebas y límites de aceptación |
 | [53 · Comparadores clásicos X1.1](53-comparadores-clasicos-x1.md) | Diseño, límites y evidencia de kNN/CART/MLP |
 | [54 · Rejilla acotada X1.2](54-rejilla-acotada-x1.md) | Plan, presupuesto, intentos y selección con validación |
+
+| [55 · Importancia por permutación](55-importancia-permutacion-x1.md) | Modelo congelado, inspector y cierre X1 |
+| [56 · Cien conceptos de IA](56-cien-conceptos-ia.md) | C1001–C1100, fuentes y revisión de duplicados |

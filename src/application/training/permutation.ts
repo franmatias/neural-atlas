@@ -1,4 +1,4 @@
-import {networkWire} from './network-schema';
+import { networkWire } from './network-schema';
 import { z } from '@/shared/validation';
 import { forward, parameterCount } from '@/domain/network/model';
 import { outputLoss } from '@/domain/network/backprop';
@@ -117,6 +117,8 @@ export function measurePermutation(
       deviation = Math.sqrt(
         trials.reduce((s, t) => s + (t.delta - mean) ** 2, 0) / (repetitions - 1),
       );
+    if (!Number.isFinite(mean) || !Number.isFinite(deviation))
+      throw Error('PERMUTATION_NON_FINITE');
     return { id: feature.id, name: feature.name, mean, deviation, trials };
   });
   if (hashValue({ network: networkWire(model.network), pipeline: model.pipeline }) !== snapshot)

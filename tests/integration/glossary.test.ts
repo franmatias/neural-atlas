@@ -32,9 +32,9 @@ describe('catálogo grande accesible y filtrado', () => {
     const { wrapper } = await render();
     expect(wrapper.findAll('.glossary-pagination')).toHaveLength(2);
     expect(wrapper.findAll('.glossary-pagination [aria-current="page"]')).toHaveLength(2);
-    await wrapper.get('[aria-label="Ir a la página 28"]').trigger('click');
-    expect(wrapper.findAll('.concept-card')).toHaveLength(4);
-    expect(wrapper.get('[role=status]').text()).toContain('649–652 de 652');
+    await wrapper.get('[aria-label="Ir a la página 32"]').trigger('click');
+    expect(wrapper.findAll('.concept-card')).toHaveLength(8);
+    expect(wrapper.get('[role=status]').text()).toContain('745–752 de 752');
     expect(
       wrapper
         .get('.glossary-pagination .pagination-direction:last-child button:first-child')
@@ -42,9 +42,9 @@ describe('catálogo grande accesible y filtrado', () => {
     ).toBeDefined();
     await wrapper.get('#concept-page-size').setValue('96');
     expect(wrapper.findAll('.concept-card')).toHaveLength(96);
-    expect(wrapper.get('[role=status]').text()).toContain('Página 1 de 7');
-    await wrapper.get('[aria-label="Ir a la página 7"]').trigger('click');
-    expect(wrapper.findAll('.concept-card')).toHaveLength(76);
+    expect(wrapper.get('[role=status]').text()).toContain('Página 1 de 8');
+    await wrapper.get('[aria-label="Ir a la página 8"]').trigger('click');
+    expect(wrapper.findAll('.concept-card')).toHaveLength(80);
     await wrapper.get('input[type=search]').setValue('C652');
     expect(wrapper.findAll('.glossary-pagination')).toHaveLength(0);
     expect(wrapper.findAll('.concept-card')).toHaveLength(1);
@@ -52,10 +52,10 @@ describe('catálogo grande accesible y filtrado', () => {
     expect(wrapper.get('[role=status]').text()).toContain('0–0 de 0');
     expect(wrapper.findAll('.glossary-pagination')).toHaveLength(0);
   });
-  it('pagina 652 fichas y combina filtros sin perder la primera página', async () => {
+  it('pagina 752 fichas y combina filtros sin perder la primera página', async () => {
     const { wrapper } = await render();
     expect(wrapper.findAll('.concept-card')).toHaveLength(24);
-    expect(wrapper.get('[role=status]').text()).toContain('652');
+    expect(wrapper.get('[role=status]').text()).toContain('752');
     await wrapper
       .get('.glossary-pagination .pagination-direction:last-child button:first-child')
       .trigger('click');
@@ -64,7 +64,7 @@ describe('catálogo grande accesible y filtrado', () => {
       .get('.glossary-pagination .pagination-direction:first-child button:last-child')
       .trigger('click');
     await wrapper.get('#concept-kind').setValue('reference');
-    expect(wrapper.get('[role=status]').text()).toContain('500');
+    expect(wrapper.get('[role=status]').text()).toContain('600');
     await wrapper.get('#concept-topic').setValue('attention');
     expect(wrapper.get('[role=status]').text()).toContain('25 conceptos');
     await wrapper

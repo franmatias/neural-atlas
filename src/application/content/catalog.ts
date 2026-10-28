@@ -100,7 +100,13 @@ export function buildCatalog(state: CatalogState) {
       if (!categories.has(category.id)) categories.set(category.id, category);
     for (const c of pack.concepts) {
       const old = nodes.get(c.id);
-      if (old && c.contentVersion <= old.contentVersion) continue;
+      const retainedLocalIdentity =
+        old?.slug.startsWith('reference-') &&
+        !records.has(c.id) &&
+        old.slug !== c.slug &&
+        state.identityHistory.some((h) => h.id === c.id && h.slug === c.slug);
+      // A newly bundled reference cannot erase an already saved custom identity.
+      if (old && c.contentVersion <= old.contentVersion && !retainedLocalIdentity) continue;
       records.set(c.id, c);
       nodes.set(c.id, {
         id: c.id,

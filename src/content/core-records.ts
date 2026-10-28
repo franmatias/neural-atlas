@@ -243,11 +243,14 @@ export const coreRecords: readonly ConceptRecord[] = [...old, ...extra]
       'Su regla de aprendizaje llegará con L03.',
       'Su regla de aprendizaje se explora en L03.',
     );
-    const limit = [145, 151].includes(n)
-      ? 'El mejor resultado observado selecciona sobre validación; declarar todos los intentos no sustituye una evaluación independiente ni convierte la selección en causalidad.'
-      : [143, 144].includes(n)
-        ? 'La comparación usa el mismo train y validación con pipeline común; frecuencias y reglas no garantizan generalización ni calibración.'
-        : limits[cat];
+    const limit =
+      n === 146
+        ? 'El cambio de pérdida describe este modelo y estas muestras; correlaciones y entradas artificiales limitan su interpretación causal.'
+        : [145, 151].includes(n)
+          ? 'El mejor resultado observado selecciona sobre validación; declarar todos los intentos no sustituye una evaluación independiente ni convierte la selección en causalidad.'
+          : [143, 144].includes(n)
+            ? 'La comparación usa el mismo train y validación con pipeline común; frecuencias y reglas no garantizan generalización ni calibración.'
+            : limits[cat];
     let definition = `${base} ${answer} Ejemplo estático: ${example}`;
     if (definition.split(/\s+/).length > 80) definition = `${base} Ejemplo estático: ${example}`;
     if (definition.split(/\s+/).length < 40) definition += ' ' + limit;

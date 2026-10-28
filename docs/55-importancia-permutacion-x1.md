@@ -28,3 +28,12 @@ flowchart LR
 Verificación: oráculo lineal exacto con una variable relevante y otra ignorada; columna constante, nulos/categorías, derivadas y dependencias correlacionadas; signo negativo y dispersión; semillas y conservación del multiconjunto. Igualdad de red/pipeline antes y después, test extremo, límites y fuente incompatible. Integración de checkpoint, cancelación y error; navegador real para inspector, modelos e informes descargados, teclado, temas, contraste y móvil. CI completo y smoke público antes de publicar.
 
 Fuente primaria: [Permutation feature importance](https://scikit-learn.org/stable/modules/permutation_importance.html). Algoritmo didáctico propio con el signo, pérdidas y límites anteriores.
+
+## Evidencia de la versión 1.3.0
+
+- 625 pruebas unitarias/integración en 78 archivos; cobertura de líneas 92,73 %, funciones 86,89 % y ramas 90,72 %, con los umbrales originales. Se comprueba también que ninguna desviación no finita se publique como un número válido.
+- Doce recorridos locales pasan en Chromium/WebKit: laboratorio, checkpoint sin actualizaciones nuevas, reproducción, informe/modelo descargados, catálogo ampliado, búsqueda por siglas, enlaces C1001/C1100, paginación, temas, Axe y móvil. Firefox y la suite completa siguen siendo obligatorios en CI.
+- El smoke público verifica el análisis del checkpoint, hashes de modelo/pipeline, informe sin datos crudos, las cien fichas y una referencia nueva sin conexión, conservando las actualizaciones del laboratorio.
+- X1 queda implementado: US-056/057/058. La aceptación con alumnado y las extensiones X2 continúan pendientes.
+
+![Importancia, signo y dispersión reales](implementation/x1-permutation.png)
