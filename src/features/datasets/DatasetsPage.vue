@@ -5,6 +5,7 @@ import { useDatasetsStore } from '@/stores/datasets';
 import { usePreferencesStore } from '@/stores/preferences';
 import type { SplitName } from '@/domain/data/types';
 import DatasetGenerator from './DatasetGenerator.vue';
+import RealDatasets from './RealDatasets.vue';
 import DatasetScatter from './DatasetScatter.vue';
 import DatasetTable from './DatasetTable.vue';
 import DatasetInspector from './DatasetInspector.vue';
@@ -137,6 +138,7 @@ onScopeDispose(data.cancel);
       <span v-if="data.error.detail">({{ data.error.detail }})</span>
     </p>
     <p class="data-notice" role="status">{{ t(`data.notice.${data.notice}`) }}</p>
+    <RealDatasets v-if="tab === 'explore'" />
     <template v-if="tab === 'explore'"
       ><div class="dataset-workspace">
         <DatasetGenerator />

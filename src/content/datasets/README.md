@@ -1,0 +1,10 @@
+# Copias oficiales de UCI
+
+Descargadas el 28/10/2026 desde `https://archive.ics.uci.edu/static/public/53/iris.zip` y `https://archive.ics.uci.edu/static/public/109/wine.zip`. Archivos originales y nombres conservados en `raw/`; SHA-256 en [provenance.json](provenance.json). Se redistribuyen bajo **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, según las fichas oficiales consultadas en esa fecha.
+
+- **Iris**: Fisher, R. (1936). Iris [Dataset]. UCI Machine Learning Repository. [DOI 10.24432/C56C76](https://doi.org/10.24432/C56C76), [ficha UCI](https://archive.ics.uci.edu/dataset/53/iris). Se utiliza **bezdekIris.data**, 150 filas, cuatro medidas en cm y tres clases de 50. Sin editar sus valores. Las muestras 35 y 38 coinciden con las correcciones indicadas por UCI: `4.9,3.1,1.5,0.2` y `4.9,3.6,1.4,0.1`; `iris.data` también se conserva para documentar la diferencia.
+- **Wine**: Aeberhard, S. & Forina, M. (1992). Wine [Dataset]. UCI Machine Learning Repository. [DOI 10.24432/C5PC7J](https://doi.org/10.24432/C5PC7J), [ficha UCI](https://archive.ics.uci.edu/dataset/109/wine). Se utiliza **wine.data**, 178 filas, trece características y tres clases con soportes 59/71/48. Sin editar valores. No se inventan unidades que no estén declaradas en la fuente.
+
+Adaptación de formato: CSV → valores numéricos y etiquetas de texto del dataset interno; nombres de columnas traducidos, IDs de fila secuenciales y `origin=imported`. No se escalan, imputan, dividen ni generan nuevas filas al cargar. No representan por sí solos la variedad de problemas reales ni establecen causalidad. No se identifican individuos a partir de medidas idénticas; la fuente no proporciona todos los metadatos de recogida necesarios para evaluar cada posible sesgo.
+
+Wine conserva las trece columnas para Datos y Entrenamiento. Los estudios X1 acotados que admiten hasta ocho columnas crudas mantienen ese límite y lo muestran al rechazar una copia incompatible. La proyección 2D no muestra todas las dimensiones.

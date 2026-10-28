@@ -5,6 +5,7 @@ import { useI18n, type MessageKey } from '@/app/i18n';
 import { usePreferencesStore } from '@/stores/preferences';
 import { laboratories } from '@/content/laboratories';
 import AppIcon from '@/shared/ui/AppIcon.vue';
+import LabGuide from '@/shared/ui/LabGuide.vue';
 import SettingsForm from '@/shared/ui/SettingsForm.vue';
 import { trapDialogFocus } from '@/shared/ui/dialog-focus';
 const { t } = useI18n();
@@ -96,7 +97,9 @@ watch(
         <AppIcon name="settings" />
       </button>
     </header>
-    <main id="main-content" ref="main" tabindex="-1"><RouterView /></main>
+    <main id="main-content" ref="main" tabindex="-1">
+      <LabGuide :path="route.path" /><RouterView />
+    </main>
     <footer class="footer">
       <span>NEURAL ATLAS</span><span>{{ t('brand.tagline') }}</span
       ><RouterLink to="/ajustes">{{ t('nav.settings') }}</RouterLink>

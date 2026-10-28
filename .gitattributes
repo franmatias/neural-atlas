@@ -9,3 +9,5 @@
 *.html text eol=lf
 *.js text eol=lf
 *.yml text eol=lf
+# UCI source files are checked by byte-level SHA-256 on Windows and Linux.
+src/content/datasets/raw/* -text

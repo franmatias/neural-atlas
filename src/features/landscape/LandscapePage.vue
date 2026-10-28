@@ -10,11 +10,16 @@ import { cloneNetwork } from '@/domain/network/model';
 import { parameterEntries } from '@/domain/training/landscape';
 import ParameterField from '@/shared/ui/ParameterField.vue';
 import LandscapePlot from './LandscapePlot.vue';
+import GradientStep from './GradientStep.vue';
+import SonificationPanel from '@/shared/ui/SonificationPanel.vue';
+import { gradientLessons } from '@/content/gradient-lessons';
 const Landscape3D = defineAsyncComponent(() => import('./Landscape3D.vue'));
 const study = useLandscapeStore(),
   training = useTrainingStore(),
   prefs = usePreferencesStore(),
-  view = ref('2d'),
+  view = ref('both'),
+  webglUnavailable = ref(false),
+  lesson = ref('first-step'),
   downloadError = ref('');
 const { index, count } = storeToRefs(study),
   playback = useSnapshotPlayback(index, count);
@@ -54,6 +59,13 @@ watch([() => study.result, () => study.busy], playback.stop);
 function move(delta: number) {
   playback.stop();
   study.index = Math.max(0, Math.min(study.count - 1, study.index + delta));
+}
+function prepareLesson() {
+  playback.stop();
+  const selected = gradientLessons.find((l) => l.id === lesson.value)!;
+  Object.assign(study.options, JSON.parse(JSON.stringify(selected.patch)));
+  study.notice =
+    'Ejemplo preparado. Pulsa «Calcular paisaje y trayectorias» para registrar los nuevos datos.';
 }
 function capture() {
   if (!training.state || !training.input || training.busy || training.running) return;
@@ -101,6 +113,27 @@ onBeforeRouteLeave(() => {
       Compara optimizadores desde el mismo punto. Distingue una función ilustrativa de un corte de
       dos parámetros de una red congelada.
     </p>
+    <section class="training-panel">
+      <h2>Aprende a leer el descenso</h2>
+      <label
+        >Ejemplo guiado de descenso<select v-model="lesson">
+          <option v-for="l in gradientLessons" :key="l.id" :value="l.id">{{ l.title }}</option>
+        </select></label
+      >
+      <p>{{ gradientLessons.find((l) => l.id === lesson)?.question }}</p>
+      <button class="button secondary" :disabled="study.busy" @click="prepareLesson">
+        Preparar ejemplo guiado
+      </button>
+      <details>
+        <summary>Explicación del ejemplo guiado</summary>
+        <p>{{ gradientLessons.find((l) => l.id === lesson)?.explanation }}</p>
+      </details>
+      <p>
+        Vista 2D: ubicación y curvas de igual pérdida. Vista 3D: esa misma ubicación sobre una
+        superficie cuya altura es la pérdida. Los dos marcadores avanzan juntos; girar la cámara no
+        entrena el modelo.
+      </p>
+    </section>
     <section class="training-panel">
       <h2>Prepara el estudio</h2>
       <fieldset :disabled="study.busy">
@@ -260,26 +293,45 @@ onBeforeRouteLeave(() => {
           {{ study.result.options.clip }}. Los controles superiores preparan otro estudio.
         </p>
         <div class="actions">
+          <button class="button secondary" :aria-pressed="view === 'both'" @click="view = 'both'">
+            2D y 3D simultáneos
+          </button>
           <button class="button secondary" :aria-pressed="view === '2d'" @click="view = '2d'">
             Contornos 2D</button
-          ><button class="button secondary" :aria-pressed="view === '3d'" @click="view = '3d'">
+          ><button
+            class="button secondary"
+            :aria-pressed="view === '3d'"
+            @click="view = webglUnavailable ? 'both' : '3d'"
+          >
             Malla 3D
           </button>
         </div>
-        <LandscapePlot
-          v-if="view === '2d'"
-          :result="study.result"
-          :index="study.index"
-          @start="pick"
-        />
-        <Landscape3D
-          v-else
-          :result="study.result"
-          :index="study.index"
-          @unavailable="
-            view = '2d';
-            study.notice = 'WebGL no disponible. Se conservan contornos y tabla.';
-          "
+        <div
+          :class="{ 'dual-landscape': view === 'both' }"
+          aria-label="Vistas sincronizadas del paisaje"
+        >
+          <LandscapePlot
+            v-if="view !== '3d'"
+            :result="study.result"
+            :index="study.index"
+            @start="pick"
+          />
+          <Landscape3D
+            v-if="view !== '2d'"
+            :result="study.result"
+            :index="study.index"
+            @unavailable="
+              webglUnavailable = true;
+              view = 'both';
+              study.notice = 'WebGL no disponible. Se conservan contornos y tabla.';
+            "
+          />
+        </div>
+        <GradientStep :result="study.result" :index="study.index" />
+        <SonificationPanel
+          :value="displayed.find((e) => e.path.kind === 'sgd')?.point?.loss"
+          kind="loss"
+          label="pérdida SGD del paso inspeccionado"
         />
         <p>
           Próximo inicio preparado: x={{ study.options.start[0].toPrecision(5) }}, y={{
@@ -391,6 +443,20 @@ onBeforeRouteLeave(() => {
   </div>
 </template>
 <style scoped>
+.dual-landscape {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  align-items: start;
+}
+.dual-landscape > * {
+  min-width: 0;
+}
+@media (max-width: 1050px) {
+  .dual-landscape {
+    grid-template-columns: 1fr;
+  }
+}
 .fields {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));

@@ -57,6 +57,7 @@ function position(x: number, y: number, loss: number) {
   );
 }
 function updatePaths() {
+  renderer?.domElement.setAttribute('data-step', String(props.index));
   disposeGroup(paths);
   props.result.paths.forEach((p, i) => {
     const points = p.points.slice(0, props.index + 1).map((v) => position(v.x, v.y, v.loss));

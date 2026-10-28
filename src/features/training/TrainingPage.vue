@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SegmentControls from './SegmentControls.vue';
+import ConfigurationHistory from './ConfigurationHistory.vue';
+import SonificationPanel from '@/shared/ui/SonificationPanel.vue';
 import { segmentContext } from '@/domain/training/segments';
 import { computed, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
@@ -107,6 +109,12 @@ const alerts: Record<string, string> = {
       >
     </section>
     <TrainingControls />
+    <ConfigurationHistory />
+    <SonificationPanel
+      :value="session.state?.history.at(-1)?.trainLoss"
+      kind="loss"
+      label="pérdida train de la última época registrada"
+    />
     <AugmentationPanel v-if="session.source?.augmentation" :report="session.source.augmentation" />
     <section v-if="session.budget" class="training-panel">
       <h2>Presupuesto del experimento</h2>

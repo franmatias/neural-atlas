@@ -66,7 +66,7 @@ export const laboratories: readonly Laboratory[] = [
     id: 'L07',
     slug: 'optimizacion',
     title: 'Paisajes de pérdida',
-    question: '¿Qué camino sigue cada optimizador?',
+    question: '¿Cómo desciende el gradiente? Observa el mismo paso en 2D y 3D.',
     group: 'learning',
     phase: 'D9',
     available: true,

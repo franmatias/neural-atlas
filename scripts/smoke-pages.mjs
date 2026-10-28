@@ -71,6 +71,32 @@ try {
         await page.locator('.gradient-check tbody tr').filter({ hasText: 'Correcto' }).count(),
         9,
       );
+      const extra=await browser.newPage();
+      try {
+        await extra.goto(new URL('#/lab/optimizacion',url).href);
+        await extra.getByRole('combobox',{name:'Ejemplo guiado de descenso',exact:true}).selectOption('first-step');
+        await extra.getByRole('button',{name:'Preparar ejemplo guiado',exact:true}).click();
+        await extra.getByRole('button',{name:'Calcular paisaje y trayectorias',exact:true}).click();
+        await expect(extra.getByTestId('gradient-next')).toContainText('1,12');
+        await expect(extra.locator('svg[data-step]')).toHaveAttribute('data-step','0');
+        await expect(extra.locator('.gpu-surface canvas').or(extra.getByRole('status').filter({hasText:'WebGL no disponible'}))).toBeVisible();
+        await extra.getByRole('button',{name:'Paso siguiente',exact:true}).click();
+        await expect(extra.locator('svg[data-step]')).toHaveAttribute('data-step','1');
+        if(await extra.locator('.gpu-surface canvas').count())await expect(extra.locator('.gpu-surface canvas')).toHaveAttribute('data-step','1');
+        await extra.goto(new URL('#/lab/datos',url).href);
+        await extra.getByText('Datasets reales opcionales · Iris y Wine',{exact:true}).click();
+        await extra.getByRole('button',{name:'Cargar Iris y sustituir datos',exact:true}).click();
+        await expect(extra.getByRole('status').filter({hasText:'Iris cargado sin división'})).toBeVisible();
+        await extra.goto(new URL('#/lab/entrenamiento',url).href);
+        const seed=extra.getByLabel('Semilla del modelo',{exact:true});const original=await seed.inputValue();
+        await seed.fill('73');await seed.press('Enter');
+        await extra.getByRole('button',{name:'Deshacer configuración',exact:true}).click();await expect(seed).toHaveValue(original);
+        await extra.getByRole('button',{name:'Rehacer configuración',exact:true}).click();await expect(seed).toHaveValue('73');
+        await extra.goto(new URL('#/lab/neurona',url).href);
+        await extra.getByText('Sonificación opcional · salida de la neurona',{exact:true}).click();
+        await expect(extra.getByRole('button',{name:'Silenciar inmediatamente',exact:true})).toBeDisabled();
+      } finally {await extra.close();}
+      console.log('X2 public check: synchronized gradient views, numerical step, UCI Iris, configuration undo/redo, opt-in audio.');
       assert.deepEqual(errors, []);
       await page.goto(new URL('#/lab/entrenamiento', url).href);
       await page.getByRole('button', { name: 'Cargar ejemplo y sustituir datos' }).click();
