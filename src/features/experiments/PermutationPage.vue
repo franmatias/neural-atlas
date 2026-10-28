@@ -22,6 +22,12 @@ const selected = computed(() => study.result?.results[feature.value]),
 const extent = computed(() =>
   Math.max(0.001, ...(study.result?.results.map((r) => Math.abs(r.mean) + r.deviation) ?? [])),
 );
+const sourceNames: Record<string, string> = {
+  moons: 'Dos lunas',
+  flowers: 'Flores sintéticas multiclase',
+  sine: 'Seno',
+  correlated: 'Variables correlacionadas y ruido',
+};
 function stop() {
   playing.value = false;
   clearTimeout(timer);
@@ -169,8 +175,11 @@ onScopeDispose(stop);
         <h2>Dependencia predictiva, no causalidad</h2>
         <p>
           Fuente registrada:
-          {{ study.result.source === 'checkpoint' ? 'checkpoint detenido' : study.result.recipe }}.
-          {{ study.result.validationIds.length }} filas de validación ·
+          {{
+            study.result.source === 'checkpoint'
+              ? 'checkpoint detenido'
+              : sourceNames[study.result.recipe ?? 'sine']
+          }}. {{ study.result.validationIds.length }} filas de validación ·
           {{ study.result.settings.repetitions }} repeticiones · semilla
           {{ study.result.settings.seed }} · test no evaluado.
         </p>

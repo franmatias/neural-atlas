@@ -42,7 +42,11 @@ it('oráculo lineal, variable ignorada, dispersión exacta, negativos e inmutabi
     { id: 'a', origin: 'manual' as const, features: { x1: -1, x2: 4 }, target: -1 },
     { id: 'b', origin: 'manual' as const, features: { x1: 1, x2: 4 }, target: 1 },
   ];
-  const before = JSON.stringify({ model: networkWire(model.network), pipeline: model.pipeline, rows }),
+  const before = JSON.stringify({
+      model: networkWire(model.network),
+      pipeline: model.pipeline,
+      rows,
+    }),
     r = measurePermutation(model, rows, 42, 5);
   expect(r.baseline.loss).toBe(0);
   expect(r.results[1]!.trials.every((t) => t.delta === 0)).toBe(true);
@@ -53,7 +57,9 @@ it('oráculo lineal, variable ignorada, dispersión exacta, negativos e inmutabi
   expect(r.results[0]!.deviation).toBeCloseTo(
     Math.sqrt(oracle.reduce((s, x) => s + (x - mean) ** 2, 0) / 4),
   );
-  expect(JSON.stringify({ model: networkWire(model.network), pipeline: model.pipeline, rows })).toBe(before);
+  expect(
+    JSON.stringify({ model: networkWire(model.network), pipeline: model.pipeline, rows }),
+  ).toBe(before);
   expect(
     measurePermutation(
       model,
@@ -98,7 +104,7 @@ it.each(['moons', 'flowers', 'sine', 'correlated'] as const)(
   (recipe) => {
     const result = permutationStudy({ ...defaultPermutation, recipe, epochs: 5 }),
       model = importInferenceModel(result.model);
-    expect(result.results).toHaveLength(['correlated','flowers'].includes(recipe) ? 3 : 2);
+    expect(result.results).toHaveLength(['correlated', 'flowers'].includes(recipe) ? 3 : 2);
     expect(result.testEvaluated).toBe(false);
     expect(model.hashes.pipelineHash).toBe(result.provenance.pipelineHash);
     expect(model.hashes.networkHash).toBe(result.provenance.networkHash);
@@ -168,6 +174,26 @@ it('límites, modelo alterado, objetivos inválidos y fuente maliciosa', () => {
   bad.network.layers[0]!.weights[0] = 999;
   expect(() => measurePermutation(bad, f.dataset.rows, 42, 5)).toThrow();
   expect(() => permutationStudy({ ...defaultPermutation, experimentJson: '{}' })).toThrow();
+  const extreme = structuredClone(model);
+  extreme.task = 'binary';
+  extreme.network.spec.task = 'binary';
+  extreme.classOrder = ['0', '1'];
+  extreme.positiveClassId = 1;
+  extreme.threshold = 0.5;
+  extreme.network.layers[0]!.activation = 'sigmoid';
+  extreme.network.layers[0]!.weights.set([1e200, 0]);
+  extreme.hashes.networkHash = hashValue(networkWire(extreme.network));
+  expect(() =>
+    measurePermutation(
+      extreme,
+      [
+        { id: 'a', origin: 'manual', features: { x1: -1, x2: 0 }, target: '1' },
+        { id: 'b', origin: 'manual', features: { x1: 1, x2: 0 }, target: '0' },
+      ],
+      42,
+      5,
+    ),
+  ).toThrow('PERMUTATION_NON_FINITE');
   expect(() =>
     permutationStudy({ ...defaultPermutation, experimentJson: ' '.repeat(8 * 1024 * 1024 + 1) }),
   ).toThrow();
