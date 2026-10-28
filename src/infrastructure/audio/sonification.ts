@@ -33,6 +33,7 @@ export class Sonification {
     const tone = toneFor(value, kind, register);
     if (!tone || !this.visible() || !Number.isFinite(volume)) return false;
     const id = ++this.revision;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       const context = this.factory();
       this.context = context;
@@ -42,7 +43,12 @@ export class Sonification {
       this.oscillator.type = 'sine';
       this.oscillator.connect(this.gain);
       this.gain.connect(context.destination);
-      await context.resume();
+      await Promise.race([
+        context.resume(),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(Error('AUDIO_RESUME_TIMEOUT')), 2000);
+        }),
+      ]);
       if (id !== this.revision) return false;
       if (!this.visible()) {
         this.stop();
@@ -55,6 +61,8 @@ export class Sonification {
     } catch {
       if (id === this.revision) this.stop();
       return false;
+    } finally {
+      if (timer !== undefined) clearTimeout(timer);
     }
   }
   update(value: number, kind: ToneKind, volume: number, register: ToneRegister = 'normal') {

@@ -26,6 +26,8 @@ jobs:
       - run: npm run check
       - name: Comprobar regresiones de importación y móvil
         run: node node_modules/@playwright/test/cli.js test tests/e2e/learning-catalog.spec.ts tests/e2e/teaching.spec.ts --grep "nuevas páginas|docencia y disponibilidad|paquete docente completo" --project=chromium --project=webkit --repeat-each=3 --reporter=list --output=test-results/early
+      - name: Comprobar audio nativo y cancelación
+        run: node node_modules/@playwright/test/cli.js test tests/e2e/x2.spec.ts --grep "sonido apagado|activación de audio" --project=chromium --project=firefox --project=webkit --repeat-each=2 --reporter=list --output=test-results/audio-early
       - run: npm run test:e2e
       - name: Preparar el artefacto verificado para Pages
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'

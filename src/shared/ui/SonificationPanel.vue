@@ -71,6 +71,7 @@ onScopeDispose(() => {
       }}
       → [220;880] Hz en registro normal. Grave divide la frecuencia por dos; agudo la duplica. Los
       valores fuera del rango saturan el tono y conservan su valor real.
+      Si el sonido no se activa en dos segundos, se cancela el intento.
     </p>
     <p>
       Valor: {{ value === undefined ? 'aún no disponible' : value.toPrecision(6) }} · frecuencia
